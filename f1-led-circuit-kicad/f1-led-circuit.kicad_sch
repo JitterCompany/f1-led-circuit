@@ -1063,6 +1063,178 @@
 				)
 			)
 		)
+		(symbol "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "RGB_LED"
+				(at 0.254 8.89 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "HD108-2020"
+				(at 0.254 13.208 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+				(at 1.016 17.018 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "HD108-2020_0_1"
+				(rectangle
+					(start -6.35 6.35)
+					(end 6.35 -6.35)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "HD108-2020_1_1"
+				(pin power_in line
+					(at -8.89 3.81 0)
+					(length 2.54)
+					(name "VDD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at -8.89 0 0)
+					(length 2.54)
+					(name "DOUT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at -8.89 -3.81 0)
+					(length 2.54)
+					(name "DCKO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 8.89 3.81 180)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 8.89 0 180)
+					(length 2.54)
+					(name "DCKI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 8.89 -3.81 180)
+					(length 2.54)
+					(name "DIN"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "PCM_Espressif:ESP32-C3-MINI-1"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -3397,6 +3569,18 @@
 		(uuid 42b324b3-e7d2-408e-aac6-4d5d08be3bf0)
 	)
 	(rectangle
+		(start 88.265 22.86)
+		(end 118.11 48.895)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid 5e3baef2-de3c-499f-b63c-c66a1e6148d9)
+	)
+	(rectangle
 		(start 190.5 95.25)
 		(end 278.13 158.115)
 		(stroke
@@ -3407,6 +3591,16 @@
 			(type none)
 		)
 		(uuid 66e9e87a-24c0-4a49-9509-42d04489209f)
+	)
+	(text "Test RGB LED Component"
+		(exclude_from_sim no)
+		(at 104.394 20.574 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "21ef09ee-372e-41a7-becd-128da89bbe07")
 	)
 	(text "VBUS from USB Connector (nom +5V)  Min. 22uF inp./outp. caps"
 		(exclude_from_sim no)
@@ -3677,6 +3871,87 @@
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "#PWR07")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 102.87 36.83 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1c58fd5e-b185-46df-8e8d-bf2213b31385")
+		(property "Reference" "RGB_LED1"
+			(at 102.87 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 103.124 23.622 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 103.886 19.812 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 102.87 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "6"
+			(uuid "cac05ed8-343b-4e20-a77d-2c2634a78848")
+		)
+		(pin "2"
+			(uuid "04d1305c-73af-4de2-b938-8ddddaa444db")
+		)
+		(pin "1"
+			(uuid "07128814-5bed-4b36-a329-81f9dc12ddab")
+		)
+		(pin "5"
+			(uuid "c1c0a9a1-3a8a-4cbf-a05d-9842a1315dfe")
+		)
+		(pin "4"
+			(uuid "5224001f-854b-4478-b35d-6052671b8241")
+		)
+		(pin "3"
+			(uuid "cf3e76ba-67c1-4756-89b0-b5e889260c14")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "RGB_LED1")
 					(unit 1)
 				)
 			)
