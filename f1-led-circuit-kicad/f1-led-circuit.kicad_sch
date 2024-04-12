@@ -1063,178 +1063,6 @@
 				)
 			)
 		)
-		(symbol "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "RGB_LED"
-				(at 0.254 8.89 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "HD108-2020"
-				(at 0.254 13.208 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-				(at 1.016 17.018 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "HD108-2020_0_1"
-				(rectangle
-					(start -6.35 6.35)
-					(end 6.35 -6.35)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "HD108-2020_1_1"
-				(pin power_in line
-					(at -8.89 3.81 0)
-					(length 2.54)
-					(name "VDD"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin output line
-					(at -8.89 0 0)
-					(length 2.54)
-					(name "DOUT"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin output line
-					(at -8.89 -3.81 0)
-					(length 2.54)
-					(name "DCKO"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at 8.89 3.81 180)
-					(length 2.54)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin input line
-					(at 8.89 0 180)
-					(length 2.54)
-					(name "DCKI"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin input line
-					(at 8.89 -3.81 180)
-					(length 2.54)
-					(name "DIN"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "PCM_Espressif:ESP32-C3-MINI-1"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -3418,6 +3246,16 @@
 	)
 	(wire
 		(pts
+			(xy 175.26 54.61) (xy 162.56 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "851a97b2-ad80-42f6-b62d-af0d769b6615")
+	)
+	(wire
+		(pts
 			(xy 50.8 40.64) (xy 50.8 50.8)
 		)
 		(stroke
@@ -3485,6 +3323,16 @@
 			(type default)
 		)
 		(uuid "a4f9a736-8ffc-4336-9342-7de05d32e35f")
+	)
+	(wire
+		(pts
+			(xy 175.26 57.15) (xy 162.56 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a9b60490-4e09-4e70-9f59-1661cf2d1e7f")
 	)
 	(wire
 		(pts
@@ -3569,18 +3417,6 @@
 		(uuid 42b324b3-e7d2-408e-aac6-4d5d08be3bf0)
 	)
 	(rectangle
-		(start 88.265 22.86)
-		(end 118.11 48.895)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid 5e3baef2-de3c-499f-b63c-c66a1e6148d9)
-	)
-	(rectangle
 		(start 190.5 95.25)
 		(end 278.13 158.115)
 		(stroke
@@ -3591,16 +3427,6 @@
 			(type none)
 		)
 		(uuid 66e9e87a-24c0-4a49-9509-42d04489209f)
-	)
-	(text "Test RGB LED Component"
-		(exclude_from_sim no)
-		(at 104.394 20.574 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "21ef09ee-372e-41a7-becd-128da89bbe07")
 	)
 	(text "VBUS from USB Connector (nom +5V)  Min. 22uF inp./outp. caps"
 		(exclude_from_sim no)
@@ -3664,7 +3490,7 @@
 		(uuid "c7a8e7bd-6838-4a24-91c1-deb2c5526fa3")
 	)
 	(label "D_FS_P"
-		(at 157.48 110.49 0)
+		(at 162.56 34.29 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3708,7 +3534,7 @@
 		(uuid "af8d87e9-cc5b-48d7-89a6-e3e2fbbd3ed9")
 	)
 	(label "D_FS_N"
-		(at 157.48 113.03 0)
+		(at 162.56 36.83 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3728,6 +3554,54 @@
 			(justify left bottom)
 		)
 		(uuid "c44abde5-a4e7-42ea-bc4c-b2ecaf268f01")
+	)
+	(hierarchical_label "MCU_DATA_1"
+		(shape output)
+		(at 175.26 57.15 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "0199245a-af8f-4c5b-95ca-f996306b7720")
+	)
+	(hierarchical_label "MCU_CLOCK_1"
+		(shape output)
+		(at 175.26 54.61 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "44766717-c9e9-4980-8c94-ee1007f7666a")
+	)
+	(hierarchical_label "CLOCK_CHAIN_4_TO_5"
+		(shape output)
+		(at 212.09 59.69 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "4dd8e448-ea08-41b4-b894-1c8f332db0d7")
+	)
+	(hierarchical_label "DATA_CHAIN_4_TO_5"
+		(shape output)
+		(at 212.09 54.61 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b0a74a20-fd63-4fb9-9b75-442626aeb29d")
 	)
 	(symbol
 		(lib_id "adams_library_symbols:NUF2042XV6T1G")
@@ -3871,87 +3745,6 @@
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "#PWR07")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
-		(at 102.87 36.83 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "1c58fd5e-b185-46df-8e8d-bf2213b31385")
-		(property "Reference" "RGB_LED1"
-			(at 102.87 27.94 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "HD108-2020"
-			(at 103.124 23.622 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 103.886 19.812 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 33.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 102.87 33.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "6"
-			(uuid "cac05ed8-343b-4e20-a77d-2c2634a78848")
-		)
-		(pin "2"
-			(uuid "04d1305c-73af-4de2-b938-8ddddaa444db")
-		)
-		(pin "1"
-			(uuid "07128814-5bed-4b36-a329-81f9dc12ddab")
-		)
-		(pin "5"
-			(uuid "c1c0a9a1-3a8a-4cbf-a05d-9842a1315dfe")
-		)
-		(pin "4"
-			(uuid "5224001f-854b-4478-b35d-6052671b8241")
-		)
-		(pin "3"
-			(uuid "cf3e76ba-67c1-4756-89b0-b5e889260c14")
-		)
-		(instances
-			(project "f1-led-circuit"
-				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "RGB_LED1")
 					(unit 1)
 				)
 			)
@@ -4364,7 +4157,7 @@
 	)
 	(symbol
 		(lib_id "PCM_Espressif:ESP32-C3-MINI-1")
-		(at 129.54 120.65 0)
+		(at 134.62 44.45 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4372,7 +4165,7 @@
 		(dnp no)
 		(uuid "6f1baee6-ba1d-483d-a8a6-0523174474d2")
 		(property "Reference" "U1"
-			(at 151.384 93.218 0)
+			(at 156.464 17.018 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4381,7 +4174,7 @@
 			)
 		)
 		(property "Value" "ESP32-C3-MINI-1"
-			(at 135.636 148.082 0)
+			(at 140.716 71.882 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4390,7 +4183,7 @@
 			)
 		)
 		(property "Footprint" "PCM_Espressif:ESP32-C3-MINI-1"
-			(at 129.54 156.21 0)
+			(at 134.62 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4399,7 +4192,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.espressif.com/sites/default/files/documentation/esp32-c3-mini-1_datasheet_en.pdf"
-			(at 129.54 158.75 0)
+			(at 134.62 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4408,7 +4201,7 @@
 			)
 		)
 		(property "Description" "ESP32-C3-MINI-1 family is an ultra-low-power MCU-based SoC solution that supports 2.4 GHz Wi-Fi and Bluetooth®Low Energy (Bluetooth LE)."
-			(at 129.54 120.65 0)
+			(at 134.62 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5500,6 +5293,80 @@
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "C2")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(sheet
+		(at 212.09 53.34)
+		(size 19.05 8.89)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "79904105-a8d7-46a3-bc29-7dd5c0cc0978")
+		(property "Sheetname" "RGB_LED_Track_Chain_5_TO_8"
+			(at 208.534 51.816 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "rgb_led_track_chain_5.kicad_sch"
+			(at 203.835 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 175.26 52.705)
+		(size 18.415 9.525)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "dd939c9e-36cb-4c44-9395-9319cfda0013")
+		(property "Sheetname" "RGB_LED_Track_Chain_1_TO_4"
+			(at 171.831 51.562 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "rgb_led_track_chain.kicad_sch"
+			(at 168.148 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(page "2")
 				)
 			)
 		)

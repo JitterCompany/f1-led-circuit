@@ -385,6 +385,14 @@
     [
       "e1a94fd7-a746-413d-af87-306e7f792800",
       "Root"
+    ],
+    [
+      "dd939c9e-36cb-4c44-9395-9319cfda0013",
+      "RGB_LED_Track_Chain_1_TO_4"
+    ],
+    [
+      "79904105-a8d7-46a3-bc29-7dd5c0cc0978",
+      "RGB_LED_Track_Chain_5_TO_8"
     ]
   ],
   "text_variables": {}
