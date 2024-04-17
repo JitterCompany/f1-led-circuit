@@ -1072,24 +1072,24 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "U?"
-				(at -0.254 9.906 0)
+			(property "Reference" "U128"
+				(at 4.826 9.144 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" ""
-				(at 0 0 0)
+			(property "Value" "LDLN050"
+				(at -4.826 9.144 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" ""
-				(at 0 0 0)
+			(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:DFN8_LDLN050_STM"
+				(at -0.254 12.446 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1097,8 +1097,8 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" ""
-				(at 0 0 0)
+			(property "Datasheet" "https://www.st.com/resource/en/datasheet/ldln050.pdf"
+				(at 0.254 -21.336 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1147,7 +1147,7 @@
 				)
 				(pin no_connect line
 					(at 10.16 -2.54 180)
-					(length 2.54)
+					(length 2.54) hide
 					(name "NC"
 						(effects
 							(font
@@ -1201,7 +1201,7 @@
 				)
 				(pin no_connect line
 					(at -10.16 -1.27 0)
-					(length 2.54)
+					(length 2.54) hide
 					(name "NC"
 						(effects
 							(font
@@ -1219,7 +1219,7 @@
 				)
 				(pin no_connect line
 					(at -10.16 -5.08 0)
-					(length 2.54)
+					(length 2.54) hide
 					(name "NC"
 						(effects
 							(font
@@ -4642,7 +4642,7 @@
 				)
 			)
 		)
-		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:LDLN050"
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:DFN8_LDLN050_STM"
 			(at 143.256 119.634 0)
 			(effects
 				(font
@@ -4652,7 +4652,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.st.com/resource/en/datasheet/ldln050.pdf"
-			(at 143.51 132.08 0)
+			(at 143.764 153.416 0)
 			(effects
 				(font
 					(size 1.27 1.27)

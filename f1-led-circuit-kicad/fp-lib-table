@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "F1-LED-CIRCUIT-LIBRARY")(type "KiCad")(uri "/Users/adamh/Documents/KiCad/8.0/footprints/F1-LED-CIRCUIT-LIBRARY.pretty")(options "")(descr ""))
+)
