@@ -4651,7 +4651,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.st.com/resource/en/datasheet/ldln050.pdf"
 			(at 146.05 132.08 0)
 			(effects
 				(font

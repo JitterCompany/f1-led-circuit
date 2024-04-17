@@ -12,6 +12,7 @@
 *.sch-bak
 *~
 *.lck
+~f1-led-circuit.kicad_sch.lck
 _autosave-*
 *.tmp
 *-save.pro
