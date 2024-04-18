@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "Jitter_Symbols")(type "KiCad")(uri "/Users/adamh/Documents/KiCad/8.0/symbols/Jitter_IC.kicad_sym")(options "")(descr ""))
+)
