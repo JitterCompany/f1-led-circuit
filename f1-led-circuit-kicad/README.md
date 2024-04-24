@@ -1,18 +1,19 @@
-### F1-LED-CIRCUIT (WIP)
+### F1-LED-CIRCUIT (Work In Progress)
 
 ## Instructions
 
 ### Step 1: Clone the Repository
-- Use Git to clone this repository to your local machine.
+  1. Use Git to clone this repository to your local machine.
   git clone https://github.com/JitterCompany/f1-led-circuit
-- Navitage to the cloned directory:
-  cd F1-LED-CIRCUIT
+  2. Navitage to the cloned directory
+  3. Navigate to the f1-led-circuit-kicad directory
+  4. Open file f1-led-circuit.kicad_pro from the KiCad application
 
 ### Step 2: Add Symbol Libraries to KiCad
 Symbols represent electronic components in your schematic. 
 You need to add project-specific symbol libraries to KiCad.
 
-- Jitter Symbols - Use Git to clone this repository to your local machine.
+Jitter Symbols - Use Git to clone this repository to your local machine.
   git clone https://github.com/JitterCompany/KicadComponents.git
 
   1. Add the library to KiCad:
@@ -21,7 +22,7 @@ You need to add project-specific symbol libraries to KiCad.
   4. Click "Add Library" and navigate to the cloned KicadComponents directory.
   5. Select the appropriate .lib file and click "Open".
 
-- ESP32 Symbols - Use the Plugin and Content Manager in KiCad
+ESP32 Symbols - Use the Plugin and Content Manager in KiCad
   
   1. Navigate to this this repository - https://github.com/espressif/kicad-libraries
   2. Follow the instructions in its README to add the library using the Plugin and Content Manager (PCM) in KiCad.
