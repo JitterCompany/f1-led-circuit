@@ -4,7 +4,10 @@
 
 ### Step 1: Clone the Repository
   1. Use Git to clone this repository to your local machine.
+  ```bash
   git clone https://github.com/JitterCompany/f1-led-circuit
+  ```
+  
   2. Navitage to the cloned directory
   3. Navigate to the f1-led-circuit-kicad directory
   4. Open file f1-led-circuit.kicad_pro from the KiCad application
@@ -14,7 +17,9 @@ Symbols represent electronic components in your schematic.
 You need to add project-specific symbol libraries to KiCad.
 
 Jitter Symbols - Use Git to clone this repository to your local machine.
-  git clone https://github.com/JitterCompany/KicadComponents.git
+```bash
+git clone https://github.com/JitterCompany/KicadComponents.git
+```
 
   1. Add the library to KiCad:
   2. Open KiCad and go to "Preferences" > "Manage Symbol Libraries."
