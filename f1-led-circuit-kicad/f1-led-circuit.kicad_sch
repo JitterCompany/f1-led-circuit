@@ -6496,7 +6496,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.we-online.com/components/products/datasheet/4301x2xxx8x6.pdf"
+		(property "Datasheet" "~"
 			(at 163.83 134.62 0)
 			(effects
 				(font
@@ -7359,7 +7359,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP970X-Family-Data-Sheet-DS20001942.pdf"
+		(property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/20001942G.pdf"
 			(at 35.56 179.07 0)
 			(effects
 				(font
@@ -7368,7 +7368,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Analog Temperature Sensor - Sensor Accuracy between -10°C to +125°C is Min. -2.0 Typ. ±1 Max. +4.0 °C"
+		(property "Description" "Low power, analog thermistor temperature sensor, ±2C accuracy, -40C to +125C, in SC-70-5"
 			(at 35.56 179.07 0)
 			(effects
 				(font
@@ -9318,7 +9318,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.we-online.com/components/products/datasheet/4301x2xxx8x6.pdf"
+		(property "Datasheet" "~"
 			(at 219.71 88.9 0)
 			(effects
 				(font
