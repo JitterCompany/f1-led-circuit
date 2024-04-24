@@ -11,6 +11,7 @@
   2. Navitage to the cloned directory
   3. Navigate to the f1-led-circuit-kicad directory
   4. Open file f1-led-circuit.kicad_pro from the KiCad application
+  5. Open the Schematic Editor
 
 ### Step 2: Add External Symbol Libraries to KiCad
 Symbols represent electronic components in your schematic. 
