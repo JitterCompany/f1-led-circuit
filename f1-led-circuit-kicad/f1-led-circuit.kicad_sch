@@ -4420,6 +4420,12 @@
 		(uuid "6184df24-5157-48a4-b7a5-7b52454c5e3d")
 	)
 	(junction
+		(at 35.56 189.23)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "676c2d6b-68a1-4b27-ad87-1c7ad5d34bba")
+	)
+	(junction
 		(at 247.65 63.5)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4584,6 +4590,16 @@
 			(type default)
 		)
 		(uuid "0da4e8e1-5939-4202-b682-b38ce9649ea5")
+	)
+	(wire
+		(pts
+			(xy 35.56 190.5) (xy 35.56 189.23)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0dabec6a-7149-44c2-8ca4-6b9957a54166")
 	)
 	(wire
 		(pts
@@ -5274,6 +5290,16 @@
 			(type default)
 		)
 		(uuid "ba34c9ba-d65f-439c-b5f3-62c244e6dfc8")
+	)
+	(wire
+		(pts
+			(xy 35.56 189.23) (xy 35.56 186.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "baa4d069-7256-4dc5-82a2-55b2ba9ce61c")
 	)
 	(wire
 		(pts
@@ -6869,7 +6895,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 35.56 186.69 0)
+		(at 35.56 190.5 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6878,7 +6904,7 @@
 		(fields_autoplaced yes)
 		(uuid "278a6e68-c99d-46ed-81ae-6d066ad3c2d8")
 		(property "Reference" "#PWR0259"
-			(at 35.56 193.04 0)
+			(at 35.56 196.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6887,7 +6913,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 35.56 191.77 0)
+			(at 35.56 195.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6896,7 +6922,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 35.56 186.69 0)
+			(at 35.56 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6905,7 +6931,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 35.56 186.69 0)
+			(at 35.56 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6914,7 +6940,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 35.56 186.69 0)
+			(at 35.56 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9790,6 +9816,74 @@
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "#PWR0277")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 35.56 189.23 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8f992971-344c-4ea0-92e5-62d2d5fe66f2")
+		(property "Reference" "#FLG03"
+			(at 33.655 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 31.75 189.2299 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 35.56 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 35.56 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 35.56 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bd9ecef0-cd33-49f2-b866-e5cee912eadb")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "#FLG03")
 					(unit 1)
 				)
 			)
