@@ -6952,6 +6952,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "FTSH-105-01-L-DV-K"
+			(at 386.08 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "8"
 			(uuid "670e971d-d06f-4fb6-932a-b30a7685d088")
 		)
@@ -7106,7 +7115,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1308111-1_SWITCHES_CORE_PROGRAM_CATALOG&DocType=CS&DocLang=English"
 			(at 139.7 129.54 0)
 			(effects
 				(font
@@ -7117,6 +7126,15 @@
 		)
 		(property "Description" "Switch, single pole double throw"
 			(at 147.32 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" ""
+			(at 147.32 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8463,6 +8481,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "MCP9701AT-E/TT"
+			(at 325.12 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "3"
 			(uuid "c769f8d7-babc-437f-9809-67150794cabd")
 		)
@@ -8599,6 +8626,15 @@
 			)
 		)
 		(property "Description" "400W unidirectional Transient Voltage Suppressor, 5.0Vr, SMA(DO-214AC)"
+			(at 168.91 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SMAJ5.0A"
 			(at 168.91 116.84 0)
 			(effects
 				(font
@@ -9438,6 +9474,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "LDLN050PU33R"
+			(at 217.17 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "7"
 			(uuid "d557671b-1be9-43b6-ba30-f79a37396318")
 		)
@@ -9666,6 +9711,15 @@
 			)
 		)
 		(property "Description" "ESP32-C3-MINI-1 family is an ultra-low-power MCU-based SoC solution that supports 2.4 GHz Wi-Fi and Bluetooth®Low Energy (Bluetooth LE)."
+			(at 304.8 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "ESP32-C3FH4X"
 			(at 304.8 115.57 0)
 			(effects
 				(font
@@ -11199,6 +11253,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "430-182-043-816"
+			(at 63.5 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "0a7cfe41-ee71-4c9a-a9b6-045193fefbda")
 		)
@@ -12409,6 +12472,15 @@
 			)
 		)
 		(property "Description" "Single Pole Single Throw (SPST) switch"
+			(at 119.38 191.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "430-182-070-816"
 			(at 119.38 191.77 0)
 			(effects
 				(font
