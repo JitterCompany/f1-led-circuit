@@ -2340,7 +2340,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "05023bfe-aaba-4440-809c-f6256923dc08")
-		(property "Reference" "U72"
+		(property "Reference" "U34"
 			(at 293.0241 161.29 0)
 			(effects
 				(font
@@ -2406,19 +2406,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U72")
+					(reference "U34")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U102")
+					(reference "U64")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U132")
+					(reference "U94")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U42")
+					(reference "U124")
 					(unit 1)
 				)
 			)
@@ -2753,7 +2753,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "181df424-a5ca-4464-a6ab-412d4982f992")
-		(property "Reference" "U51"
+		(property "Reference" "U36"
 			(at 130.4641 214.63 0)
 			(effects
 				(font
@@ -2819,19 +2819,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U51")
+					(reference "U36")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U81")
+					(reference "U66")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U111")
+					(reference "U96")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U21")
+					(reference "U126")
 					(unit 1)
 				)
 			)
@@ -2925,7 +2925,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "1a312b05-5a80-4a43-b9dc-9dd84abe74c9")
-		(property "Reference" "U45"
+		(property "Reference" "U17"
 			(at 107.696 106.68 0)
 			(effects
 				(font
@@ -2991,19 +2991,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U45")
+					(reference "U17")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U75")
+					(reference "U47")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U105")
+					(reference "U77")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U15")
+					(reference "U107")
 					(unit 1)
 				)
 			)
@@ -3175,7 +3175,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "2a8829af-9b27-409a-9d45-607726f5ff8a")
-		(property "Reference" "U63"
+		(property "Reference" "U31"
 			(at 222.504 162.306 0)
 			(effects
 				(font
@@ -3241,19 +3241,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U63")
+					(reference "U31")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U93")
+					(reference "U61")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U123")
+					(reference "U91")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U33")
+					(reference "U121")
 					(unit 1)
 				)
 			)
@@ -3347,7 +3347,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "2e70aaa0-f72a-48bc-923d-68698cc36396")
-		(property "Reference" "U66"
+		(property "Reference" "U32"
 			(at 244.856 162.306 0)
 			(effects
 				(font
@@ -3413,19 +3413,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U66")
+					(reference "U32")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U96")
+					(reference "U62")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U126")
+					(reference "U92")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U36")
+					(reference "U122")
 					(unit 1)
 				)
 			)
@@ -3519,7 +3519,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "3001aa38-6220-4e6a-afc2-7f81d7497c24")
-		(property "Reference" "U58"
+		(property "Reference" "U11"
 			(at 187.452 50.8 0)
 			(effects
 				(font
@@ -3585,19 +3585,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U58")
+					(reference "U11")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U88")
+					(reference "U41")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U118")
+					(reference "U71")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U28")
+					(reference "U101")
 					(unit 1)
 				)
 			)
@@ -3612,7 +3612,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "32740d9a-4296-42e5-a081-aa0832094df2")
-		(property "Reference" "U62"
+		(property "Reference" "U22"
 			(at 221.234 106.426 0)
 			(effects
 				(font
@@ -3678,19 +3678,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U62")
+					(reference "U22")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U92")
+					(reference "U52")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U122")
+					(reference "U82")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U32")
+					(reference "U112")
 					(unit 1)
 				)
 			)
@@ -3864,7 +3864,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "41d3aa45-dca9-499b-8609-ff41d93c6561")
-		(property "Reference" "U71"
+		(property "Reference" "U25"
 			(at 291.7541 105.41 0)
 			(effects
 				(font
@@ -3930,19 +3930,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U71")
+					(reference "U25")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U101")
+					(reference "U55")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U131")
+					(reference "U85")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U41")
+					(reference "U115")
 					(unit 1)
 				)
 			)
@@ -4036,7 +4036,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4b403d37-12b6-4d00-8c40-5fa40fa7e0cb")
-		(property "Reference" "U48"
+		(property "Reference" "U8"
 			(at 119.126 50.8 0)
 			(effects
 				(font
@@ -4102,19 +4102,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U48")
+					(reference "U8")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U78")
+					(reference "U38")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U108")
+					(reference "U68")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U18")
+					(reference "U98")
 					(unit 1)
 				)
 			)
@@ -4208,7 +4208,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "5229630b-6d10-4840-a164-9a5451c92d41")
-		(property "Reference" "U50"
+		(property "Reference" "U27"
 			(at 131.572 162.56 0)
 			(effects
 				(font
@@ -4274,19 +4274,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U50")
+					(reference "U27")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U80")
+					(reference "U57")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U110")
+					(reference "U87")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U20")
+					(reference "U117")
 					(unit 1)
 				)
 			)
@@ -4459,7 +4459,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "647dab67-f8b5-450f-a742-80b5a0fc0e6f")
-		(property "Reference" "U47"
+		(property "Reference" "U26"
 			(at 108.966 162.56 0)
 			(effects
 				(font
@@ -4525,19 +4525,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U47")
+					(reference "U26")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U77")
+					(reference "U56")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U107")
+					(reference "U86")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U17")
+					(reference "U116")
 					(unit 1)
 				)
 			)
@@ -4552,7 +4552,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6674ed61-f788-4b52-b9f3-b70adea24139")
-		(property "Reference" "U60"
+		(property "Reference" "U30"
 			(at 200.66 162.306 0)
 			(effects
 				(font
@@ -4618,19 +4618,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U60")
+					(reference "U30")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U90")
+					(reference "U60")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U120")
+					(reference "U90")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U30")
+					(reference "U120")
 					(unit 1)
 				)
 			)
@@ -4645,7 +4645,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "768366f3-644e-49e7-a2c6-8e0a8475df49")
-		(property "Reference" "U56"
+		(property "Reference" "U20"
 			(at 176.022 106.68 0)
 			(effects
 				(font
@@ -4711,19 +4711,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U56")
+					(reference "U20")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U86")
+					(reference "U50")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U116")
+					(reference "U80")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U26")
+					(reference "U110")
 					(unit 1)
 				)
 			)
@@ -4739,7 +4739,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "785edbb3-0ec5-4114-ad7b-599257eec456")
-		(property "Reference" "U68"
+		(property "Reference" "U24"
 			(at 267.6241 105.41 0)
 			(effects
 				(font
@@ -4805,19 +4805,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U68")
+					(reference "U24")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U98")
+					(reference "U54")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U128")
+					(reference "U84")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U38")
+					(reference "U114")
 					(unit 1)
 				)
 			)
@@ -4912,7 +4912,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7d75335c-af0b-4675-842e-d2b74dc22ab5")
-		(property "Reference" "U73"
+		(property "Reference" "U16"
 			(at 303.1841 49.53 0)
 			(effects
 				(font
@@ -4978,19 +4978,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U73")
+					(reference "U16")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U103")
+					(reference "U46")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U133")
+					(reference "U76")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U43")
+					(reference "U106")
 					(unit 1)
 				)
 			)
@@ -5245,7 +5245,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8732a34c-8b03-4114-9bdc-b7f8fbf097d8")
-		(property "Reference" "U52"
+		(property "Reference" "U9"
 			(at 141.732 50.8 0)
 			(effects
 				(font
@@ -5311,19 +5311,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U52")
+					(reference "U9")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U82")
+					(reference "U39")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U112")
+					(reference "U69")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U22")
+					(reference "U99")
 					(unit 1)
 				)
 			)
@@ -5894,7 +5894,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a450b752-5f86-4568-8cef-1d40070d70a9")
-		(property "Reference" "U55"
+		(property "Reference" "U10"
 			(at 165.1 50.8 0)
 			(effects
 				(font
@@ -5960,19 +5960,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U55")
+					(reference "U10")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U85")
+					(reference "U40")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U115")
+					(reference "U70")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U25")
+					(reference "U100")
 					(unit 1)
 				)
 			)
@@ -5987,7 +5987,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a7e412cf-c3b1-4af0-a6b5-9900f3457b16")
-		(property "Reference" "U67"
+		(property "Reference" "U14"
 			(at 255.016 50.546 0)
 			(effects
 				(font
@@ -6053,19 +6053,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U67")
+					(reference "U14")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U97")
+					(reference "U44")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U127")
+					(reference "U74")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U37")
+					(reference "U104")
 					(unit 1)
 				)
 			)
@@ -6080,7 +6080,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a9834c10-882a-4a93-a9c1-2222ba5a96ed")
-		(property "Reference" "U64"
+		(property "Reference" "U13"
 			(at 232.664 50.546 0)
 			(effects
 				(font
@@ -6146,19 +6146,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U64")
+					(reference "U13")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U94")
+					(reference "U43")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U124")
+					(reference "U73")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U34")
+					(reference "U103")
 					(unit 1)
 				)
 			)
@@ -6174,7 +6174,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "aa9bd59f-5e6f-4cf4-b71d-88fc6ce22871")
-		(property "Reference" "U69"
+		(property "Reference" "U33"
 			(at 268.8941 161.29 0)
 			(effects
 				(font
@@ -6240,19 +6240,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U69")
+					(reference "U33")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U99")
+					(reference "U63")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U129")
+					(reference "U93")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U39")
+					(reference "U123")
 					(unit 1)
 				)
 			)
@@ -6267,7 +6267,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "aeec92d8-ea3b-4439-81e8-0a61a4f4384f")
-		(property "Reference" "U59"
+		(property "Reference" "U21"
 			(at 199.39 106.426 0)
 			(effects
 				(font
@@ -6333,19 +6333,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U59")
+					(reference "U21")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U89")
+					(reference "U51")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U119")
+					(reference "U81")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U29")
+					(reference "U111")
 					(unit 1)
 				)
 			)
@@ -6439,7 +6439,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b5fc5187-46a9-44a8-affc-1783af560517")
-		(property "Reference" "U65"
+		(property "Reference" "U23"
 			(at 243.586 106.426 0)
 			(effects
 				(font
@@ -6505,19 +6505,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U65")
+					(reference "U23")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U95")
+					(reference "U53")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U125")
+					(reference "U83")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U35")
+					(reference "U113")
 					(unit 1)
 				)
 			)
@@ -6690,7 +6690,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c115a707-cfbe-4575-aa69-30a3a65a4b8b")
-		(property "Reference" "U54"
+		(property "Reference" "U28"
 			(at 154.94 162.56 0)
 			(effects
 				(font
@@ -6756,19 +6756,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U54")
+					(reference "U28")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U84")
+					(reference "U58")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U114")
+					(reference "U88")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U24")
+					(reference "U118")
 					(unit 1)
 				)
 			)
@@ -6863,7 +6863,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c4de12f9-7ff4-4c96-ac96-1fcf34037dd2")
-		(property "Reference" "U70"
+		(property "Reference" "U15"
 			(at 279.0541 49.53 0)
 			(effects
 				(font
@@ -6929,19 +6929,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U70")
+					(reference "U15")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U100")
+					(reference "U45")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U130")
+					(reference "U75")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U40")
+					(reference "U105")
 					(unit 1)
 				)
 			)
@@ -6956,7 +6956,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "cdba55cf-5f61-4279-b1b8-8216cd9e8f1b")
-		(property "Reference" "U46"
+		(property "Reference" "U35"
 			(at 106.426 215.646 0)
 			(effects
 				(font
@@ -7022,19 +7022,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U46")
+					(reference "U35")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U76")
+					(reference "U65")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U106")
+					(reference "U95")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U16")
+					(reference "U125")
 					(unit 1)
 				)
 			)
@@ -7364,7 +7364,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d572cef0-ec1d-4a30-afd7-a9f5790bf8f5")
-		(property "Reference" "U49"
+		(property "Reference" "U18"
 			(at 130.302 106.68 0)
 			(effects
 				(font
@@ -7430,19 +7430,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U49")
+					(reference "U18")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U79")
+					(reference "U48")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U109")
+					(reference "U78")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U19")
+					(reference "U108")
 					(unit 1)
 				)
 			)
@@ -7615,7 +7615,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "dd6029bf-19ff-4c3d-9d55-1ebb4a8a7aba")
-		(property "Reference" "U57"
+		(property "Reference" "U29"
 			(at 177.292 162.56 0)
 			(effects
 				(font
@@ -7681,19 +7681,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U57")
+					(reference "U29")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U87")
+					(reference "U59")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U117")
+					(reference "U89")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U27")
+					(reference "U119")
 					(unit 1)
 				)
 			)
@@ -7708,7 +7708,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e2a50152-541b-4595-a7a3-b6f9790b60df")
-		(property "Reference" "U44"
+		(property "Reference" "U7"
 			(at 96.266 51.054 0)
 			(effects
 				(font
@@ -7774,19 +7774,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U44")
+					(reference "U7")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U74")
+					(reference "U37")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U104")
+					(reference "U67")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U14")
+					(reference "U97")
 					(unit 1)
 				)
 			)
@@ -8040,7 +8040,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f1f5ce9e-2d9f-4f17-bd2d-9a9a62c486c1")
-		(property "Reference" "U53"
+		(property "Reference" "U19"
 			(at 153.67 106.68 0)
 			(effects
 				(font
@@ -8106,19 +8106,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U53")
+					(reference "U19")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U83")
+					(reference "U49")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U113")
+					(reference "U79")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U23")
+					(reference "U109")
 					(unit 1)
 				)
 			)
@@ -8290,7 +8290,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ffc19baa-72fd-4011-8bd6-ae961b588198")
-		(property "Reference" "U61"
+		(property "Reference" "U12"
 			(at 210.82 50.546 0)
 			(effects
 				(font
@@ -8356,19 +8356,19 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
-					(reference "U61")
+					(reference "U12")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/0e0c93e3-84d7-42b2-b8bb-02a25955330c"
-					(reference "U91")
+					(reference "U42")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/76d7aa16-577c-458e-8b5c-a56aea9320e7"
-					(reference "U121")
+					(reference "U72")
 					(unit 1)
 				)
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/4bb73d14-200b-4ebd-9d63-f0f113e79ea3"
-					(reference "U31")
+					(reference "U102")
 					(unit 1)
 				)
 			)
