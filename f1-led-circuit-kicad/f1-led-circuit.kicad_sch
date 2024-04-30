@@ -7170,7 +7170,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "03648d16-8087-460d-ae9d-5696764213a3")
-		(property "Reference" "#PWR027"
+		(property "Reference" "#PWR028"
 			(at 247.65 71.12 0)
 			(effects
 				(font
@@ -7221,7 +7221,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR027")
+					(reference "#PWR028")
 					(unit 1)
 				)
 			)
@@ -7304,7 +7304,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "13c89d9f-f86f-4ccb-b636-ca4e958b48a2")
-		(property "Reference" "#PWR031"
+		(property "Reference" "#PWR033"
 			(at 312.42 41.91 0)
 			(effects
 				(font
@@ -7355,7 +7355,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR031")
+					(reference "#PWR033")
 					(unit 1)
 				)
 			)
@@ -8736,7 +8736,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "50fca3eb-e9ac-4cf6-8bcd-44f6bed8a08a")
-		(property "Reference" "#PWR028"
+		(property "Reference" "#PWR027"
 			(at 241.3 111.76 0)
 			(effects
 				(font
@@ -8787,7 +8787,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR028")
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -9002,7 +9002,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5cbd3f37-50e6-46ab-bb8e-b10b4eef347b")
-		(property "Reference" "U8"
+		(property "Reference" "U9"
 			(at 229.5241 46.99 0)
 			(effects
 				(font
@@ -9068,7 +9068,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U8")
+					(reference "U9")
 					(unit 1)
 				)
 			)
@@ -9431,7 +9431,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6e8177ab-53e3-4370-b76c-b1dad3d5e292")
-		(property "Reference" "U9"
+		(property "Reference" "U8"
 			(at 221.996 107.696 0)
 			(effects
 				(font
@@ -9510,7 +9510,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U9")
+					(reference "U8")
 					(unit 1)
 				)
 			)
@@ -10503,7 +10503,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "87601908-d9e4-415a-8d78-a09c99c7e79f")
-		(property "Reference" "#PWR024"
+		(property "Reference" "#PWR025"
 			(at 227.33 71.12 0)
 			(effects
 				(font
@@ -10554,7 +10554,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR024")
+					(reference "#PWR025")
 					(unit 1)
 				)
 			)
@@ -10840,7 +10840,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8f81a73b-cb67-4fb3-9fe4-b3b7cd9678b8")
-		(property "Reference" "#PWR032"
+		(property "Reference" "#PWR030"
 			(at 304.8 77.47 0)
 			(effects
 				(font
@@ -10890,7 +10890,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR032")
+					(reference "#PWR030")
 					(unit 1)
 				)
 			)
@@ -11496,7 +11496,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a7631b89-9dae-455a-86ec-efa8527a9bb7")
-		(property "Reference" "#PWR033"
+		(property "Reference" "#PWR031"
 			(at 304.8 149.86 0)
 			(effects
 				(font
@@ -11547,7 +11547,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR033")
+					(reference "#PWR031")
 					(unit 1)
 				)
 			)
@@ -11980,7 +11980,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ca7a422d-17e6-4012-bd49-f044fd3c9881")
-		(property "Reference" "#PWR025"
+		(property "Reference" "#PWR023"
 			(at 217.17 140.97 0)
 			(effects
 				(font
@@ -12031,7 +12031,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR025")
+					(reference "#PWR023")
 					(unit 1)
 				)
 			)
@@ -12313,7 +12313,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "df9496cf-4321-40f8-aeea-ec667df16260")
-		(property "Reference" "#PWR023"
+		(property "Reference" "#PWR024"
 			(at 227.33 40.64 0)
 			(effects
 				(font
@@ -12364,7 +12364,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR023")
+					(reference "#PWR024")
 					(unit 1)
 				)
 			)
@@ -13000,7 +13000,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ffc29aa9-8c76-4cda-95c5-e8d0cce1cec3")
-		(property "Reference" "#PWR030"
+		(property "Reference" "#PWR032"
 			(at 308.61 29.21 0)
 			(effects
 				(font
@@ -13050,7 +13050,7 @@
 		(instances
 			(project "f1-led-circuit"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR030")
+					(reference "#PWR032")
 					(unit 1)
 				)
 			)
