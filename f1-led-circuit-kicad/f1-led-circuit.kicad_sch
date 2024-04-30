@@ -7026,7 +7026,7 @@
 				)
 			)
 		)
-		(property "Footprint" "sot:SOT-563"
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:SON_2XV6T1G_ONS"
 			(at 99.06 111.76 0)
 			(effects
 				(font
@@ -7106,7 +7106,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:AS12AP_NKK"
 			(at 147.32 129.54 0)
 			(effects
 				(font
@@ -7115,7 +7115,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1308111-1_SWITCHES_CORE_PROGRAM_CATALOG&DocType=CS&DocLang=English"
+		(property "Datasheet" "~"
 			(at 139.7 129.54 0)
 			(effects
 				(font
@@ -7133,7 +7133,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" ""
+		(property "MPN" "AS13AP"
 			(at 147.32 129.54 90)
 			(effects
 				(font
@@ -7605,7 +7605,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 317.1952 85.09 0)
 			(effects
 				(font
@@ -7955,7 +7955,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 46.482 180.34 90)
 			(effects
 				(font
@@ -8104,7 +8104,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 110.998 180.34 90)
 			(effects
 				(font
@@ -8385,7 +8385,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 352.298 113.03 90)
 			(effects
 				(font
@@ -8685,7 +8685,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 238.76 129.794 0)
 			(effects
 				(font
@@ -9541,7 +9541,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 336.8548 38.1 0)
 			(effects
 				(font
@@ -10139,7 +10139,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 233.3752 128.27 0)
 			(effects
 				(font
@@ -10209,7 +10209,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 136.398 115.57 90)
 			(effects
 				(font
@@ -10343,7 +10343,7 @@
 				)
 			)
 		)
-		(property "Footprint" "connectors:USB_C_Receptacle_USB4105"
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:GCT_USB4125-GF-A_REVA2"
 			(at 57.15 120.65 0)
 			(effects
 				(font
@@ -10451,7 +10451,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 313.3852 35.56 0)
 			(effects
 				(font
@@ -10585,7 +10585,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 365.76 146.558 90)
 			(effects
 				(font
@@ -10788,7 +10788,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 193.04 128.524 0)
 			(effects
 				(font
@@ -11060,7 +11060,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Jitter_IC:PDFN33-1EP_3x3mm_P0.65mm"
+		(property "Footprint" "JITTER-COMPONENTS:PDFN33-1EP_3x3mm_P0.65mm"
 			(at 142.875 106.68 0)
 			(effects
 				(font
@@ -11158,7 +11158,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
 			(at 354.33 144.78 0)
 			(effects
 				(font
@@ -11177,6 +11177,15 @@
 			)
 		)
 		(property "Description" "Jumper, 2-pole, open"
+			(at 354.33 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SNT-100-BK-G"
 			(at 354.33 144.78 0)
 			(effects
 				(font
@@ -11852,7 +11861,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 361.188 113.03 90)
 			(effects
 				(font
@@ -11919,7 +11928,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 129.8448 195.58 0)
 			(effects
 				(font
@@ -12053,7 +12062,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 71.4248 191.77 0)
 			(effects
 				(font

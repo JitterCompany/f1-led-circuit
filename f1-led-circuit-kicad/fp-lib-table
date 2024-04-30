@@ -1,4 +1,5 @@
 (fp_lib_table
   (version 7)
   (lib (name "F1-LED-CIRCUIT-LIBRARY")(type "KiCad")(uri "${KIPRJMOD}/footprints/F1-LED-CIRCUIT-LIBRARY.pretty")(options "")(descr ""))
+  (lib (name "JITTER-COMPONENTS")(type "KiCad")(uri "/Users/hott/eng/jitter-kicad-components/KicadComponents/Jitter_IC.pretty")(options "")(descr ""))
 )
