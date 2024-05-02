@@ -5168,7 +5168,7 @@
 	)
 	(wire
 		(pts
-			(xy 340.36 134.62) (xy 350.52 134.62)
+			(xy 340.36 134.62) (xy 349.25 134.62)
 		)
 		(stroke
 			(width 0)
@@ -5358,7 +5358,7 @@
 	)
 	(wire
 		(pts
-			(xy 350.52 134.62) (xy 350.52 138.43)
+			(xy 349.25 134.62) (xy 349.25 138.43)
 		)
 		(stroke
 			(width 0)
@@ -6005,6 +6005,16 @@
 			(type default)
 		)
 		(uuid "8c928ce2-1237-4933-8ee9-20ccbab40017")
+	)
+	(wire
+		(pts
+			(xy 349.25 138.43) (xy 350.52 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8e9e6a41-ed13-4d0f-abf5-4dba8fc454e2")
 	)
 	(wire
 		(pts
@@ -6928,16 +6938,6 @@
 		)
 		(uuid "1f339842-afab-41d4-8ea8-cdb86ae2d5eb")
 	)
-	(text "MTDI"
-		(exclude_from_sim no)
-		(at 371.094 124.968 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "241961b3-5b25-4530-b4eb-581d7cd42671")
-	)
 	(text "Low-Dropout Voltage Regulator ( 5V In -> 3.3V Out)"
 		(exclude_from_sim no)
 		(at 214.376 103.124 0)
@@ -6968,26 +6968,6 @@
 		)
 		(uuid "57266ec2-4038-4d0a-9c5e-102b60c6798c")
 	)
-	(text "MTCK"
-		(exclude_from_sim no)
-		(at 370.84 130.048 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "65e5e1ea-d517-4e62-bace-1f252371e606")
-	)
-	(text "MTDO"
-		(exclude_from_sim no)
-		(at 370.84 127.508 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "86c499f2-586c-4d83-bd10-de619bd3cd86")
-	)
 	(text "USB-C port with ESD protection"
 		(exclude_from_sim no)
 		(at 51.562 89.916 0)
@@ -6997,16 +6977,6 @@
 			)
 		)
 		(uuid "ad89ce84-4c80-4cdc-a942-bb1c3581ec99")
-	)
-	(text "MTMS"
-		(exclude_from_sim no)
-		(at 370.84 122.428 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "bd9efdd5-06bc-4624-ab46-035cbb69bb5c")
 	)
 	(text "VBUS from USB Connector (nom +5V) "
 		(exclude_from_sim no)
