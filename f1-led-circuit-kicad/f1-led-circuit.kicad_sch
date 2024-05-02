@@ -10481,7 +10481,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.usb.org/sites/default/files/documents/usb_type-c.zip"
+		(property "Datasheet" "https://pt.mouser.com/datasheet/2/837/USB4720-3368672.pdf"
 			(at 57.15 120.65 0)
 			(effects
 				(font
@@ -10491,6 +10491,15 @@
 			)
 		)
 		(property "Description" "USB 2.0-only 14P Type-C Receptacle connector"
+			(at 53.34 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "USB4720-03-A"
 			(at 53.34 120.65 0)
 			(effects
 				(font
