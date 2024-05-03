@@ -23,3 +23,6 @@ with open(csv_file_path, newline='') as csvfile:
             module.SetPosition(pcbnew.VECTOR2I(int(x), int(y)))
         else:
             print(f"Footprint {designator} not found")
+
+    # Save the board with changes
+    board.Save('/Users/hott/eng/f1-led-circuit/f1-led-circuit-kicad/f1-led-circuit.kicad_pcb')
