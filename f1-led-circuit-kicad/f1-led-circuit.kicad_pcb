@@ -315,9 +315,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "02e2dae4-f628-4f40-9f4b-9be5d99c8bcc")
-		(at 164.2 110.3)
+		(at 174.625 116.5 -15)
 		(property "Reference" "U48"
-			(at 0 -2.8 0)
+			(at -0.091607 2.845674 -15)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "58c83ab6-b6ac-4ba6-9e50-e548cee0a4be")
@@ -329,7 +329,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.8 -15)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "3fcb5d3c-07c5-4b0d-80bb-864bfc8c9809")
@@ -341,7 +341,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 -15)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -354,7 +354,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 -15)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -367,7 +367,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 -15)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -384,7 +384,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 -15)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "2602fc7d-ea93-4e01-9136-c7397877e873")
@@ -396,7 +396,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 345)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -406,7 +406,7 @@
 			(uuid "fa67880f-8d08-4c8b-a9f9-962c94abd9be")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0 345)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 114 "Net-(U48-DCKO)")
@@ -416,7 +416,7 @@
 			(uuid "28a07c64-246d-4df5-83ce-bd14ed328acb")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 345)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 113 "Net-(U48-DOUT)")
@@ -426,7 +426,7 @@
 			(uuid "b343e412-09cd-414d-bab6-d1c340b04b9c")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 345)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -436,7 +436,7 @@
 			(uuid "29eddccc-8594-4bb5-8182-405450fd8e67")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 0 345)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 109 "Net-(U47-DCKO)")
@@ -446,7 +446,7 @@
 			(uuid "b843d8bf-0593-46f8-b126-966a494bc24e")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 345)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 111 "Net-(U47-DOUT)")
@@ -4429,9 +4429,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "1d46a696-0913-4a5e-9e91-fd0a7cebe94f")
-		(at 184.2 112.3)
+		(at 191.1 103.7 55)
 		(property "Reference" "U42"
-			(at 0 -2.8 0)
+			(at 0.047522 2.988142 55)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "160978d9-5469-4f77-b652-03a3c9b2b1df")
@@ -4443,7 +4443,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.8 55)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "c33cd492-ef0c-4919-801a-33a0ed3efa01")
@@ -4455,7 +4455,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 55)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -4468,7 +4468,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 55)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -4481,7 +4481,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 55)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -4498,7 +4498,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 55)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "9965cb31-034b-4472-8b5f-a432041be122")
@@ -4510,7 +4510,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.700001 -0.799999 55)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -4520,7 +4520,7 @@
 			(uuid "ae361430-bec4-4bd6-aeb0-4cc942763cad")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.699999 0 55)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 171 "Net-(U42-DCKO)")
@@ -4530,7 +4530,7 @@
 			(uuid "9b8572b4-b797-4350-9b3a-54ef3370d986")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 55)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 172 "Net-(U42-DOUT)")
@@ -4540,7 +4540,7 @@
 			(uuid "e4740757-5f14-421a-9f97-24a65e61bed6")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 55)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -4550,7 +4550,7 @@
 			(uuid "0c5400ca-5a53-4481-8af2-782f4eec1153")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.699999 0 55)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 52 "Net-(U41-DCKO)")
@@ -4560,7 +4560,7 @@
 			(uuid "d68e171f-5e08-4161-bf8c-14189100a3c7")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.700001 0.799999 55)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 51 "Net-(U41-DOUT)")
@@ -5654,9 +5654,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "26556b17-8f25-4fdc-985a-84eb34a35850")
-		(at 171.2 105.3)
+		(at 167.625 112.725 -41)
 		(property "Reference" "U50"
-			(at 0 -2.8 0)
+			(at 0.385012 3.110348 -41)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "0c58d77b-b138-4581-8d03-ba8876504b6c")
@@ -5668,7 +5668,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at -0.000001 -14.800001 -41)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "215b8459-c848-4f58-8427-db36ced28120")
@@ -5680,7 +5680,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 -41)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -5693,7 +5693,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 -41)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -5706,7 +5706,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 -41)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -5723,7 +5723,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 -41)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "37666f87-57d0-4b8e-aa82-55d97423296d")
@@ -5735,7 +5735,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 319)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -5745,7 +5745,7 @@
 			(uuid "f8cdeb7d-1d70-4ec9-a75f-5c38d93540ec")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.700001 0 319)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 118 "Net-(U50-DCKO)")
@@ -5755,7 +5755,7 @@
 			(uuid "e2316079-7a18-47d4-ab24-dfe21ecbc9cc")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.699999 0.8 319)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 117 "Net-(U50-DOUT)")
@@ -5765,7 +5765,7 @@
 			(uuid "ccf3cf9c-4c8e-4bb7-99f7-58d725e47b0d")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.699999 -0.8 319)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -5775,7 +5775,7 @@
 			(uuid "1f86977f-b464-4dbb-80d3-e1a2b862acbc")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.700001 0 319)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 115 "Net-(U49-DCKO)")
@@ -5785,7 +5785,7 @@
 			(uuid "58e3077b-10b5-4a4c-8528-5293b841f394")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 319)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 116 "Net-(U49-DOUT)")
@@ -8084,9 +8084,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "376a4df0-942f-4efd-a801-ec0dd0adc5bb")
-		(at 193.2 88.3)
+		(at 187.675 84.85 175)
 		(property "Reference" "U36"
-			(at 0 -2.8 0)
+			(at -0.039875 2.412656 -5)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "83ed3f0a-d6ae-4332-ba36-6e64893a1a54")
@@ -8098,7 +8098,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0.000001 -14.800001 175)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "6c39c610-96da-4be9-9b5f-b9e4ca94b802")
@@ -8110,7 +8110,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 175)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -8123,7 +8123,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 175)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -8136,7 +8136,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 175)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -8153,7 +8153,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 175)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "da584d99-9545-423e-a437-6c5a267634a7")
@@ -8165,7 +8165,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.799999 175)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -8175,7 +8175,7 @@
 			(uuid "34db2c9e-261a-4964-af11-943f9d904137")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.700001 0.000001 175)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 120 "/LED_CHAIN1/DCKO")
@@ -8185,7 +8185,7 @@
 			(uuid "bf5771eb-32f1-4bcc-a65c-241b0d98cacb")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.799999 175)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 119 "/LED_CHAIN1/DOUT")
@@ -8195,7 +8195,7 @@
 			(uuid "21a28564-10d3-44de-9b06-c0ca2594a60e")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.799999 175)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -8205,7 +8205,7 @@
 			(uuid "e20c2cd5-1bf5-4e65-adec-aa189d23523f")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.700001 -0.000001 175)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 94 "Net-(U35-DCKO)")
@@ -8215,7 +8215,7 @@
 			(uuid "cfd6c4f8-19bc-450c-a35b-2a79a3d9fdd9")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.799999 175)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 93 "Net-(U35-DOUT)")
@@ -9479,9 +9479,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "44000b3b-21d3-4b91-9acc-0df222fcf9cd")
-		(at 189.2 104.3)
+		(at 195.325 96.825 70)
 		(property "Reference" "U40"
-			(at 0 -2.8 0)
+			(at -0.432709 2.977564 70)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "147a4772-d6b3-408e-9e71-37830a20c671")
@@ -9493,7 +9493,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0.000001 -14.8 70)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "6db76c99-8b64-4795-889b-9f487d06ddf8")
@@ -9505,7 +9505,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.200001 70)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -9518,7 +9518,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.200001 70)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -9531,7 +9531,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.200001 70)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -9548,7 +9548,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.199999 3.2 70)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "9bb147ef-61ea-4bff-be3f-467258f4ba50")
@@ -9560,7 +9560,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 70)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -9570,7 +9570,7 @@
 			(uuid "e20d05e7-2987-4e84-8f66-dd75878bf42e")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 -0.000001 70)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 102 "Net-(U40-DCKO)")
@@ -9580,7 +9580,7 @@
 			(uuid "005be449-aeb9-41bc-9e15-ef8889c292c6")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 70)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 101 "Net-(U40-DOUT)")
@@ -9590,7 +9590,7 @@
 			(uuid "d6f71d31-074f-41b3-bf74-baed0e4bc125")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 70)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -9600,7 +9600,7 @@
 			(uuid "3a7d573e-8b5c-4cef-a91e-03e32e77e0f8")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 0.000001 70)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 99 "Net-(U39-DCKO)")
@@ -9610,7 +9610,7 @@
 			(uuid "a29f17d4-5300-482e-8065-761959ef9e5e")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 70)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 100 "Net-(U39-DOUT)")
@@ -10343,9 +10343,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "54bac8ec-cacd-4cd5-9a42-ea7965e23e0b")
-		(at 194.2 92.3)
+		(at 191.45 86.15 149)
 		(property "Reference" "U37"
-			(at 0 -2.8 0)
+			(at -0.169866 2.581162 -31)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "f547609e-c229-43ac-8755-f79eb5bc61e0")
@@ -10357,7 +10357,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.8 149)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "8dd76d68-2872-4fab-b9e6-01d7e6c4bc6a")
@@ -10369,7 +10369,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 149)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -10382,7 +10382,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 149)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -10395,7 +10395,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.2 149)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -10412,7 +10412,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 149)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "ee3039e1-523d-4194-a8c5-434da3927cc9")
@@ -10424,7 +10424,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.799999 149)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -10434,7 +10434,7 @@
 			(uuid "39dbe98a-a604-42cf-99d6-6abc0dd6eb62")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0 149)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 96 "Net-(U37-DCKO)")
@@ -10444,7 +10444,7 @@
 			(uuid "1434266b-df20-4a80-999b-24ea6ce41cc5")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 149)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 95 "Net-(U37-DOUT)")
@@ -10454,7 +10454,7 @@
 			(uuid "257ca065-0628-4190-a675-cb6a1a98a42d")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 149)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -10464,7 +10464,7 @@
 			(uuid "24e0eac2-b36c-4b15-8585-9dfa71be41b1")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 0 149)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 120 "/LED_CHAIN1/DCKO")
@@ -10474,7 +10474,7 @@
 			(uuid "bb4a42b4-0c05-4bb5-b910-08c90f107656")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.799999 149)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 119 "/LED_CHAIN1/DOUT")
@@ -11574,7 +11574,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 175)
+			(at 0.1 0.200001 175)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -11587,7 +11587,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 175)
+			(at 0.1 0.200001 175)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -11600,7 +11600,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 175)
+			(at 0.1 0.200001 175)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -12400,9 +12400,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "6e68e210-ff3b-4f3b-8020-ab66012627ad")
-		(at 189.2 86.3)
+		(at 183.725 84.525 177)
 		(property "Reference" "U35"
-			(at 0 -2.8 0)
+			(at -0.150325 2.386138 -3)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "0267c82d-4dba-4b32-9201-f60843f50272")
@@ -12414,7 +12414,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.800001 177)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "75795873-57ed-4aa5-8eae-c0b041ef25e2")
@@ -12426,7 +12426,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 177)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -12439,7 +12439,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 177)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -12452,7 +12452,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 177)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -12469,7 +12469,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.199999 177)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "382a4ac8-faac-436a-ad7d-1bf75f25a6e4")
@@ -12481,7 +12481,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 177)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -12491,7 +12491,7 @@
 			(uuid "d51abddd-c8bd-47eb-aefc-74dc97b44a4c")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.699999 0.000002 177)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 94 "Net-(U35-DCKO)")
@@ -12501,7 +12501,7 @@
 			(uuid "e21ae4af-7e49-43bb-a1ce-0c1d4600c80a")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.800002 177)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 93 "Net-(U35-DOUT)")
@@ -12511,7 +12511,7 @@
 			(uuid "0d73ae6c-6eaa-4fb8-8271-444f04550d57")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.800002 177)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -12521,7 +12521,7 @@
 			(uuid "1b05e779-95ea-4144-854b-c0c6fff25d91")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.699999 -0.000002 177)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 108 "/LED_CHAIN1/CLOCK_CHAIN_3_TO_4")
@@ -12531,7 +12531,7 @@
 			(uuid "3e1eb0c1-0dd0-4541-b040-03c5a545acc0")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 177)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 107 "/LED_CHAIN1/DATA_CHAIN_3_TO_4")
@@ -13967,9 +13967,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "821e7591-b2f9-4e52-88c8-67b181810519")
-		(at 175.2 117.3)
+		(at 185.375 114.275 63)
 		(property "Reference" "U45"
-			(at 0 -2.8 0)
+			(at -0.312485 3.021151 63)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "b981d417-d065-4155-b1a0-81e8d828d20e")
@@ -13981,7 +13981,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at -0.000001 -14.8 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "d0681e10-26e6-4be2-a5cf-1dbb9cfcb7a9")
@@ -13993,7 +13993,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -14006,7 +14006,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -14019,7 +14019,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -14036,7 +14036,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "afa4e3de-6125-4955-9714-0f6a52094f2e")
@@ -14048,7 +14048,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -14058,7 +14058,7 @@
 			(uuid "df6c31f6-8e36-4329-b273-65eaa0c05e33")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0.000001 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 174 "Net-(U45-DCKO)")
@@ -14068,7 +14068,7 @@
 			(uuid "4f6d5bb8-02e0-4dc1-8d51-6ce4125d8829")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 173 "Net-(U45-DOUT)")
@@ -14078,7 +14078,7 @@
 			(uuid "926d70c7-da4f-44e0-810e-a5cc72330ee0")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -14088,7 +14088,7 @@
 			(uuid "6318a270-e74b-4e6a-9e21-7bc7005c1115")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 -0.000001 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 104 "Net-(U44-DCKO)")
@@ -14098,7 +14098,7 @@
 			(uuid "8c3e734b-9f5d-4ee8-8bc7-74662d696490")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 103 "Net-(U44-DOUT)")
@@ -15317,9 +15317,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "92bf750a-6ac6-4986-a5da-080ac79f9d40")
-		(at 194.2 96.3)
+		(at 194.275 89 123)
 		(property "Reference" "U38"
-			(at 0 -2.8 0)
+			(at -0.13408 2.685172 -57)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "c300506f-9c0d-4342-bc7f-065611825354")
@@ -15331,7 +15331,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at -0.000001 -14.800001 123)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "e7168457-e3e1-4833-af44-0684a8b4a0bd")
@@ -15343,7 +15343,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.200001 123)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -15356,7 +15356,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.200001 123)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -15369,7 +15369,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.200001 123)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -15386,7 +15386,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 123)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "52ae6479-3e01-4d2c-9245-ba751e474a7e")
@@ -15398,7 +15398,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.700001 -0.800001 123)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -15408,7 +15408,7 @@
 			(uuid "a5f78dbb-461f-4e2e-b912-c3b1f1f036c6")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0.000001 123)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 97 "Net-(U38-DCKO)")
@@ -15418,7 +15418,7 @@
 			(uuid "1ac6ac94-69d0-4007-8ecd-eaa822917018")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.799999 123)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 98 "Net-(U38-DOUT)")
@@ -15428,7 +15428,7 @@
 			(uuid "f7807180-2330-4fb2-8bea-d97ef1d1f761")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.799999 123)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -15438,7 +15438,7 @@
 			(uuid "9e54188b-fa48-4c80-8c54-cfb6853e0eda")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 -0.000001 123)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 96 "Net-(U37-DCKO)")
@@ -15448,7 +15448,7 @@
 			(uuid "e8bb48e4-9a0a-4016-98e5-5d9fb05270ed")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.700001 0.800001 123)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 95 "Net-(U37-DOUT)")
@@ -15749,9 +15749,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "a6a1ae35-ef6d-4787-b600-d2090fde4166")
-		(at 191.2 100.3)
+		(at 195.7 92.8 95)
 		(property "Reference" "U39"
-			(at 0 -2.8 0)
+			(at -0.261467 2.988584 95)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "2e6658fa-d55b-48dd-b1fe-ac1956cd84c7")
@@ -15763,7 +15763,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.8 95)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "121408b0-df07-402c-b3d2-5b9c89c186d8")
@@ -15775,7 +15775,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.099999 0.200001 95)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -15788,7 +15788,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.200001 95)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -15801,7 +15801,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.200001 95)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -15818,7 +15818,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.199999 3.2 95)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "a23a4fed-d960-4d00-a09c-c26952a3894f")
@@ -15830,7 +15830,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.799999 95)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -15840,7 +15840,7 @@
 			(uuid "315c733e-788d-410d-b54c-6aaf9116b786")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0 95)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 99 "Net-(U39-DCKO)")
@@ -15850,7 +15850,7 @@
 			(uuid "0841663c-ecb7-4401-afe6-962615982077")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 95)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 100 "Net-(U39-DOUT)")
@@ -15860,7 +15860,7 @@
 			(uuid "8ef232dc-8dab-4721-bcfe-c2a4043a0a8f")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 95)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -15870,7 +15870,7 @@
 			(uuid "d6e86d25-f2bb-4425-b4b1-f522581d9806")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 0 95)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 97 "Net-(U38-DCKO)")
@@ -15880,7 +15880,7 @@
 			(uuid "9de5d1f9-cdf7-4187-8158-223d17ea8379")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.799999 95)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 98 "Net-(U38-DOUT)")
@@ -16247,9 +16247,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "a74489d1-6d8e-4316-acd3-8f847361d396")
-		(at 167.2 113.3)
+		(at 178.55 117.225 -6)
 		(property "Reference" "U47"
-			(at 0 -2.8 0)
+			(at 0.140888 2.775478 -6)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "34dcb9f7-646b-475e-aba0-2a2d72420a1d")
@@ -16261,7 +16261,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.800001 -6)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "505e51b1-eb76-46b8-a89b-1ad39dcdb598")
@@ -16273,7 +16273,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 -6)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -16286,7 +16286,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 -6)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -16299,7 +16299,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 -6)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -16316,7 +16316,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 -6)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "a04081e9-ddcc-4569-a60b-3cd2f0cf31a8")
@@ -16328,7 +16328,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.699999 -0.8 354)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -16338,7 +16338,7 @@
 			(uuid "2eded1e5-d286-4ce1-9754-00b8fb95becc")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0.000001 354)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 109 "Net-(U47-DCKO)")
@@ -16348,7 +16348,7 @@
 			(uuid "73c7d82a-9de4-4030-aa0d-ee24b076423f")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 354)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 111 "Net-(U47-DOUT)")
@@ -16358,7 +16358,7 @@
 			(uuid "6d11c52b-d7dd-40ec-82c3-a07687679105")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 354)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -16368,7 +16368,7 @@
 			(uuid "e4d944f6-4d2e-4723-aa09-5350716e6481")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 -0.000001 354)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 137 "/LED_CHAIN2/CLOCK_CHAIN_1_TO_2")
@@ -16378,7 +16378,7 @@
 			(uuid "e6430101-9de9-4730-a48a-954886c6b666")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.699999 0.8 354)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 138 "/LED_CHAIN2/DATA_CHAIN_1_TO_2")
@@ -19229,9 +19229,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "c81e0892-cd3e-4c64-82af-c59302046cd6")
-		(at 186.2 108.3)
+		(at 193.375 100.4 57)
 		(property "Reference" "U41"
-			(at 0 -2.8 0)
+			(at -0.271639 2.978458 57)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "5f3cf728-c6fc-412c-abc7-c403ad7fec2a")
@@ -19243,7 +19243,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.800001 57)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "20447af2-47c0-4a5a-ad89-554d1154f309")
@@ -19255,7 +19255,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.099998 0.2 57)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -19268,7 +19268,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.099998 0.2 57)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -19281,7 +19281,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.099998 0.2 57)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -19298,7 +19298,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 57)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "1c08078f-bee9-4f12-a63e-a4c7f114bc87")
@@ -19310,7 +19310,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 57)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -19320,7 +19320,7 @@
 			(uuid "7b3b8888-7627-4c97-b33c-54fb242b55ef")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0.000001 57)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 52 "Net-(U41-DCKO)")
@@ -19330,7 +19330,7 @@
 			(uuid "a0fb2106-924d-406b-b6aa-861271abaed6")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 57)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 51 "Net-(U41-DOUT)")
@@ -19340,7 +19340,7 @@
 			(uuid "d0c2a036-035c-4f15-823a-75c245a271be")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 57)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -19350,7 +19350,7 @@
 			(uuid "715e3d2e-c757-4f56-a11c-26b82db230ab")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 -0.000001 57)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 102 "Net-(U40-DCKO)")
@@ -19360,7 +19360,7 @@
 			(uuid "0d2d2c3b-d374-4f36-ba96-c731a41c3023")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 57)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 101 "Net-(U40-DOUT)")
@@ -20488,7 +20488,7 @@
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
 		(layer "F.Cu")
 		(uuid "d0edb74c-51e9-47dc-a463-38660c8aa82d")
-		(at 188.8 115.75)
+		(at 190.4 124.3)
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C20"
@@ -20842,9 +20842,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "d2cfefe1-47ac-4ca8-8bc2-80b9b83bc8cf")
-		(at 171.2 115.3)
+		(at 182.55 117.125 10)
 		(property "Reference" "U46"
-			(at 0 -2.8 0)
+			(at 0.125 2.5 10)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "ec5f9c2b-d058-474f-9eb2-0608c3f65b71")
@@ -20856,7 +20856,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at -0.000001 -14.8 10)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "5f810a62-732b-4194-b73e-8c55d8582529")
@@ -20868,7 +20868,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.099999 0.200001 10)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -20881,7 +20881,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.200001 10)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -20894,7 +20894,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.200001 10)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -20911,7 +20911,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 10)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "63438989-00f6-45f3-ae0d-1b67236f4d64")
@@ -20923,7 +20923,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.700001 -0.799999 10)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -20933,7 +20933,7 @@
 			(uuid "0b27fb43-a898-43c9-ac2f-4112d730cfb9")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.700001 0.000001 10)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 137 "/LED_CHAIN2/CLOCK_CHAIN_1_TO_2")
@@ -20943,7 +20943,7 @@
 			(uuid "ca522e68-53f6-4dd9-876b-b27bceb578a6")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 10)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 138 "/LED_CHAIN2/DATA_CHAIN_1_TO_2")
@@ -20953,7 +20953,7 @@
 			(uuid "348ef8d6-c57a-461c-b6d3-615e746388aa")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 10)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -20963,7 +20963,7 @@
 			(uuid "cbe1cce6-e1c3-4a28-b78c-0e767c27a1f1")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.700001 -0.000001 10)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 174 "Net-(U45-DCKO)")
@@ -20973,7 +20973,7 @@
 			(uuid "1587c8f8-5ef7-44f8-814c-94269fed68c1")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.700001 0.799999 10)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 173 "Net-(U45-DOUT)")
@@ -22193,9 +22193,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "e07e9263-39ca-47a4-851d-1b542030bc7b")
-		(at 183.2 116.3)
+		(at 188.975 107.125 63)
 		(property "Reference" "U43"
-			(at 0 -2.8 0)
+			(at 0.145641 2.984131 63)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "0acae1b9-aaa4-41b9-ae75-7d90ba74dca9")
@@ -22207,7 +22207,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at -0.000001 -14.8 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "5974f0f7-cffc-4cff-9b01-a504673d96bc")
@@ -22219,7 +22219,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -22232,7 +22232,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -22245,7 +22245,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.099999 0.2 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -22262,7 +22262,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.199999 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "d50f21ce-f930-43f8-aa91-b1ebf53927dc")
@@ -22274,7 +22274,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -22284,7 +22284,7 @@
 			(uuid "4d8abec3-739b-4f9e-b38a-1adc20f75878")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 -0.000001 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 55 "Net-(U43-DCKO)")
@@ -22294,7 +22294,7 @@
 			(uuid "0deda894-51ad-4f61-94af-6fd581bdc27b")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.799999 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 54 "Net-(U43-DOUT)")
@@ -22304,7 +22304,7 @@
 			(uuid "14230e3e-8308-40fa-9c15-c7172f747e5d")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.799999 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -22314,7 +22314,7 @@
 			(uuid "2d45c307-cb75-4c8b-88bc-295f3349fae5")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 0.000001 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 171 "Net-(U42-DCKO)")
@@ -22324,7 +22324,7 @@
 			(uuid "d8346343-a36b-4db6-aac5-b6b8486b4bde")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 172 "Net-(U42-DOUT)")
@@ -22694,7 +22694,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.199999 3.2 -149)
+			(at -0.199999 3.199999 -149)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "28bb598a-61af-48fb-90b7-212d40604832")
@@ -23201,9 +23201,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f20ecdc5-0cc4-4fae-b21b-3afa819b39c0")
-		(at 167.2 106.3)
+		(at 170.9 115 -28)
 		(property "Reference" "U49"
-			(at 0 -2.8 0)
+			(at -0.033375 3.132313 -28)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "906f00cb-3c17-4702-b3d7-d8e5db2866b6")
@@ -23215,7 +23215,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.8 -28)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "211d1a7f-5472-4771-90db-e47f2e576541")
@@ -23227,7 +23227,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.100001 0.2 -28)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23240,7 +23240,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.100001 0.2 -28)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23253,7 +23253,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.100001 0.2 -28)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23270,7 +23270,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 -28)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "7f89e010-fb4d-4e5c-b6a2-81f51a914ba1")
@@ -23282,7 +23282,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 332)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -23292,7 +23292,7 @@
 			(uuid "a1a790a4-c84a-4266-a140-bc30a43d9e7f")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0 332)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 115 "Net-(U49-DCKO)")
@@ -23302,7 +23302,7 @@
 			(uuid "2ff6692a-306b-4046-870d-78cf0e5973fc")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.800001 332)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 116 "Net-(U49-DOUT)")
@@ -23312,7 +23312,7 @@
 			(uuid "89b86505-b48d-40b0-b9f0-9cd9fa98dd1e")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.800001 332)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -23322,7 +23322,7 @@
 			(uuid "4f24fcd0-7369-4f63-859c-96327c5e88ca")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 0 332)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 114 "Net-(U48-DCKO)")
@@ -23332,7 +23332,7 @@
 			(uuid "cccc8037-5f9c-4906-b41d-60ed694005b8")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 332)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 113 "Net-(U48-DOUT)")
@@ -23345,9 +23345,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f26a6daa-c2a4-4674-9d50-13dfb55b2f4d")
-		(at 175.2 104.3)
+		(at 165.6 109.25 -105)
 		(property "Reference" "U51"
-			(at 0 -2.8 0)
+			(at 3.018767 2.089897 -15)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "6f0c10dd-1950-44a7-9392-5242cc2f144d")
@@ -23359,7 +23359,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at 0 -14.8 -105)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "39737444-2c3a-48e5-b092-77897fb1dc32")
@@ -23371,7 +23371,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 -105)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23384,7 +23384,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 -105)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23397,7 +23397,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 -105)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23414,7 +23414,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.199999 -105)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "713c1ee3-99df-4134-8581-8ec07ded3f1a")
@@ -23426,7 +23426,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 255)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -23436,7 +23436,7 @@
 			(uuid "2cc55ca8-d5af-4145-8320-a95dd37a9968")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.699999 0 255)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 57 "Net-(U51-DCKO)")
@@ -23446,7 +23446,7 @@
 			(uuid "0b69eabd-b484-422b-b93e-2eb57aba7b7b")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.800001 255)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 56 "Net-(U51-DOUT)")
@@ -23456,7 +23456,7 @@
 			(uuid "1fcf5d87-ff22-4254-8391-2c262ff667c0")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.800001 255)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -23466,7 +23466,7 @@
 			(uuid "524149b2-b4b2-477b-8130-a5def692b624")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.699999 0 255)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 118 "Net-(U50-DCKO)")
@@ -23476,7 +23476,7 @@
 			(uuid "a02c6034-6211-4a61-a252-aef0434d9d8c")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 255)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 117 "Net-(U50-DOUT)")
@@ -23777,9 +23777,9 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f827984e-436d-49a7-b29a-1730ec258939")
-		(at 179.2 117.3)
+		(at 187.175 110.7 63)
 		(property "Reference" "U44"
-			(at 0 -2.8 0)
+			(at 0.001913 3.197655 63)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "eeb9ade0-85f5-4a93-ac52-5630612a1065")
@@ -23791,7 +23791,7 @@
 			)
 		)
 		(property "Value" "HD108-2020"
-			(at 0 -14.8 0)
+			(at -0.000001 -14.8 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "ebd8d6c7-b602-40da-b6bb-bfa34f35bb85")
@@ -23803,7 +23803,7 @@
 			)
 		)
 		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23816,7 +23816,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23829,7 +23829,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0.1 0.2 0)
+			(at 0.1 0.199999 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -23846,7 +23846,7 @@
 		(sheetfile "rgb_led_track_chain.kicad_sch")
 		(attr smd)
 		(fp_text user "${REFERENCE}"
-			(at -0.2 3.2 0)
+			(at -0.2 3.2 63)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "f2171b05-3d27-4bb2-9426-4a8fe8a1e372")
@@ -23858,7 +23858,7 @@
 			)
 		)
 		(pad "1" smd rect
-			(at -0.7 -0.8)
+			(at -0.7 -0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 2 "+5V")
@@ -23868,7 +23868,7 @@
 			(uuid "1886015d-9605-4edc-97be-f2017a48840c")
 		)
 		(pad "2" smd rect
-			(at -0.7 0)
+			(at -0.7 0.000001 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 104 "Net-(U44-DCKO)")
@@ -23878,7 +23878,7 @@
 			(uuid "6e47350a-9e88-49bf-ac90-fe28dce87320")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.8)
+			(at -0.7 0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 103 "Net-(U44-DOUT)")
@@ -23888,7 +23888,7 @@
 			(uuid "03fa2378-c406-489c-83dc-2bcda07d321f")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.8)
+			(at 0.7 -0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
@@ -23898,7 +23898,7 @@
 			(uuid "73df1584-758c-47bd-a749-520fa8dc9563")
 		)
 		(pad "5" smd rect
-			(at 0.7 0)
+			(at 0.7 -0.000001 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 55 "Net-(U43-DCKO)")
@@ -23908,7 +23908,7 @@
 			(uuid "aed611ba-02d2-49d2-a23e-cfce581d0e9c")
 		)
 		(pad "6" smd rect
-			(at 0.7 0.8)
+			(at 0.7 0.8 63)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 54 "Net-(U43-DOUT)")
