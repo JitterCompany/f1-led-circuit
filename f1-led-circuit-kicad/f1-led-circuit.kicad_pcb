@@ -315,7 +315,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "02e2dae4-f628-4f40-9f4b-9be5d99c8bcc")
-		(at 180.1 125.75)
+		(at 179.2 117.3)
 		(property "Reference" "U48"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -1261,7 +1261,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "0508073c-6743-4f6a-a919-c328362b4652")
-		(at 130.1 131.75)
+		(at 129.199999 123.3)
 		(property "Reference" "U19"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -1744,7 +1744,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "08c03259-d928-41f0-86dd-8b0e8165c3b6")
-		(at 195.1 100.75)
+		(at 194.2 92.3)
 		(property "Reference" "U55"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -1886,7 +1886,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "0932968f-6f50-4f67-8e2c-c5af61c9b6db")
-		(at 127.1 115.75)
+		(at 126.2 107.3)
 		(property "Reference" "U23"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -2028,7 +2028,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "0ac1e190-617f-4d6b-9548-b737f7009785")
-		(at 113.1 110.75 90)
+		(at 112.2 102.3 90)
 		(property "Reference" "U6"
 			(at 0.1 -2.85 0)
 			(unlocked yes)
@@ -2170,7 +2170,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "0c281e7e-6511-4d75-a0a1-0e4112dc857b")
-		(at 126.1 101.75)
+		(at 125.2 93.3)
 		(property "Reference" "U73"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -2522,7 +2522,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "0fd1bd50-14de-4974-96b1-42fb86f49f73")
-		(at 123.3 139.45)
+		(at 122.4 131)
 		(property "Reference" "U16"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -3076,7 +3076,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "138b18c4-09ab-4fe9-9d77-61e055db4fd3")
-		(at 157.1 103.75)
+		(at 156.2 95.3)
 		(property "Reference" "U32"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -3428,7 +3428,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "19109dda-6402-44fa-9245-28164036572a")
-		(at 127.1 111.75)
+		(at 126.2 103.3)
 		(property "Reference" "U24"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -3780,7 +3780,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "1ac9f3d9-704b-4b41-8b7c-99f0c6da4f37")
-		(at 125.1 82.75)
+		(at 124.2 74.3)
 		(property "Reference" "U89"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -4409,7 +4409,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "1d46a696-0913-4a5e-9e91-fd0a7cebe94f")
-		(at 172.1 113.75)
+		(at 171.2 105.3)
 		(property "Reference" "U42"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -4761,7 +4761,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "1e586698-d07f-4363-a6d8-865af878f5da")
-		(at 115.1 138.75)
+		(at 114.2 130.3)
 		(property "Reference" "U14"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -4903,7 +4903,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "2048c65f-5712-4013-b2f4-aab14ff4a593")
-		(at 182.1 93.75)
+		(at 181.2 85.3)
 		(property "Reference" "U59"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -5340,7 +5340,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "255fa539-c567-4b75-b76a-c0b9ad95290c")
-		(at 170.1 94.75)
+		(at 169.2 86.3)
 		(property "Reference" "U62"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -5482,7 +5482,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "25db9627-c843-4e54-ba49-73a99b0a437d")
-		(at 133.1 109.75)
+		(at 132.199999 101.3)
 		(property "Reference" "U26"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -5624,7 +5624,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "26556b17-8f25-4fdc-985a-84eb34a35850")
-		(at 185.1 120.75)
+		(at 184.2 112.3)
 		(property "Reference" "U50"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -5766,7 +5766,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "27b04f24-d7b3-495f-93e1-36530dfcf4af")
-		(at 107.1 129.75)
+		(at 106.2 121.3)
 		(property "Reference" "U11"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -6328,7 +6328,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "2a0b16d9-f521-4d99-afc3-08b3ea2e9a6c")
-		(at 119.1 94.75 90)
+		(at 118.2 86.3 90)
 		(property "Reference" "U2"
 			(at -0.1 -3.2 0)
 			(unlocked yes)
@@ -7616,7 +7616,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "30c7b0b8-2018-49b8-9510-f1a02dfa98b0")
-		(at 126.1 78.75)
+		(at 125.2 70.3)
 		(property "Reference" "U88"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -7758,7 +7758,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "3236a436-24a5-4a00-99f8-7f16fd556589")
-		(at 132.1 90.75)
+		(at 131.199999 82.3)
 		(property "Reference" "U77"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -7900,7 +7900,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "3355d43f-e332-4fdb-9b3c-f6e20f4b52c2")
-		(at 123.1 98.75)
+		(at 122.2 90.3)
 		(property "Reference" "U74"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -8042,7 +8042,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "376a4df0-942f-4efd-a801-ec0dd0adc5bb")
-		(at 173.1 102.75)
+		(at 172.2 94.3)
 		(property "Reference" "U36"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -8517,7 +8517,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "3cb53e98-b313-4654-b2db-5cf98447ec1c")
-		(at 195.1 104.75)
+		(at 194.2 96.3)
 		(property "Reference" "U54"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -9079,7 +9079,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "40f41399-5f35-4cd1-8d5c-75c2ff69d4ed")
-		(at 186.1 93.75)
+		(at 185.2 85.3)
 		(property "Reference" "U58"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -9221,7 +9221,7 @@
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
 		(layer "F.Cu")
 		(uuid "433ade3d-0aec-4fe0-ab56-617e05361582")
-		(at 110.75 95.3 90)
+		(at 108.15 91.8 90)
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C1"
@@ -9431,7 +9431,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "44000b3b-21d3-4b91-9acc-0df222fcf9cd")
-		(at 180.1 110.75)
+		(at 179.2 102.3)
 		(property "Reference" "U40"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -9573,7 +9573,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "4718c974-74e7-465d-9b95-fb986fdf18d3")
-		(at 121.1 90.75 90)
+		(at 120.2 82.3 90)
 		(property "Reference" "U1"
 			(at 0 -2.85 0)
 			(unlocked yes)
@@ -9715,7 +9715,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "48bf60a5-c3fc-4d55-96c4-38de76075388")
-		(at 142.1 97.75)
+		(at 141.2 89.3)
 		(property "Reference" "U69"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -9857,7 +9857,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "49b14ab1-4528-44a2-99a4-fbb3aafa04d6")
-		(at 135.1 64.75)
+		(at 134.199999 56.3)
 		(property "Reference" "U84"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -9999,7 +9999,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "4b933dfb-c061-4f2e-908b-7a2cea6ad219")
-		(at 129.1 127.75)
+		(at 128.199999 119.3)
 		(property "Reference" "U20"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -10141,7 +10141,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "4eaf4df4-1ce0-453d-994a-382c2251308a")
-		(at 194.1 96.75)
+		(at 193.2 88.3)
 		(property "Reference" "U56"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -10283,7 +10283,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "54bac8ec-cacd-4cd5-9a42-ea7965e23e0b")
-		(at 177.1 102.75)
+		(at 176.2 94.3)
 		(property "Reference" "U37"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -10425,7 +10425,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "54da3885-ab81-434d-a32f-9ac073d4c6dc")
-		(at 128.1 74.75)
+		(at 127.2 66.3)
 		(property "Reference" "U87"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -10567,7 +10567,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "57a2e8d2-2f05-4386-9e12-5b7427b5e791")
-		(at 141.1 108.75)
+		(at 140.2 100.3)
 		(property "Reference" "U28"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -11050,7 +11050,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "5a79a84e-b31c-4ac9-b2e5-0cf7649d1f7f")
-		(at 134.1 98.75)
+		(at 133.199999 90.3)
 		(property "Reference" "U71"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -11192,7 +11192,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "5ae6e782-7ebc-424b-9a02-fcd922e5a006")
-		(at 130.1 99.75)
+		(at 129.199999 91.3)
 		(property "Reference" "U72"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -11334,7 +11334,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "5bc73c38-f8e3-427f-938d-9b5388f45844")
-		(at 116.1 102.75 90)
+		(at 115.2 94.3 90)
 		(property "Reference" "U4"
 			(at 0 -2.9 0)
 			(unlocked yes)
@@ -11476,7 +11476,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "6261ebb8-63eb-4c26-9a78-1d44ab4a4077")
-		(at 137.1 110.75)
+		(at 136.2 102.3)
 		(property "Reference" "U27"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -11618,7 +11618,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "62a7b3cb-af8d-47de-bea7-7d81d2c875ba")
-		(at 137.6 70.45)
+		(at 136.7 62)
 		(property "Reference" "U82"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -12180,7 +12180,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "667db770-8ffe-443f-b58d-d8115ebf28af")
-		(at 129.1 123.75)
+		(at 128.199999 115.3)
 		(property "Reference" "U21"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -12322,7 +12322,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "6e68e210-ff3b-4f3b-8020-ab66012627ad")
-		(at 169.1 102.75)
+		(at 168.2 94.3)
 		(property "Reference" "U35"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -12464,7 +12464,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "71e5a03d-99ac-4074-a836-161a2f3fffaf")
-		(at 190.1 112.75)
+		(at 189.2 104.3)
 		(property "Reference" "U52"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -12606,7 +12606,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "7419e4d9-4dd1-411d-b33a-5958d2a2b50b")
-		(at 150.1 98.75)
+		(at 149.2 90.3)
 		(property "Reference" "U67"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -12748,7 +12748,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "762357b8-8c1f-4ac5-b810-f20a32782684")
-		(at 130.1 70.75)
+		(at 129.199999 62.3)
 		(property "Reference" "U86"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -13100,7 +13100,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "7b25428d-2f95-4e4b-b36c-ca39d58ce61d")
-		(at 133.1 86.75)
+		(at 132.199999 78.3)
 		(property "Reference" "U78"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -13242,7 +13242,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "7ddefced-e744-4f21-b3d6-d8c65e792bda")
-		(at 146.1 97.75)
+		(at 145.2 89.3)
 		(property "Reference" "U68"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -13384,7 +13384,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "801c648c-9486-40d5-b27e-2555e13ddb1b")
-		(at 109.1 121.75)
+		(at 108.2 113.3)
 		(property "Reference" "U9"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -13875,7 +13875,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "821e7591-b2f9-4e52-88c8-67b181810519")
-		(at 168.1 121.75)
+		(at 167.2 113.3)
 		(property "Reference" "U45"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -14017,7 +14017,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "8420c504-1fdd-4eae-b44b-98688ff7ba30")
-		(at 166.1 95.75)
+		(at 165.2 87.3)
 		(property "Reference" "U63"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -14579,7 +14579,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "8cd53063-5567-4d51-8218-2c5067bd2d26")
-		(at 145.1 106.75)
+		(at 144.2 98.3)
 		(property "Reference" "U29"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -14931,7 +14931,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "8ded8e03-1b64-4a93-af74-2f5dabd797ab")
-		(at 129.1 93.75)
+		(at 128.199999 85.3)
 		(property "Reference" "U76"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -15073,7 +15073,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "913a2170-b440-4df0-ad6a-72bafa7e73a3")
-		(at 119.3 139.45)
+		(at 118.4 131)
 		(property "Reference" "U15"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -15215,7 +15215,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "92bf750a-6ac6-4986-a5da-080ac79f9d40")
-		(at 181.1 103.75)
+		(at 180.2 95.3)
 		(property "Reference" "U38"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -15357,7 +15357,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "997cf4b5-095e-4f86-9dd1-c82048c1fd26")
-		(at 125.1 94.75)
+		(at 124.2 86.3)
 		(property "Reference" "U75"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -15499,7 +15499,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "9cefaf48-ed71-401b-8af2-ae0e612f66c5")
-		(at 138.1 97.75)
+		(at 137.2 89.3)
 		(property "Reference" "U70"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -15641,7 +15641,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "a6a1ae35-ef6d-4787-b600-d2090fde4166")
-		(at 183.1 107.75)
+		(at 182.2 99.3)
 		(property "Reference" "U39"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -15993,7 +15993,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "a6f1bc80-6e0b-45ae-af4f-0ca3f50ccf77")
-		(at 111.1 136.75)
+		(at 110.2 128.3)
 		(property "Reference" "U13"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -16135,7 +16135,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "a74489d1-6d8e-4316-acd3-8f847361d396")
-		(at 176.1 125.75)
+		(at 175.2 117.3)
 		(property "Reference" "U47"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -16768,7 +16768,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "b35fa951-b422-4ae5-a006-f5cc339310c2")
-		(at 107.1 125.75)
+		(at 106.2 117.3)
 		(property "Reference" "U10"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -16910,7 +16910,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "b5195c59-9b6a-4d0c-ac59-f78e6341f287")
-		(at 135.6 74.15)
+		(at 134.7 65.7)
 		(property "Reference" "U81"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -17262,7 +17262,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "b81dd4ae-8ecc-4607-a811-b7256a84ff3c")
-		(at 130.1 135.75)
+		(at 129.199999 127.3)
 		(property "Reference" "U18"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -17681,7 +17681,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "ba81c474-46d1-4f24-88d4-43ab7c3b8a29")
-		(at 165.1 102.75)
+		(at 164.2 94.3)
 		(property "Reference" "U34"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -18033,7 +18033,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "bed1e8eb-5c67-43d3-a5f9-dc44f155655e")
-		(at 154.1 99.75)
+		(at 153.2 91.3)
 		(property "Reference" "U66"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -18385,7 +18385,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "c0206049-9422-420f-9ed6-878088946d9b")
-		(at 190.1 94.75)
+		(at 189.2 86.3)
 		(property "Reference" "U57"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -18527,7 +18527,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "c42cf7bb-f943-4dd7-bae6-6f7db58b9d2a")
-		(at 111.1 114.75)
+		(at 110.2 106.3)
 		(property "Reference" "U7"
 			(at -3.15 -1.5 0)
 			(unlocked yes)
@@ -18669,7 +18669,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "c5267b7d-11b6-4580-9c4c-56f9087a51c1")
-		(at 178.1 93.75)
+		(at 177.2 85.3)
 		(property "Reference" "U60"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -18811,7 +18811,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "c616d335-b481-49c4-ba51-cbdb73fc8921")
-		(at 133.1 82.75)
+		(at 132.199999 74.3)
 		(property "Reference" "U79"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -18953,7 +18953,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "c7eae04e-f75b-46b4-acbe-f035846f43bf")
-		(at 109.9 118.25)
+		(at 109 109.8)
 		(property "Reference" "U8"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -19095,7 +19095,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "c81e0892-cd3e-4c64-82af-c59302046cd6")
-		(at 176.1 112.75)
+		(at 175.2 104.3)
 		(property "Reference" "U41"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -19657,7 +19657,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "d1a3b6f7-e94c-4195-9a81-c53884ef2a3d")
-		(at 129.1 108.75)
+		(at 128.199999 100.3)
 		(property "Reference" "U25"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -19799,7 +19799,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "d2cfefe1-47ac-4ca8-8bc2-80b9b83bc8cf")
-		(at 172.1 123.75)
+		(at 171.2 115.3)
 		(property "Reference" "U46"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -19941,7 +19941,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "d312273f-2ec1-4deb-b328-924ee9f2c761")
-		(at 127.1 138.75)
+		(at 126.2 130.3)
 		(property "Reference" "U17"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -20083,7 +20083,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "d54af131-951f-4fb6-b5aa-e4edae996ca2")
-		(at 118.1 98.75 90)
+		(at 117.2 90.3 90)
 		(property "Reference" "U3"
 			(at 0.1 -2.8 0)
 			(unlocked yes)
@@ -20225,7 +20225,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "d87b4e4b-c2bf-4b39-aab9-f9a3db0d83c3")
-		(at 128.1 119.75)
+		(at 127.2 111.3)
 		(property "Reference" "U22"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -20644,7 +20644,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "dad5f1d7-5a2c-427b-a9b6-88ad892cb4b3")
-		(at 174.1 93.75)
+		(at 173.2 85.3)
 		(property "Reference" "U61"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -20786,7 +20786,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "db1ab9b4-fe70-4ce5-8d60-35c4e7730836")
-		(at 108.1 133.75)
+		(at 107.2 125.3)
 		(property "Reference" "U12"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -21138,7 +21138,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "e07e9263-39ca-47a4-851d-1b542030bc7b")
-		(at 168.1 114.75)
+		(at 167.2 106.3)
 		(property "Reference" "U43"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -21280,7 +21280,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "e3b151fe-3a9f-48ae-8e6e-ef8136837fd2")
-		(at 162.1 98.75)
+		(at 161.2 90.3)
 		(property "Reference" "U64"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -21422,7 +21422,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "e7f77428-9c45-4891-83ab-589e41662812")
-		(at 161.1 102.75)
+		(at 160.2 94.3)
 		(property "Reference" "U33"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -21564,7 +21564,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "e934c675-72cc-4876-bb9e-15b88bbf4c7c")
-		(at 149.1 105.75)
+		(at 148.2 97.3)
 		(property "Reference" "U30"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -21706,7 +21706,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "ebdd9380-093f-4673-ba81-e96d060b7532")
-		(at 158.1 99.75)
+		(at 157.2 91.3)
 		(property "Reference" "U65"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -21848,7 +21848,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f08739b1-fc7c-4734-8823-714d50a5171c")
-		(at 114.3 106.25 90)
+		(at 113.4 97.8 90)
 		(property "Reference" "U5"
 			(at 0.05 -2.5 0)
 			(unlocked yes)
@@ -21990,7 +21990,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f1f60697-3f03-4995-b3cd-437b909b481e")
-		(at 138.1 66.75)
+		(at 137.2 58.3)
 		(property "Reference" "U83"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -22132,7 +22132,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f20ecdc5-0cc4-4fae-b21b-3afa819b39c0")
-		(at 184.1 124.75)
+		(at 183.2 116.3)
 		(property "Reference" "U49"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -22274,7 +22274,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f26a6daa-c2a4-4674-9d50-13dfb55b2f4d")
-		(at 187.1 116.75)
+		(at 186.2 108.3)
 		(property "Reference" "U51"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -22416,7 +22416,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f50d9333-16b8-4711-a1fb-3e44f7b3954b")
-		(at 131.1 66.75)
+		(at 130.199999 58.3)
 		(property "Reference" "U85"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -22558,7 +22558,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f7531c68-38b3-4bb5-905f-6ac8affd57ab")
-		(at 153.1 104.75)
+		(at 152.2 96.3)
 		(property "Reference" "U31"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -22700,7 +22700,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "f827984e-436d-49a7-b29a-1730ec258939")
-		(at 165.1 118.75)
+		(at 164.2 110.3)
 		(property "Reference" "U44"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -22842,7 +22842,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "fbd01b4e-e9a4-48c3-bab5-d2a7911ebde8")
-		(at 123.1 86.75)
+		(at 122.2 78.3)
 		(property "Reference" "U90"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -23194,7 +23194,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "fc792fec-96f6-4a67-8259-d31325010362")
-		(at 192.1 108.75)
+		(at 191.2 100.3)
 		(property "Reference" "U53"
 			(at 0 -2.8 0)
 			(unlocked yes)
@@ -23336,7 +23336,7 @@
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "ffe0d2ee-5cd0-47eb-b390-54b669254fc8")
-		(at 134.1 78.75)
+		(at 133.199999 70.3)
 		(property "Reference" "U80"
 			(at 0 -2.8 0)
 			(unlocked yes)
