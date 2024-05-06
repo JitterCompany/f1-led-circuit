@@ -5,7 +5,7 @@ import csv
 board = pcbnew.GetBoard()
 
 # Path to the CSV file with coordinates
-csv_file_path = '/Users/hott/eng/f1-led-circuit/f1-led-circuit-kicad/x_y_led_coords_zandvoort/zandvoort_led_coordinates.csv'
+csv_file_path = '/Users/hott/eng/f1-led-circuit/f1-led-circuit-kicad/x_y_led_coords_zandvoort/zandvoort_led_coordinates_clockwise.csv'
 
 # Read the CSV file
 with open(csv_file_path, newline='') as csvfile:

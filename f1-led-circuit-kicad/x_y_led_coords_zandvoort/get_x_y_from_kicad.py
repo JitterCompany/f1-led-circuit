@@ -6,7 +6,7 @@ board = pcbnew.GetBoard()
 
 # Define the range of designators you are interested in, e.g., U1 to U90
 designator_prefix = "U"
-designator_range = range(1, 90) 
+designator_range = range(1, 91) 
 
 # Prepare a list to hold the component data
 component_data = []
