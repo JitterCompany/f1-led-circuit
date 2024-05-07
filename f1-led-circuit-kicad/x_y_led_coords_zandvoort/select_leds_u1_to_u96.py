@@ -10,7 +10,7 @@ for footprint in board.GetFootprints():
         # Extract the numeric part of the reference designator
         try:
             num = int(ref[1:])  # Assumes the format is U<number>
-            if 1 <= num <= 90:
+            if 1 <= num <= 96:
                 footprint.SetSelected()  # Select the component without argument
         except ValueError:
             pass

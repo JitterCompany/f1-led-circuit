@@ -4,9 +4,9 @@ import csv
 # Load the current board
 board = pcbnew.GetBoard()
 
-# Define the range of designators you are interested in, e.g., U1 to U90
+# Define the range of designators you are interested in, e.g., U1 to U96
 designator_prefix = "U"
-designator_range = range(1, 91) 
+designator_range = range(1, 97) 
 
 # Prepare a list to hold the component data
 component_data = []
@@ -23,17 +23,20 @@ for module in board.GetFootprints():
                 # Convert from nanometers to millimeters
                 x = pcbnew.ToMM(pos.x)
                 y = pcbnew.ToMM(pos.y)
-                component_data.append({"Designator": ref, "X": x, "Y": y})
+                # Get orientation, convert to degrees and handle EDA_ANGLE object
+                orientation = module.GetOrientation()
+                angle = orientation.AsDegrees()  # Convert EDA_ANGLE to degrees
+                component_data.append({"Designator": ref, "X": x, "Y": y, "Angle": angle})
         except ValueError:
             # The designator number wasn't an integer, skip this component
             pass
 
 # Define the CSV file path
-csv_file_path = '/Users/hott/eng/f1-led-circuit/f1-led-circuit-kicad/x_y_led_coords_zandvoort//zandvoort_led_coordinates.csv'
+csv_file_path = '/Users/hott/eng/f1-led-circuit/f1-led-circuit-kicad/x_y_led_coords_zandvoort/zandvoort_led_coordinates.csv'
 
 # Write the data to a CSV file
 with open(csv_file_path, mode='w', newline='') as file:
-    writer = csv.DictWriter(file, fieldnames=["Designator", "X", "Y"])
+    writer = csv.DictWriter(file, fieldnames=["Designator", "X", "Y", "Angle"])
     writer.writeheader()
     for data in component_data:
         writer.writerow(data)

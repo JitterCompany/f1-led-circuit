@@ -10645,7 +10645,7 @@
 		(uuid "508f541d-f414-4c3d-b642-e7d0ce8b9043")
 		(at 117.95 87.775 -112)
 		(property "Reference" "U95"
-			(at 0.253005 3.676558 -22)
+			(at 0.253005 3.676559 -22)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "68848c3f-9395-45bf-b5a9-30498ca6243e")
