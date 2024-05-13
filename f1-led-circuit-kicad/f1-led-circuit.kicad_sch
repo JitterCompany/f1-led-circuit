@@ -10694,7 +10694,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://pt.mouser.com/datasheet/2/837/USB4720-3368672.pdf"
+		(property "Datasheet" "https://nl.mouser.com/datasheet/2/837/Global_Connector_Technology_usb4105-3106202.pdf"
 			(at 57.15 120.65 0)
 			(effects
 				(font
@@ -10712,7 +10712,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "USB4720-03-A"
+		(property "MPN" "USB4105-GF-A"
 			(at 53.34 120.65 0)
 			(effects
 				(font
