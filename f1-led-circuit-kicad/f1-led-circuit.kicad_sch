@@ -7108,7 +7108,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://pt.mouser.com/datasheet/2/295/Aslides-1663571.pdf"
 			(at 139.7 129.54 0)
 			(effects
 				(font
@@ -10785,7 +10785,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.we-online.com/components/products/datasheet/4301x2xxx8x6.pdf"
 			(at 63.5 189.23 0)
 			(effects
 				(font
@@ -12029,7 +12029,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.we-online.com/components/products/datasheet/4301x2xxx8x6.pdf"
 			(at 119.38 191.77 0)
 			(effects
 				(font
