@@ -6075,7 +6075,7 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C21"
-			(at 0.258094 2.195567 315)
+			(at 0.258094 2.195567 -45)
 			(layer "F.SilkS")
 			(uuid "7fdb4c22-d0b5-4995-92c0-5df60c665d95")
 			(effects
@@ -18133,7 +18133,7 @@
 		(descr "SOT-353, SC-70-5")
 		(tags "SOT-353 SC-70-5")
 		(property "Reference" "U201"
-			(at -3.85 1.9425 180)
+			(at 3.95 0.3125 180)
 			(layer "F.SilkS")
 			(uuid "09fd3123-9a45-4474-8a70-5c9af5ce8a2a")
 			(effects
