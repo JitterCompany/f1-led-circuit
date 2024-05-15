@@ -8,7 +8,6 @@
 		(title "F1 LED CIRCUIT PROJECT")
 		(date "2024-04-10")
 		(rev "v1.0")
-		(company "JITTER")
 	)
 	(lib_symbols
 		(symbol "Connector:USB_C_Receptacle_USB2.0_14P"

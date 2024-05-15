@@ -11,7 +11,6 @@
 		(title "F1 LED CIRCUIT PROJECT")
 		(date "2024-04-30")
 		(rev "v1.0")
-		(company "JITTER")
 	)
 	(layers
 		(0 "F.Cu" signal)
