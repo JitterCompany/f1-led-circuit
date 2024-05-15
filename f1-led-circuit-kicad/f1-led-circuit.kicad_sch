@@ -9240,7 +9240,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" " 500 mA, high performance low dropout linear regulator"
 			(at 217.17 116.84 0)
 			(effects
 				(font
