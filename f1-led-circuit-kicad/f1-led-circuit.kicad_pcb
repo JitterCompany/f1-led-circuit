@@ -474,7 +474,7 @@
 		(uuid "034134fe-a204-4bd0-93d4-267b6d9e5dd5")
 		(at 148.3225 147.0375)
 		(property "Reference" "J1"
-			(at -6.9025 -0.2775 0)
+			(at -6.9325 0.3825 0)
 			(layer "F.SilkS")
 			(uuid "c7aa1d79-9e35-49ae-9ee6-91ff9f56e1c2")
 			(effects
@@ -4072,7 +4072,7 @@
 		(descr "Through hole straight pin header, 1x02, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x02 2.54mm single row")
 		(property "Reference" "JP1"
-			(at 3.3 -1.125 0)
+			(at -3.565 1.095 0)
 			(layer "F.SilkS")
 			(uuid "ab8b027a-c152-41cb-951a-27693e1e82a9")
 			(effects
@@ -17207,7 +17207,7 @@
 		(at 128.87 146.7 90)
 		(tags "AS12AP ")
 		(property "Reference" "SW3"
-			(at -1.42 -4.4 0)
+			(at 6.83 2.83 0)
 			(unlocked yes)
 			(layer "F.SilkS")
 			(uuid "72e9cbc4-8fcc-42bd-aec2-79679845bda2")
