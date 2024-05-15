@@ -1,0 +1,29 @@
+%TF.GenerationSoftware,KiCad,Pcbnew,8.0.1*%
+%TF.CreationDate,2024-05-15T12:48:43+01:00*%
+%TF.ProjectId,f1-led-circuit,66312d6c-6564-42d6-9369-72637569742e,v1.0*%
+%TF.SameCoordinates,Original*%
+%TF.FileFunction,Legend,Bot*%
+%TF.FilePolarity,Positive*%
+%FSLAX46Y46*%
+G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
+G04 Created by KiCad (PCBNEW 8.0.1) date 2024-05-15 12:48:43*
+%MOMM*%
+%LPD*%
+G01*
+G04 APERTURE LIST*
+%ADD10C,0.508000*%
+G04 APERTURE END LIST*
+D10*
+%TO.C,SW3*%
+X129251000Y-149163800D02*
+G75*
+G02*
+X128489000Y-149163800I-381000J0D01*
+G01*
+X128489000Y-149163800D02*
+G75*
+G02*
+X129251000Y-149163800I381000J0D01*
+G01*
+%TD*%
+M02*
