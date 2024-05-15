@@ -7400,8 +7400,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "HD108-2020 RGB LED"
 			(at 95.25 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "HD108-2020"
+			(at 95.25 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7619,8 +7628,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "HD108-2020 RGB LED"
 			(at 33.02 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "HD108-2020"
+			(at 33.02 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9067,8 +9085,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "HD108-2020 RGB LED"
 			(at 54.61 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "HD108-2020"
+			(at 54.61 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9675,8 +9702,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "HD108-2020 RGB LED"
 			(at 139.7 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "HD108-2020"
+			(at 139.7 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11207,8 +11243,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "HD108-2020 RGB LED"
 			(at 118.11 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "HD108-2020"
+			(at 118.11 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11356,8 +11401,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "HD108-2020 RGB LED"
 			(at 74.93 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "HD108-2020"
+			(at 74.93 55.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
