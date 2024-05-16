@@ -643,6 +643,24 @@
 					)
 				)
 			)
+			(pin power_in line
+				(at 0 -10.16 90)
+				(length 2.54)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 			(pin input line
 				(at -10.16 2.54 0)
 				(length 2.54)
@@ -718,14 +736,14 @@
 			(pin power_in line
 				(at 0 -10.16 90)
 				(length 2.54)
-				(name "4"
+				(name "GND"
 					(effects
 						(font
 							(size 1.27 1.27)
 						)
 					)
 				)
-				(number "GND"
+				(number "9"
 					(effects
 						(font
 							(size 1.27 1.27)
