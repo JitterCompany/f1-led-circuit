@@ -1,2 +1,0 @@
-[esp-wifi]
-heap_size = 110000 # use 110k by default
