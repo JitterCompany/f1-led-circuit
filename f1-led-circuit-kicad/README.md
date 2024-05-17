@@ -56,5 +56,5 @@ ESP32 Symbols - Use the Plugin and Content Manager in KiCad
   3. Go to "Preferences" > "Manage Footprint Libraries."
   4. Select "Project Libraries" to add the footprints to this project or "Global Libraries" for all projects.
   5. Click "Add Library" and navigate to the F1-LED-CIRCUIT-LIBRARY.pretty folder.
-  6. Select the folder and click "OK" to add it to your KiCad project.
+  6. Select the folder and click "OK" to add it to your KiCad project..
 
