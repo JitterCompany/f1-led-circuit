@@ -67,6 +67,37 @@
 		)
 	)
 	(attr smd)
+	(fp_line
+		(start -1.2 -1.2)
+		(end -1.2 -0.65)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "a7b1076a-c000-40b4-9496-83af4e5af5bc")
+	)
+	(fp_line
+		(start -0.6 -1.2)
+		(end -1.2 -1.2)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "4e2390c2-cdd8-4f22-8a39-86405e1a1833")
+	)
+	(fp_rect
+		(start -1.2 -1.2)
+		(end 1.2 1.2)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "fc06b44d-1a90-4611-a747-2424a6d324d7")
+	)
 	(fp_text user "${REFERENCE}"
 		(at -0.2 3.2 0)
 		(unlocked yes)

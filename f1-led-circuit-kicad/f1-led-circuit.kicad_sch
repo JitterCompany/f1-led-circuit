@@ -9334,7 +9334,7 @@
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "69dda84c-ebf6-45bc-9526-eba6df90c8bb")
 		(property "Reference" "H1"
@@ -9346,7 +9346,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "MountingHole_Pad_MP"
+		(property "Value" "DNI"
 			(at 189.23 255.2699 0)
 			(effects
 				(font
