@@ -121,4 +121,15 @@
 		(thermal_bridge_angle 45)
 		(uuid "19d01db9-e8f0-4c28-a4c5-d4504ca23ebd")
 	)
+	(model "${KIPRJMOD}/3D models/HD108-2020.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
 )
