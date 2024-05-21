@@ -33,7 +33,7 @@ jobs:
         targets: riscv32imc-unknown-none-elf
         components: llvm-tools
     - name : Run Tests for f1-logic
-      run: cargo test --features=test --locked --target x86_64-unknown-linux-gnu
+      run: cargo test --locked --target x86_64-unknown-linux-gnu
       working-directory: ./firmware/f1-logic
   build:
     timeout-minutes: 20
