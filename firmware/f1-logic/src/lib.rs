@@ -1,20 +1,33 @@
 #![no_std]
 #![no_main]
 
-#[main]
-fn main() {
+use core::panic::PanicInfo;
+use riscv_rt::entry;
+
+#[entry]
+fn main() -> ! {
     let a = 5;
     let b = 10;
-    let sum = add(a, b);
+    let _sum = add(a, b);
+    loop {}
 }
 
 fn add(x: i32, y: i32) -> i32 {
     x + y
 }
 
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+    loop {}
+}
+
+// Conditionally compile tests only when std is available
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // Use std for testing purposes
+    extern crate std;
 
     #[test]
     fn test_add() {
