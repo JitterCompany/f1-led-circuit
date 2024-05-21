@@ -9679,7 +9679,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "ESP32-C3FH4X"
+		(property "MPN" "ESP32-C3-MINI-1U-N4"
 			(at 304.8 115.57 0)
 			(effects
 				(font
