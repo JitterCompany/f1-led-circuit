@@ -2432,7 +2432,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "10145f26-d7d9-4c3b-abab-06729bbcd18b")
 		(property "Reference" "C18"
@@ -5085,7 +5085,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "82493669-0b1a-4f2c-b9dd-652c8db8f5c7")
 		(property "Reference" "C15"
@@ -5336,7 +5336,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "8930d703-a587-486e-b513-2d3beb205d36")
 		(property "Reference" "C16"
@@ -7866,7 +7866,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "ebb525c5-6966-484c-84cf-bff830462231")
 		(property "Reference" "C17"
