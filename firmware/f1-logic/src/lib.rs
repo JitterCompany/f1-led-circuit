@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-
 fn main() {
     let a = 5;
     let b = 10;
