@@ -3,26 +3,39 @@
 #![feature(type_alias_impl_trait)]
 
 extern crate alloc;
-use esp_backtrace as _;
 use esp_hal as hal;
+use hal::{clock::ClockControl, embassy, peripherals::Peripherals, prelude::*, timer::TimerGroup, Rng};
+use core::mem::MaybeUninit;
+use esp_backtrace as _;
 use esp_println::println;
-use hal::{
-    clock::ClockControl, embassy, peripherals::Peripherals, prelude::*, timer::TimerGroup, Rng,
+
+
+use esp_wifi::{initialize, EspWifiInitFor};
+use esp_wifi::wifi::{
+    ClientConfiguration, Configuration, WifiController, WifiDevice, WifiEvent,
+    WifiStaDevice, WifiState,
 };
 
-use esp_wifi::wifi::{
-    ClientConfiguration, Configuration, WifiController, WifiDevice, WifiEvent, WifiStaDevice,
-    WifiState,
-};
-use esp_wifi::{initialize, EspWifiInitFor};
 
 use embassy_executor::Spawner;
-use embassy_net::{Config, Stack, StackResources};
 use embassy_time::{Duration, Timer};
+use embassy_net::{Config, Stack, StackResources};
+
 use static_cell::make_static;
+
 
 #[global_allocator]
 static ALLOCATOR: esp_alloc::EspHeap = esp_alloc::EspHeap::empty();
+
+
+fn init_heap() {
+    const HEAP_SIZE: usize = 32 * 1024;
+    static mut HEAP: MaybeUninit<[u8; HEAP_SIZE]> = MaybeUninit::uninit();
+
+    unsafe {
+        ALLOCATOR.init(HEAP.as_mut_ptr() as *mut u8, HEAP_SIZE);
+    }
+}
 
 const SSID: &str = env!("SSID");
 const PASSWORD: &str = env!("PASSWORD");
@@ -86,7 +99,9 @@ async fn main(spawner: Spawner) -> ! {
         Timer::after(Duration::from_millis(500)).await;
     }
 
-    loop {}
+    loop {
+
+    }
 }
 
 #[embassy_executor::task]
@@ -107,11 +122,7 @@ async fn connection(mut controller: WifiController<'static>) {
             let client_config = Configuration::Client(ClientConfiguration {
                 ssid: SSID.try_into().unwrap(),
                 password: PASSWORD.try_into().unwrap(),
-                auth_method: if PASSWORD.is_empty() {
-                    esp_wifi::wifi::AuthMethod::None
-                } else {
-                    Default::default()
-                },
+                auth_method: if PASSWORD.is_empty() { esp_wifi::wifi::AuthMethod::None } else { Default::default() },
                 ..Default::default()
             });
 
@@ -131,6 +142,7 @@ async fn connection(mut controller: WifiController<'static>) {
         }
     }
 }
+
 
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
