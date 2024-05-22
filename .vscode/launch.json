@@ -18,7 +18,7 @@
             "coreConfigs": [
                 {
                     "coreIndex": 0,
-                    "programBinary": "target/riscv32imc-unknown-none-elf/debug/firmware"
+                    "programBinary": "firmware/f1-hardware/target/riscv32imc-unknown-none-elf/debug/f1-hardware"
                 }
             ]
         }
