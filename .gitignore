@@ -2,9 +2,6 @@
 # Format documentation: https://kicad.org/help/file-formats/
 
 #Local files
-.DS_Store
-f1-led-circuit-kicad/.DS_Store
-f1-led-circuit-kicad/footprints/.DS_Store
 *.DS_Store
 
 # Temporary files
@@ -35,3 +32,10 @@ fp-info-cache
 # Exported BOM files
 *.xml
 *.csv
+
+# Rust
+
+/firmware/f1-hardware/Cargo.lock
+/firmware/f1-hardware/target
+/firmware/f1-logic/Cargo.lock
+/firmware/f1-logic/target
