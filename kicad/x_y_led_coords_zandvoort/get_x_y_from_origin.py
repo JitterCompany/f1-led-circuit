@@ -8,6 +8,10 @@ board = pcbnew.GetBoard()
 designator_prefix = "U"
 designator_range = range(1, 97) 
 
+# Set the grid origin (in millimeters)
+grid_origin_x = 100.0
+grid_origin_y = 149.95
+
 # Prepare a list to hold the component data
 component_data = []
 
@@ -21,8 +25,8 @@ for module in board.GetFootprints():
             if designator_number in designator_range:
                 pos = module.GetPosition()
                 # Convert from nanometers to millimeters
-                x = pcbnew.ToMM(pos.x)
-                y = pcbnew.ToMM(pos.y)
+                x = pcbnew.ToMM(pos.x) - grid_origin_x
+                y = -(pcbnew.ToMM(pos.y) - grid_origin_y)  # Inverse the Y coordinate
                 # Get orientation, convert to degrees and handle EDA_ANGLE object
                 orientation = module.GetOrientation()
                 angle = orientation.AsDegrees()  # Convert EDA_ANGLE to degrees
@@ -32,7 +36,7 @@ for module in board.GetFootprints():
             pass
 
 # Define the CSV file path
-csv_file_path = '/Users/hott/eng/f1-led-circuit/f1-led-circuit-kicad/x_y_led_coords_zandvoort/zandvoort_led_coordinates.csv'
+csv_file_path = '/Users/hott/eng/f1-led-circuit/kicad/x_y_led_coords_zandvoort/zandvoort_led_coordinates.csv'
 
 # Write the data to a CSV file
 with open(csv_file_path, mode='w', newline='') as file:
