@@ -8490,7 +8490,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "MCP9701AT-E/TT"
+		(property "Value" "MCP9701AT-E/LT"
 			(at 357.886 26.924 0)
 			(effects
 				(font
@@ -8526,7 +8526,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "MCP9701AT-E/TT"
+		(property "MPN" "MCP9701AT-E/LT"
 			(at 337.82 35.56 0)
 			(effects
 				(font
