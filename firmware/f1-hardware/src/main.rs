@@ -10,7 +10,10 @@ use esp_hal::{
     gpio::Io,
     peripherals::Peripherals,
     prelude::*,
-    spi::SpiMode,
+    spi::{
+        master::{prelude::*, Spi},
+        SpiMode,
+    },
     system::SystemControl,
 };
 use hd108::HD108;
@@ -37,19 +40,12 @@ fn main() -> ! {
     let mosi = io.pins.gpio13;
     let cs = io.pins.gpio10;
 
-    let mut spi = esp_hal::spi::master::Spi::new(
-        peripherals.SPI2,
-        40.MHz(),
-        SpiMode::Mode0,
-        &mut clocks,
-    )
+    let mut spi = Spi::new(peripherals.SPI2, 100.kHz(), SpiMode::Mode0, &clocks)
     .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs));
 
-    // Wrap the SPI interface
-    let spi_wrapper = SpiWrapper::new(spi);
 
     // Create an instance of the HD108 driver
-    let mut hd108 = HD108::new(spi_wrapper);
+    let mut hd108 = HD108::new(spi);
 
 
     let executor = Executor::new();
