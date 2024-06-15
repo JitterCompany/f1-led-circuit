@@ -1,15 +1,15 @@
-use embedded_hal_async::spi::SpiDevice;
+use embedded_hal_async::spi::SpiBus;
 use heapless::Vec;
 
-pub struct HD108<SPI> {
-    spi: SPI,
+pub struct HD108<'a, SPI> {
+    spi: &'a mut SPI,
 }
 
-impl<SPI> HD108<SPI>
+impl<'a, SPI> HD108<'a, SPI>
 where
-    SPI: SpiDevice,
+    SPI: SpiBus<u8>,
 {
-    pub fn new(spi: SPI) -> Self {
+    pub fn new(spi: &'a mut SPI) -> Self {
         Self { spi }
     }
 
@@ -46,10 +46,6 @@ where
 
         // Write the data to the SPI bus
         self.spi.write(&data).await?;
-
-        // Send additional DCLK pulses (96 LEDs need 96 additional pulses)
-        let additional_dclk_pulses: [u8; 12] = [0xFF; 12]; // 96 bits (12 bytes) of high for DCLK pulses
-        self.spi.write(&additional_dclk_pulses).await?;
 
         Ok(())
     }
