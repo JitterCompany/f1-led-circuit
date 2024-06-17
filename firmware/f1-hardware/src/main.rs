@@ -2,6 +2,7 @@
 #![no_main]
 
 mod hd108;
+mod spi_wrapper;
 
 use esp_hal::{
     clock::ClockControl,
@@ -15,13 +16,16 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use hd108::HD108;
+use spi_wrapper::AsyncSpiDma;
+use core::marker::Sized;
 use panic_rtt_target as _;
 use rtt_target::{rtt_init_print, rprintln};
 use embassy_time::{Duration, Timer};
 use embassy_executor::Spawner;
-use embedded_hal_bus::spi::ExclusiveDevice;
-use embedded_hal::spi::SpiDevice;
+use embedded_hal::spi::SpiBus;
+//use embedded_hal_bus::spi::ExclusiveDevice;
 use embedded_hal::digital::{OutputPin, ErrorType};
+use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 
 struct DummyPin;
 
@@ -38,6 +42,8 @@ impl OutputPin for DummyPin {
         Ok(())
     }
 }
+
+
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -63,21 +69,17 @@ async fn main(spawner: Spawner) {
     let dma_channel = dma.channel0;
 
     let (mut descriptors, mut rx_descriptors) = dma_descriptors!(32000);
+    
+    let tx_channel = dma.channel0.configure(false, &mut descriptors, &mut descriptors, DmaPriority::Priority0);
+    let rx_channel = dma.channel1.configure(true, &mut rx_descriptors, &mut rx_descriptors, DmaPriority::Priority0);
+    
 
-    let mut spi = Spi::new(peripherals.SPI2, 100.kHz(), SpiMode::Mode0, &clocks)
+    let spi = Spi::new(peripherals.SPI2, 100.kHz(), SpiMode::Mode0, &clocks)
         .with_pins(Some(sclk), None, Some(miso), None);
 
-    // Assuming the async configuration method:
-    dma_channel.configure(
-        false,
-        &mut descriptors,
-        &mut rx_descriptors,
-        DmaPriority::Priority0,
-    );
+    let mut async_spi = AsyncSpiDma::new(spi, tx_channel, rx_channel);
 
-    let spi_device = ExclusiveDevice::new_no_delay(spi, cs).unwrap();
-
-    let mut hd108 = HD108::new(&mut spi_device);
+    let mut hd108 = HD108::new(&mut async_spi);
 
     let send_buffer = [0, 1, 2, 3, 4, 5, 6, 7];
     loop {
