@@ -2,104 +2,74 @@
 #![no_main]
 
 mod hd108;
+mod spiwrapper;
 
 use esp_hal::{
     clock::ClockControl,
     gpio::Io,
     peripherals::Peripherals,
     prelude::*,
-    spi::{master::Spi, SpiMode, Error},
+    spi::{master::Spi, SpiMode},
     system::SystemControl,
 };
 use hd108::HD108;
 use panic_rtt_target as _;
 use rtt_target::{rtt_init_print, rprintln};
-use riscv_rt::entry;
-use embedded_hal_async::spi::SpiBus;
+use embassy_executor::raw::Executor;
+use embedded_hal_bus::spi::ExclusiveDevice;
+use embedded_hal::digital::{OutputPin,ErrorType};
+use spiwrapper::AsyncSpiBusWrapper;
 
-struct SpiWrapper<'a, T> {
-    spi: &'a mut Spi<'a, T, esp_hal::spi::FullDuplexMode>,
+struct DummyPin;
+
+impl ErrorType for DummyPin {
+    type Error = core::convert::Infallible;
 }
 
-impl<'a, T> SpiWrapper<'a, T> {
-    fn new(spi: &'a mut Spi<'a, T, esp_hal::spi::FullDuplexMode>) -> Self {
-        Self { spi }
-    }
-}
-
-impl<'a, T> SpiBus<u8> for SpiWrapper<'a, T>
-where
-    T: esp_hal::spi::Instance,
-{
-    //type Error = Error;
-
-    async fn read(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
-        for word in words.iter_mut() {
-            *word = self.spi.read_byte()?;
-        }
+impl OutputPin for DummyPin {
+    fn set_high(&mut self) -> Result<(), Self::Error> {
         Ok(())
     }
 
-    async fn write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
-        self.spi.write_bytes(words)
-    }
-
-    async fn transfer(&mut self, read: &mut [u8], write: &[u8]) -> Result<(), Self::Error> {
-        for (read_byte, write_byte) in read.iter_mut().zip(write.iter()) {
-            self.spi.write_byte(*write_byte)?;
-            *read_byte = self.spi.read_byte()?;
-        }
-        Ok(())
-    }
-
-    async fn transfer_in_place(&mut self, words: &mut [u8]) -> Result<(), Self::Error> {
-        for word in words.iter_mut() {
-            let write_byte = *word;
-            self.spi.write_byte(write_byte)?;
-            *word = self.spi.read_byte()?;
-        }
-        Ok(())
-    }
-
-    async fn flush(&mut self) -> Result<(), Self::Error> {
-        // Assuming flush means to wait until the SPI bus is idle
-        // This can be a no-op if the HAL does not provide such functionality
+    fn set_low(&mut self) -> Result<(), Self::Error> {
         Ok(())
     }
 }
 
-#[entry]
+#[riscv_rt::entry]
 fn main() -> ! {
     rtt_init_print!();
+    rprintln!("Starting program!...");
 
-    rprintln!("Starting program!...")
-
-    let peripherals = Peripherals::take().unwrap();
+    let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
-
     let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
-    
+
     let sclk = io.pins.gpio6;
     let miso = io.pins.gpio7;
-    let mosi = io.pins.gpio13;
-    let cs = io.pins.gpio10;
-
-    let mut spi = Spi::new(
+    let mosi = DummyPin;
+    let cs = DummyPin.set_high();
+    let spi = Spi::new(
         peripherals.SPI2,
         100.kHz(),
         SpiMode::Mode0,
-        &mut clocks,
+        &clocks,
     )
-    .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs));
+    .with_pins(Some(sclk), None, Some(miso), None);
+    let cs_pin = cs;
 
-    let mut spi_wrapper = SpiWrapper::new(&mut spi);
+    let spi_device = ExclusiveDevice::new_no_delay(spi, DummyPin);
+    let async_spi_device = AsyncSpiBusWrapper::new(spi_device);
+    let mut hd108 = HD108::new(&mut async_spi_device);
 
-    let mut hd108 = HD108::new(&mut spi_wrapper);
+    let executor = Executor::new(core::ptr::null_mut());
 
-    // Placeholder for running async function
-    // Here you would run your executor to poll the async functions
-    // For example: executor.run(async { hd108.make_red().await.unwrap(); });
+    executor.run(async {
+        hd108.make_red().await.unwrap();
+    });
 
-    loop {}
+    loop {
+        riscv::asm::wfi();
+    }
 }
