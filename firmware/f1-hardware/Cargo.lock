@@ -402,6 +402,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "esp-hal-embassy"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a892b9fe96cdfddab252ffa0ea90de66ccb078ff42d037b14ca9dfa3608b688a"
+dependencies = [
+ "cfg-if",
+ "critical-section",
+ "document-features",
+ "embassy-executor",
+ "embassy-time-driver",
+ "esp-build",
+ "esp-hal",
+ "esp-metadata",
+ "portable-atomic",
+]
+
+[[package]]
 name = "esp-hal-procmacros"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -461,6 +478,7 @@ dependencies = [
  "embedded-hal-async",
  "embedded-hal-bus",
  "esp-hal",
+ "esp-hal-embassy",
  "heapless",
  "panic-rtt-target",
  "riscv",

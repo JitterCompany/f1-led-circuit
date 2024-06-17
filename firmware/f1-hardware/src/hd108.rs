@@ -2,7 +2,7 @@ use embedded_hal_async::spi::SpiBus;
 use heapless::Vec;
 
 pub struct HD108<'a, SPI> {
-    spi: &'a mut SPI,
+    pub spi: &'a mut SPI,
 }
 
 impl<'a, SPI> HD108<'a, SPI>
@@ -48,5 +48,18 @@ where
         self.spi.write(&data).await?;
 
         Ok(())
+    }
+
+    pub async fn write_byte(&mut self, word: u8) -> Result<(), SPI::Error> {
+        self.spi.write(&[word]).await
+    }
+
+    pub async fn write_bytes(&mut self, words: &[u8]) -> Result<(), SPI::Error> {
+        self.spi.write(words).await
+    }
+
+    pub async fn transfer<'w>(&mut self, words: &'w mut [u8], buffer: &[u8]) -> Result<&'w [u8], SPI::Error> {
+        self.spi.transfer(words, buffer).await?;
+        Ok(words)
     }
 }
