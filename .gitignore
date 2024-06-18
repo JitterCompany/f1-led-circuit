@@ -39,3 +39,5 @@ fp-info-cache
 /firmware/f1-hardware/target
 /firmware/f1-logic/Cargo.lock
 /firmware/f1-logic/target
+/firmware/examples/f1-wifi/Cargo.lock
+/firmware/examples/f1-wifi/target
