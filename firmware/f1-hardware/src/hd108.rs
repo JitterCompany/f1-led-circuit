@@ -16,10 +16,13 @@ where
     // Function to create an LED frame
     fn create_led_frame(red: u16, green: u16, blue: u16) -> [u8; 7] {
         [
-            0b11100000,                  // Start code (1 bit) and global brightness (111 for maximum brightness)
-            (red >> 8) as u8, (red & 0xFF) as u8,  // Red (16 bits)
-            (green >> 8) as u8, (green & 0xFF) as u8,  // Green (16 bits)
-            (blue >> 8) as u8, (blue & 0xFF) as u8,  // Blue (16 bits)
+            0b11100000, // Start code (1 bit) and global brightness (111 for maximum brightness)
+            (red >> 8) as u8,
+            (red & 0xFF) as u8, // Red (16 bits)
+            (green >> 8) as u8,
+            (green & 0xFF) as u8, // Green (16 bits)
+            (blue >> 8) as u8,
+            (blue & 0xFF) as u8, // Blue (16 bits)
         ]
     }
 
@@ -58,7 +61,11 @@ where
         self.spi.write(words).await
     }
 
-    pub async fn transfer<'w>(&mut self, words: &'w mut [u8], buffer: &[u8]) -> Result<&'w [u8], SPI::Error> {
+    pub async fn transfer<'w>(
+        &mut self,
+        words: &'w mut [u8],
+        buffer: &[u8],
+    ) -> Result<&'w [u8], SPI::Error> {
         self.spi.transfer(words, buffer).await?;
         Ok(words)
     }

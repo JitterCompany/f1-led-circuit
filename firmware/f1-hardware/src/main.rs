@@ -3,6 +3,8 @@
 
 mod hd108;
 
+use embassy_executor::Spawner;
+use embassy_time::{Duration, Timer};
 use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
@@ -16,9 +18,7 @@ use esp_hal::{
 };
 use hd108::HD108;
 use panic_rtt_target as _;
-use rtt_target::{rtt_init_print, rprintln};
-use embassy_time::{Duration, Timer};
-use embassy_executor::Spawner;
+use rtt_target::{rprintln, rtt_init_print};
 //use embedded_hal_async::spi::SpiBus;
 //use embedded_hal::digital::{OutputPin, ErrorType};
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
@@ -49,7 +49,7 @@ async fn main(_spawner: Spawner) {
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
-    
+
     let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
     esp_hal_embassy::init(&clocks, timg0);
 
@@ -64,7 +64,6 @@ async fn main(_spawner: Spawner) {
 
     let dma_channel = dma.channel0;
 
-
     let (mut descriptors, mut rx_descriptors) = dma_descriptors!(32000);
 
     let mut spi = Spi::new(peripherals.SPI2, 100.kHz(), SpiMode::Mode0, &clocks)
@@ -76,13 +75,11 @@ async fn main(_spawner: Spawner) {
             DmaPriority::Priority0,
         ));
 
-        let mut hd108 = HD108::new(& mut spi);
+    let mut hd108 = HD108::new(&mut spi);
 
-        loop {
-            rprintln!("Making LED red...");
-            HD108::make_red(& mut hd108)
-            .await
-            .unwrap();
-            Timer::after(Duration::from_millis(5_000)).await;
-        }
+    loop {
+        rprintln!("Making LED red...");
+        HD108::make_red(&mut hd108).await.unwrap();
+        Timer::after(Duration::from_millis(5_000)).await;
     }
+}
