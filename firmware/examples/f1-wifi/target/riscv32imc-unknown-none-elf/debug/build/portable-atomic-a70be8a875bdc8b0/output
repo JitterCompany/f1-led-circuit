@@ -1,0 +1,9 @@
+cargo:rerun-if-changed=build.rs
+cargo:rerun-if-changed=no_atomic.rs
+cargo:rerun-if-changed=version.rs
+cargo:rustc-cfg=portable_atomic_unsafe_assume_single_core
+cargo:rerun-if-env-changed=CARGO_ENCODED_RUSTFLAGS
+cargo:rerun-if-env-changed=RUSTFLAGS
+cargo:rerun-if-env-changed=CARGO_BUILD_RUSTFLAGS
+cargo:rerun-if-env-changed=CARGO_TARGET_RISCV32IMC_UNKNOWN_NONE_ELF_RUSTFLAGS
+cargo:rustc-cfg=portable_atomic_llvm_16
