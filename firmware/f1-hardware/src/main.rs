@@ -3,9 +3,6 @@
 
 mod hd108;
 
-extern crate alloc;
-use alloc::boxed::Box;
-use embedded_hal_async::spi::SpiBus;
 use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
@@ -45,7 +42,7 @@ impl OutputPin for DummyPin {
 */
 
 #[main]
-async fn main(spawner: Spawner) {
+async fn main(_spawner: Spawner) {
     rtt_init_print!();
     rprintln!("Starting program!...");
 
@@ -79,24 +76,14 @@ async fn main(spawner: Spawner) {
             DmaPriority::Priority0,
         ));
 
-        let hd108 = HD108::new(& mut spi);
+        let mut hd108 = HD108::new(& mut spi);
 
-        // Box the hd108 to ensure it has a 'static lifetime
-        let boxed_hd108 = Box::new(hd108);
-        let static_hd108 = Box::leak(boxed_hd108);
-    
-        spawner.spawn(run_hd108(static_hd108)).unwrap();
-    
         loop {
-            Timer::after(Duration::from_secs(60)).await;
+            rprintln!("Making LED red...");
+            HD108::make_red(& mut hd108)
+            .await
+            .unwrap();
+            //Timer::after(Duration::from_millis(5_000)).await;
         }
     }
 
-#[embassy_executor::task]
-async fn run_hd108(hd108: &'static mut HD108<'static, impl SpiBus<u8>>) {
-    rprintln!("Making LED red...");
-    match hd108.make_red().await {
-        Ok(_) => rprintln!("Successfully set LED to red."),
-        Err(e) => rprintln!("Failed to set LED to red: {:?}", e),
-    }
-}

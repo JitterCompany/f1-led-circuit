@@ -1,22 +1,22 @@
 use embedded_hal_async::spi::SpiBus;
 use heapless::Vec;
 
-pub struct HD108<'a, SPI> {
-    pub spi: &'a mut SPI,
+pub struct HD108<SPI> {
+    pub spi: SPI,
 }
 
-impl<'a, SPI> HD108<'a, SPI>
+impl<SPI> HD108<SPI>
 where
     SPI: SpiBus<u8>,
 {
-    pub fn new(spi: &'a mut SPI) -> Self {
+    pub fn new(spi: SPI) -> Self {
         Self { spi }
     }
 
     // Function to create an LED frame
     fn create_led_frame(red: u16, green: u16, blue: u16) -> [u8; 7] {
         [
-            0b11100000,               // Start code (1 bit) and global brightness (111 for maximum brightness)
+            0b11100000,                  // Start code (1 bit) and global brightness (111 for maximum brightness)
             (red >> 8) as u8, (red & 0xFF) as u8,  // Red (16 bits)
             (green >> 8) as u8, (green & 0xFF) as u8,  // Green (16 bits)
             (blue >> 8) as u8, (blue & 0xFF) as u8,  // Blue (16 bits)
