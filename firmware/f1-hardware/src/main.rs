@@ -3,6 +3,7 @@
 
 mod hd108;
 
+use embedded_hal_async::spi::SpiBus;
 use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
@@ -17,10 +18,10 @@ use esp_hal::{
 use hd108::HD108;
 use panic_rtt_target as _;
 use rtt_target::{rtt_init_print, rprintln};
-//use embassy_time::{Duration, Timer};
+use embassy_time::{Duration, Timer};
 use embassy_executor::Spawner;
 //use embedded_hal_async::spi::SpiBus;
-use embedded_hal::digital::{OutputPin, ErrorType};
+//use embedded_hal::digital::{OutputPin, ErrorType};
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 
 /* *
@@ -42,7 +43,7 @@ impl OutputPin for DummyPin {
 */
 
 #[main]
-async fn main(_spawner: Spawner) {
+async fn main(spawner: Spawner) {
     rtt_init_print!();
     rprintln!("Starting program!...");
 
@@ -76,16 +77,20 @@ async fn main(_spawner: Spawner) {
             DmaPriority::Priority0,
         ));
 
-    let _hd108 = HD108::new(&mut spi);
+    let hd108 = HD108::new(&mut spi);
 
-    let _send_buffer = [0, 1, 2, 3, 4, 5, 6, 7];
+    spawner.spawn(run_hd108(hd108)).unwrap();
+
     loop {
-        /* *
-        let mut buffer = [0; 8];
-        rprintln!("Sending bytes");
-        hd108.spi.transfer(&mut buffer, &send_buffer).await;
-        rprintln!("Bytes received: {:?}", buffer);
-        Timer::after(Duration::from_millis(5_000)).await;
-        */
+        Timer::after(Duration::from_secs(60)).await;
+    }
+}
+
+#[embassy_executor::task]
+async fn run_hd108(mut hd108: HD108<'_, impl SpiBus<u8>>) {
+    rprintln!("Making LED red...");
+    match hd108.make_red().await {
+        Ok(_) => rprintln!("Successfully set LED to red."),
+        Err(e) => rprintln!("Failed to set LED to red: {:?}", e),
     }
 }
