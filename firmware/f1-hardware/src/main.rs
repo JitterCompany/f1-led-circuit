@@ -1,150 +1,85 @@
 #![no_std]
 #![no_main]
-#![feature(type_alias_impl_trait)]
 
-extern crate alloc;
-use esp_hal as hal;
-use hal::{clock::ClockControl, embassy, peripherals::Peripherals, prelude::*, timer::TimerGroup, Rng};
-use core::mem::MaybeUninit;
-use esp_backtrace as _;
-use esp_println::println;
-
-
-use esp_wifi::{initialize, EspWifiInitFor};
-use esp_wifi::wifi::{
-    ClientConfiguration, Configuration, WifiController, WifiDevice, WifiEvent,
-    WifiStaDevice, WifiState,
-};
-
+mod hd108;
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
-use embassy_net::{Config, Stack, StackResources};
+use esp_hal::{
+    clock::ClockControl,
+    dma::{Dma, DmaPriority},
+    dma_descriptors,
+    gpio::Io,
+    peripherals::Peripherals,
+    prelude::*,
+    spi::{master::Spi, SpiMode},
+    system::SystemControl,
+    timer::timg::TimerGroup,
+};
+use hd108::HD108;
+use panic_rtt_target as _;
+use rtt_target::{rprintln, rtt_init_print};
+//use embedded_hal_async::spi::SpiBus;
+//use embedded_hal::digital::{OutputPin, ErrorType};
+use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 
-use static_cell::make_static;
+/* *
+struct _DummyPin;
 
-
-#[global_allocator]
-static ALLOCATOR: esp_alloc::EspHeap = esp_alloc::EspHeap::empty();
-
-
-fn init_heap() {
-    const HEAP_SIZE: usize = 32 * 1024;
-    static mut HEAP: MaybeUninit<[u8; HEAP_SIZE]> = MaybeUninit::uninit();
-
-    unsafe {
-        ALLOCATOR.init(HEAP.as_mut_ptr() as *mut u8, HEAP_SIZE);
-    }
+impl ErrorType for DummyPin {
+    type Error = core::convert::Infallible;
 }
 
-const SSID: &str = env!("SSID");
-const PASSWORD: &str = env!("PASSWORD");
+impl OutputPin for DummyPin {
+    fn set_high(&mut self) -> Result<(), Self::Error> {
+        Ok(())
+    }
+
+    fn set_low(&mut self) -> Result<(), Self::Error> {
+        Ok(())
+    }
+}
+*/
 
 #[main]
-async fn main(spawner: Spawner) -> ! {
-    esp_println::logger::init_logger(log::LevelFilter::Info);
+async fn main(_spawner: Spawner) {
+    rtt_init_print!();
+    rprintln!("Starting program!...");
 
     let peripherals = Peripherals::take();
+    let system = SystemControl::new(peripherals.SYSTEM);
+    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
 
-    let system = peripherals.SYSTEM.split();
-    let clocks = ClockControl::max(system.clock_control).freeze();
+    let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
+    esp_hal_embassy::init(&clocks, timg0);
 
-    let rng = Rng::new(peripherals.RNG);
+    let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
 
-    let timer = hal::systimer::SystemTimer::new(peripherals.SYSTIMER).alarm0;
-    let init = initialize(
-        EspWifiInitFor::Wifi,
-        timer,
-        rng,
-        system.radio_clock_control,
-        &clocks,
-    )
-    .unwrap();
+    let sclk = io.pins.gpio6;
+    let miso = io.pins.gpio8;
+    let mosi = io.pins.gpio7;
+    let cs = io.pins.gpio9;
 
-    let wifi = peripherals.WIFI;
-    let (wifi_interface, controller) =
-        esp_wifi::wifi::new_with_mode(&init, wifi, WifiStaDevice).unwrap();
+    let dma = Dma::new(peripherals.DMA);
 
-    let timer_group0 = TimerGroup::new(peripherals.TIMG0, &clocks);
-    embassy::init(&clocks, timer_group0);
+    let dma_channel = dma.channel0;
 
-    let config = Config::dhcpv4(Default::default());
+    let (mut descriptors, mut rx_descriptors) = dma_descriptors!(32000);
 
-    let seed = 1234; // very random, very secure seed
+    let mut spi = Spi::new(peripherals.SPI2, 100.kHz(), SpiMode::Mode0, &clocks)
+        .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs))
+        .with_dma(dma_channel.configure_for_async(
+            false,
+            &mut descriptors,
+            &mut rx_descriptors,
+            DmaPriority::Priority0,
+        ));
 
-    // Init network stack
-    let stack = &*make_static!(Stack::new(
-        wifi_interface,
-        config,
-        make_static!(StackResources::<3>::new()),
-        seed
-    ));
-
-    spawner.spawn(connection(controller)).ok();
-    spawner.spawn(net_task(&stack)).ok();
+    let mut hd108 = HD108::new(&mut spi);
 
     loop {
-        if stack.is_link_up() {
-            break;
-        }
-        Timer::after(Duration::from_millis(500)).await;
+        rprintln!("Making LED red...");
+        HD108::make_red(&mut hd108).await.unwrap();
+        Timer::after(Duration::from_millis(5_000)).await;
     }
-
-    println!("Waiting to get IP address...");
-    loop {
-        if let Some(config) = stack.config_v4() {
-            println!("Got IP: {}", config.address);
-            break;
-        }
-        Timer::after(Duration::from_millis(500)).await;
-    }
-
-    loop {
-
-    }
-}
-
-#[embassy_executor::task]
-async fn connection(mut controller: WifiController<'static>) {
-    println!("start connection task");
-    println!("Device capabilities: {:?}", controller.get_capabilities());
-
-    loop {
-        match esp_wifi::wifi::get_wifi_state() {
-            WifiState::StaConnected => {
-                // wait until we're no longer connected
-                controller.wait_for_event(WifiEvent::StaDisconnected).await;
-                Timer::after(Duration::from_millis(5000)).await
-            }
-            _ => {}
-        }
-        if !matches!(controller.is_started(), Ok(true)) {
-            let client_config = Configuration::Client(ClientConfiguration {
-                ssid: SSID.try_into().unwrap(),
-                password: PASSWORD.try_into().unwrap(),
-                auth_method: if PASSWORD.is_empty() { esp_wifi::wifi::AuthMethod::None } else { Default::default() },
-                ..Default::default()
-            });
-
-            controller.set_configuration(&client_config).unwrap();
-            println!("Starting wifi");
-            controller.start().await.unwrap();
-            println!("Wifi started!");
-        }
-        println!("About to connect...");
-
-        match controller.connect().await {
-            Ok(_) => println!("Wifi connected!"),
-            Err(e) => {
-                println!("Failed to connect to wifi: {e:?}");
-                Timer::after(Duration::from_millis(5000)).await
-            }
-        }
-    }
-}
-
-
-#[embassy_executor::task]
-async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
-    stack.run().await
 }
