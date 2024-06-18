@@ -56,8 +56,8 @@ async fn main(_spawner: Spawner) {
     let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
 
     let sclk = io.pins.gpio6;
-    let miso = io.pins.gpio7;
-    let mosi = io.pins.gpio8;
+    let miso = io.pins.gpio8;
+    let mosi = io.pins.gpio7;
     let cs = io.pins.gpio9;
 
     let dma = Dma::new(peripherals.DMA);
@@ -83,7 +83,6 @@ async fn main(_spawner: Spawner) {
             HD108::make_red(& mut hd108)
             .await
             .unwrap();
-            //Timer::after(Duration::from_millis(5_000)).await;
+            Timer::after(Duration::from_millis(5_000)).await;
         }
     }
-
