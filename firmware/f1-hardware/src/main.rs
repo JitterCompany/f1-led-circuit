@@ -17,7 +17,6 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use hd108::HD108;
-use heapless::Vec;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
 //use embedded_hal_async::spi::SpiBus;
@@ -182,12 +181,8 @@ async fn main(_spawner: Spawner) {
     loop {
         for i in 0..96 {
             let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
-            let mut rgb_vec: Vec<u8, 3> = Vec::new();
-            rgb_vec.push(color.r).unwrap();
-            rgb_vec.push(color.g).unwrap();
-            rgb_vec.push(color.b).unwrap();
-            hd108.set_led(i, rgb_vec).await.unwrap();
-            Timer::after(Duration::from_millis(100)).await;
+            hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
+            Timer::after(Duration::from_millis(100)).await; // Wait for 100 milliseconds
         }
     }
 }
