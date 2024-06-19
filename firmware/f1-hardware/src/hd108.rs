@@ -71,7 +71,6 @@ where
     }
 
     pub async fn make_red(&mut self, led_num: usize) -> Result<(), SPI::Error> {
-
         // At least 128 bits of zeros for the start frame
         let start_frame = [0x00; 16]; // 16 bytes of zeros = 128 bits
 
