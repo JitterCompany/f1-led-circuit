@@ -5,6 +5,7 @@ mod hd108;
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
+use embedded_hal_async::spi::SpiBus;
 use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
@@ -19,9 +20,8 @@ use esp_hal::{
 use hd108::HD108;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
-//use embedded_hal_async::spi::SpiBus;
-//use embedded_hal::digital::{OutputPin, ErrorType};
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
+use static_cell::StaticCell;
 
 struct RGBColor {
     r: u8,
@@ -124,26 +124,9 @@ const DRIVER_COLORS: [RGBColor; 20] = [
     }, // Oscar Piastri
 ];
 
-/* *
-struct _DummyPin;
-
-impl ErrorType for DummyPin {
-    type Error = core::convert::Infallible;
-}
-
-impl OutputPin for DummyPin {
-    fn set_high(&mut self) -> Result<(), Self::Error> {
-        Ok(())
-    }
-
-    fn set_low(&mut self) -> Result<(), Self::Error> {
-        Ok(())
-    }
-}
-*/
 
 #[main]
-async fn main(_spawner: Spawner) {
+async fn main(spawner: Spawner) {
     rtt_init_print!();
     rprintln!("Starting program!...");
 
@@ -178,6 +161,12 @@ async fn main(_spawner: Spawner) {
 
     let mut hd108 = HD108::new(&mut spi);
 
+
+    spawner.spawn(led_task(hd108)).unwrap();
+}
+
+#[embassy_executor::task]
+async fn led_task(mut hd108: HD108<impl SpiBus<u8> + 'static>) {
     loop {
         for i in 0..96 {
             let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
