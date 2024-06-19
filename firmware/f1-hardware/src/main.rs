@@ -78,8 +78,9 @@ async fn main(_spawner: Spawner) {
     let mut hd108 = HD108::new(&mut spi);
 
     loop {
-        rprintln!("Making LED red...");
-        HD108::make_red_green(&mut hd108).await.unwrap();
-        Timer::after(Duration::from_millis(5_000)).await;
+        for i in 0..96 {
+            hd108.make_red(i).await.unwrap();
+            Timer::after(Duration::from_millis(250)).await;
+        }
     }
 }
