@@ -66,7 +66,7 @@ async fn main(_spawner: Spawner) {
 
     let (mut descriptors, mut rx_descriptors) = dma_descriptors!(32000);
 
-    let mut spi = Spi::new(peripherals.SPI2, 100.kHz(), SpiMode::Mode0, &clocks)
+    let mut spi = Spi::new(peripherals.SPI2, 20.MHz(), SpiMode::Mode0, &clocks)
         .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs))
         .with_dma(dma_channel.configure_for_async(
             false,
@@ -78,8 +78,9 @@ async fn main(_spawner: Spawner) {
     let mut hd108 = HD108::new(&mut spi);
 
     loop {
-        rprintln!("Making LED red...");
-        HD108::make_red(&mut hd108).await.unwrap();
-        Timer::after(Duration::from_millis(5_000)).await;
+        for i in 0..96 {
+            hd108.make_red(i).await.unwrap();
+            Timer::after(Duration::from_millis(250)).await;
+        }
     }
 }
