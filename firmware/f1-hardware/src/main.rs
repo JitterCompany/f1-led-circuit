@@ -79,7 +79,7 @@ async fn main(_spawner: Spawner) {
 
     loop {
         rprintln!("Making LED red...");
-        HD108::make_red(&mut hd108).await.unwrap();
+        HD108::make_red_green(&mut hd108).await.unwrap();
         Timer::after(Duration::from_millis(5_000)).await;
     }
 }
