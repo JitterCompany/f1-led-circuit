@@ -3,7 +3,6 @@
 
 mod hd108;
 
-use heapless::Vec;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 use esp_hal::{
@@ -18,6 +17,7 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use hd108::HD108;
+use heapless::Vec;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
 //use embedded_hal_async::spi::SpiBus;
@@ -31,26 +31,98 @@ struct RGBColor {
 }
 
 const DRIVER_COLORS: [RGBColor; 20] = [
-    RGBColor { r: 30, g: 65, b: 255 }, // Max Verstappen
-    RGBColor { r: 0, g: 82, b: 255 },  // Logan Sargeant
-    RGBColor { r: 255, g: 135, b: 0 }, // Lando Norris
-    RGBColor { r: 2, g: 144, b: 240 }, // Pierre Gasly
-    RGBColor { r: 30, g: 65, b: 255 }, // Sergio Perez
-    RGBColor { r: 0, g: 110, b: 120 }, // Fernando Alonso
-    RGBColor { r: 220, g: 0, b: 0 },   // Charles Leclerc
-    RGBColor { r: 0, g: 110, b: 120 }, // Lance Stroll
-    RGBColor { r: 160, g: 207, b: 205 },// Kevin Magnussen
-    RGBColor { r: 60, g: 130, b: 200 }, // Yuki Tsunoda
-    RGBColor { r: 0, g: 82, b: 255 },   // Alex Albon
-    RGBColor { r: 165, g: 160, b: 155 },// Zhou Guanyu
-    RGBColor { r: 160, g: 207, b: 205 },// Nico Hulkenberg
-    RGBColor { r: 2, g: 144, b: 240 },  // Esteban Ocon
-    RGBColor { r: 60, g: 130, b: 200 }, // Liam Lawson
-    RGBColor { r: 0, g: 210, b: 190 },  // Lewis Hamilton
-    RGBColor { r: 220, g: 0, b: 0 },    // Carlos Sainz
-    RGBColor { r: 0, g: 210, b: 190 },  // George Russell
-    RGBColor { r: 165, g: 160, b: 155 },// Valtteri Bottas
-    RGBColor { r: 255, g: 135, b: 0 },  // Oscar Piastri
+    RGBColor {
+        r: 30,
+        g: 65,
+        b: 255,
+    }, // Max Verstappen
+    RGBColor {
+        r: 0,
+        g: 82,
+        b: 255,
+    }, // Logan Sargeant
+    RGBColor {
+        r: 255,
+        g: 135,
+        b: 0,
+    }, // Lando Norris
+    RGBColor {
+        r: 2,
+        g: 144,
+        b: 240,
+    }, // Pierre Gasly
+    RGBColor {
+        r: 30,
+        g: 65,
+        b: 255,
+    }, // Sergio Perez
+    RGBColor {
+        r: 0,
+        g: 110,
+        b: 120,
+    }, // Fernando Alonso
+    RGBColor { r: 220, g: 0, b: 0 }, // Charles Leclerc
+    RGBColor {
+        r: 0,
+        g: 110,
+        b: 120,
+    }, // Lance Stroll
+    RGBColor {
+        r: 160,
+        g: 207,
+        b: 205,
+    }, // Kevin Magnussen
+    RGBColor {
+        r: 60,
+        g: 130,
+        b: 200,
+    }, // Yuki Tsunoda
+    RGBColor {
+        r: 0,
+        g: 82,
+        b: 255,
+    }, // Alex Albon
+    RGBColor {
+        r: 165,
+        g: 160,
+        b: 155,
+    }, // Zhou Guanyu
+    RGBColor {
+        r: 160,
+        g: 207,
+        b: 205,
+    }, // Nico Hulkenberg
+    RGBColor {
+        r: 2,
+        g: 144,
+        b: 240,
+    }, // Esteban Ocon
+    RGBColor {
+        r: 60,
+        g: 130,
+        b: 200,
+    }, // Liam Lawson
+    RGBColor {
+        r: 0,
+        g: 210,
+        b: 190,
+    }, // Lewis Hamilton
+    RGBColor { r: 220, g: 0, b: 0 }, // Carlos Sainz
+    RGBColor {
+        r: 0,
+        g: 210,
+        b: 190,
+    }, // George Russell
+    RGBColor {
+        r: 165,
+        g: 160,
+        b: 155,
+    }, // Valtteri Bottas
+    RGBColor {
+        r: 255,
+        g: 135,
+        b: 0,
+    }, // Oscar Piastri
 ];
 
 /* *
@@ -107,10 +179,9 @@ async fn main(_spawner: Spawner) {
 
     let mut hd108 = HD108::new(&mut spi);
 
-
     loop {
         for i in 0..96 {
-            let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()];  // Get the corresponding color
+            let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
             let mut rgb_vec: Vec<u8, 3> = Vec::new();
             rgb_vec.push(color.r).unwrap();
             rgb_vec.push(color.g).unwrap();
@@ -119,5 +190,4 @@ async fn main(_spawner: Spawner) {
             Timer::after(Duration::from_millis(100)).await;
         }
     }
-
 }
