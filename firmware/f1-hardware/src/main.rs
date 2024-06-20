@@ -4,20 +4,22 @@
 
 mod hd108;
 
-use core::cell::RefCell;
-use core::sync::atomic::{AtomicBool, Ordering};
+//use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
+use embassy_sync::mutex::Mutex;
+use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
+use core::cell::RefCell;
 use embedded_hal_async::spi::SpiBus;
 use esp_hal::dma::DmaDescriptor;
-use esp_hal::spi::master::dma::SpiDma;
+//use esp_hal::spi::master::dma::SpiDma;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
-use esp_hal::spi::slave::dma::WithDmaSpi2;
+//use esp_hal::spi::slave::dma::WithDmaSpi2;
 use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
-    dma_descriptors,
-    gpio::Io,
+    gpio::Gpio10,
+    gpio::{Io,Input},
     peripherals::Peripherals,
     prelude::*,
     spi::{master::Spi, SpiMode},
@@ -27,9 +29,8 @@ use esp_hal::{
 use hd108::HD108;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
-use static_cell::make_static;
-use static_cell::ConstStaticCell;
 use static_cell::StaticCell;
+
 
 struct RGBColor {
     r: u8,
@@ -132,13 +133,7 @@ const DRIVER_COLORS: [RGBColor; 20] = [
     }, // Oscar Piastri
 ];
 
-//static DESCRIPTORS: StaticCell<dma_descriptors!(32000)> = StaticCell::new();
-//static RX_DESCRIPTORS: StaticCell<dma_descriptors!(32000)> = StaticCell::new()
-
-//static DESC: StaticCell<make_static!(dma_descriptors!(32000))> = StaticCell::new([0; SIZE]);
-
-//static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
-//static RX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
+static BUTTON: Mutex<CriticalSectionRawMutex, RefCell<Option<Input<'static, Gpio10>>>> = Mutex::new(RefCell::new(None));
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -163,14 +158,6 @@ async fn main(spawner: Spawner) {
 
     let dma_channel = dma.channel0;
 
-    //let mut tx_descriptors = TX_DESC.init([DmaDescriptor; 8]);
-    //let mut rx_descriptors = RX_DESC.init();
-
-    //let mut tx_descriptors = dma_descriptors!(32000);
-    //let mut rx_descriptors = dma_descriptors!(32000);
-
-    //let tx_descriptors = make_static!(tx_descriptors);
-    //let rx_descriptors = make_static!(rx_descriptors);
 
     static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
     let tx_descriptors = TX_DESC.init([DmaDescriptor::EMPTY; 8]);
@@ -189,7 +176,26 @@ async fn main(spawner: Spawner) {
 
     let hd108 = HD108::new(spi);
 
-    spawner.spawn(led_task(hd108)).unwrap();
+    
+
+     // Initialize the button pin as input
+     let mut button_pin = io.pins.gpio10;
+     // Set the pin high
+     button_pin.set_high();
+ 
+     {
+         let mut button_lock = BUTTON.lock().await;
+         // Correctly assign the button pin to the mutex
+         *button_lock = Some(button_pin);
+     }
+
+    
+    // Spawn the button task
+    spawner.spawn(button_task()).unwrap();
+
+    // Spawn the led task
+    //spawner.spawn(led_task(hd108)).unwrap();
+
 }
 
 #[embassy_executor::task]
@@ -200,5 +206,23 @@ async fn led_task(mut hd108: HD108<impl SpiBus<u8> + 'static>) {
             hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
             Timer::after(Duration::from_millis(100)).await; // Wait for 100 milliseconds
         }
+    }
+}
+
+#[embassy_executor::task]
+async fn button_task() {
+    loop {
+        // Lock the BUTTON mutex and borrow the RefCell content
+        let button = BUTTON.lock().await;
+        let button_ref = button.borrow();
+
+        if let Some(button) = &*button_ref {
+            if button.is_low() {
+                rprintln!("Button pressed...");
+                Timer::after(Duration::from_millis(500)).await; // Debounce delay
+            }
+        }
+
+        Timer::after(Duration::from_millis(10)).await; // Polling delay
     }
 }
