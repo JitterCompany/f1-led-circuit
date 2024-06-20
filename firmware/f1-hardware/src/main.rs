@@ -5,13 +5,13 @@
 mod hd108;
 use hd108::HD108;
 
+use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::channel::Receiver;
 use embassy_sync::channel::Sender;
 use embassy_sync::signal::Signal;
-use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use esp_backtrace as _;
@@ -30,7 +30,6 @@ use esp_hal::{
 use esp_println::println;
 use panic_halt as _;
 use static_cell::StaticCell;
-
 
 struct RGBColor {
     r: u8,
@@ -187,10 +186,24 @@ async fn main(spawner: Spawner) {
     let signal = SIGNAL.init(Signal::new());
 
     // Spawn the button task with ownership of the button pin and the sender
-    spawner.spawn(button_task(button_pin, signal_channel.sender(), running_state, signal)).unwrap();
+    spawner
+        .spawn(button_task(
+            button_pin,
+            signal_channel.sender(),
+            running_state,
+            signal,
+        ))
+        .unwrap();
 
     // Spawn the led task with the receiver
-    spawner.spawn(led_task(hd108, signal_channel.receiver(), running_state, signal)).unwrap();
+    spawner
+        .spawn(led_task(
+            hd108,
+            signal_channel.receiver(),
+            running_state,
+            signal,
+        ))
+        .unwrap();
 }
 
 #[embassy_executor::task]
