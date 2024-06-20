@@ -6,6 +6,10 @@ mod hd108;
 use hd108::HD108;
 
 use embassy_executor::Spawner;
+use embassy_sync::blocking_mutex::raw::NoopRawMutex;
+use embassy_sync::channel::Channel;
+use embassy_sync::channel::Receiver;
+use embassy_sync::channel::Sender;
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use esp_backtrace as _;
@@ -126,6 +130,8 @@ const DRIVER_COLORS: [RGBColor; 20] = [
     }, // Oscar Piastri
 ];
 
+static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, (), 1>> = StaticCell::new();
+
 #[main]
 async fn main(spawner: Spawner) {
     println!("Starting program!...");
@@ -171,16 +177,30 @@ async fn main(spawner: Spawner) {
     // Enable interrupts for the button pin
     button_pin.listen(Event::FallingEdge);
 
-    // Spawn the button task with ownership of the button pin
-    spawner.spawn(button_task(button_pin)).unwrap();
+    let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
 
-    // Spawn the led task
-    spawner.spawn(led_task(hd108)).unwrap();
+    // Spawn the button task with ownership of the button pin and the sender
+    spawner
+        .spawn(button_task(button_pin, signal_channel.sender()))
+        .unwrap();
+
+    // Spawn the led task with the receiver
+    spawner
+        .spawn(led_task(hd108, signal_channel.receiver()))
+        .unwrap();
 }
 
 #[embassy_executor::task]
-async fn led_task(mut hd108: HD108<impl SpiBus<u8> + 'static>) {
+async fn led_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, (), 1>,
+) {
     loop {
+        // Wait for the signal from the button task
+        receiver.receive().await;
+
+        println!("Starting LED task...");
+
         for i in 0..96 {
             let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
             hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
@@ -190,10 +210,16 @@ async fn led_task(mut hd108: HD108<impl SpiBus<u8> + 'static>) {
 }
 
 #[embassy_executor::task]
-async fn button_task(mut button_pin: Input<'static, GpioPin<10>>) {
+async fn button_task(
+    mut button_pin: Input<'static, GpioPin<10>>,
+    sender: Sender<'static, NoopRawMutex, (), 1>,
+) {
     loop {
         button_pin.wait_for_falling_edge().await;
         println!("Button pressed...");
         Timer::after(Duration::from_millis(500)).await; // Debounce delay
+
+        // Send signal to start LED task
+        sender.send(()).await;
     }
 }
