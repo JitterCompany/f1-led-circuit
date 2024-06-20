@@ -175,7 +175,7 @@ async fn main(spawner: Spawner) {
     spawner.spawn(button_task(button_pin)).unwrap();
 
     // Spawn the led task
-    //spawner.spawn(led_task(hd108)).unwrap();
+    spawner.spawn(led_task(hd108)).unwrap();
 }
 
 #[embassy_executor::task]
