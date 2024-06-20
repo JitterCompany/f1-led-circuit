@@ -5,6 +5,9 @@
 mod hd108;
 
 //use core::sync::atomic::{AtomicBool, Ordering};
+use esp_println::println;
+use esp_backtrace as _;
+use panic_halt as _;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 use embassy_sync::mutex::Mutex;
@@ -19,7 +22,7 @@ use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
     gpio::Gpio10,
-    gpio::{Io,Input},
+    gpio::{Io,Input, GpioPin},
     peripherals::Peripherals,
     prelude::*,
     spi::{master::Spi, SpiMode},
@@ -27,8 +30,6 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use hd108::HD108;
-use panic_rtt_target as _;
-use rtt_target::{rprintln, rtt_init_print};
 use static_cell::StaticCell;
 
 
@@ -137,8 +138,8 @@ static BUTTON: Mutex<CriticalSectionRawMutex, RefCell<Option<Input<'static, Gpio
 
 #[main]
 async fn main(spawner: Spawner) {
-    rtt_init_print!();
-    rprintln!("Starting program!...");
+    
+    println!("Starting program!...");
 
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
@@ -177,21 +178,14 @@ async fn main(spawner: Spawner) {
     let hd108 = HD108::new(spi);
 
     
+    // Initialize the button pin as input
+    let mut button_pin = io.pins.gpio10;
+    // Set the pin high
+    button_pin.set_high();
 
-     // Initialize the button pin as input
-     let mut button_pin = io.pins.gpio10;
-     // Set the pin high
-     button_pin.set_high();
- 
-     {
-         let mut button_lock = BUTTON.lock().await;
-         // Correctly assign the button pin to the mutex
-         *button_lock = Some(button_pin);
-     }
-
+    // Spawn the button task with ownership of the button pin
+    spawner.spawn(button_task(button_pin)).unwrap();
     
-    // Spawn the button task
-    spawner.spawn(button_task()).unwrap();
 
     // Spawn the led task
     //spawner.spawn(led_task(hd108)).unwrap();
@@ -210,17 +204,11 @@ async fn led_task(mut hd108: HD108<impl SpiBus<u8> + 'static>) {
 }
 
 #[embassy_executor::task]
-async fn button_task() {
+async fn button_task(button_pin: GpioPin<10>) {
     loop {
-        // Lock the BUTTON mutex and borrow the RefCell content
-        let button = BUTTON.lock().await;
-        let button_ref = button.borrow();
-
-        if let Some(button) = &*button_ref {
-            if button.is_low() {
-                rprintln!("Button pressed...");
-                Timer::after(Duration::from_millis(500)).await; // Debounce delay
-            }
+        if button_pin.is_low() {
+            println!("Button pressed...");
+            Timer::after(Duration::from_millis(500)).await; // Debounce delay
         }
 
         Timer::after(Duration::from_millis(10)).await; // Polling delay
