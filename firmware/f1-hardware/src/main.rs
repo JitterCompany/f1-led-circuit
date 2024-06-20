@@ -1,11 +1,17 @@
 #![no_std]
 #![no_main]
+#![feature(type_alias_impl_trait)]
 
 mod hd108;
 
+use core::cell::RefCell;
+use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
+use esp_hal::spi::master::dma::SpiDma;
 use embedded_hal_async::spi::SpiBus;
+use esp_hal::dma::DmaDescriptor;
+use esp_hal::spi::slave::dma::WithDmaSpi2;
 use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
@@ -22,6 +28,8 @@ use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 use static_cell::StaticCell;
+use static_cell::ConstStaticCell;
+use static_cell::make_static;
 
 struct RGBColor {
     r: u8,
@@ -124,6 +132,13 @@ const DRIVER_COLORS: [RGBColor; 20] = [
     }, // Oscar Piastri
 ];
 
+//static DESCRIPTORS: StaticCell<dma_descriptors!(32000)> = StaticCell::new();
+//static RX_DESCRIPTORS: StaticCell<dma_descriptors!(32000)> = StaticCell::new()
+
+//static DESC: StaticCell<make_static!(dma_descriptors!(32000))> = StaticCell::new([0; SIZE]);
+
+//static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
+//static RX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -148,18 +163,32 @@ async fn main(spawner: Spawner) {
 
     let dma_channel = dma.channel0;
 
-    let (mut descriptors, mut rx_descriptors) = dma_descriptors!(32000);
+    //let mut tx_descriptors = TX_DESC.init([DmaDescriptor; 8]);
+    //let mut rx_descriptors = RX_DESC.init();
 
-    let mut spi = Spi::new(peripherals.SPI2, 20.MHz(), SpiMode::Mode0, &clocks)
+    //let mut tx_descriptors = dma_descriptors!(32000);
+    //let mut rx_descriptors = dma_descriptors!(32000);
+
+    //let tx_descriptors = make_static!(tx_descriptors);
+    //let rx_descriptors = make_static!(rx_descriptors);
+   
+    
+    static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
+    let tx_descriptors = TX_DESC.init([DmaDescriptor::EMPTY; 8]);
+
+    static RX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
+    let rx_descriptors = RX_DESC.init([DmaDescriptor::EMPTY; 8]);
+
+    let spi = Spi::new(peripherals.SPI2, 20.MHz(), SpiMode::Mode0, &clocks)
         .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs))
         .with_dma(dma_channel.configure_for_async(
             false,
-            &mut descriptors,
-            &mut rx_descriptors,
+            tx_descriptors,
+            rx_descriptors,
             DmaPriority::Priority0,
         ));
 
-    let mut hd108 = HD108::new(&mut spi);
+    let hd108 = HD108::new(spi);
 
 
     spawner.spawn(led_task(hd108)).unwrap();
