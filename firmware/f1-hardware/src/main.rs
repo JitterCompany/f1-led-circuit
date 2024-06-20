@@ -6,12 +6,12 @@ mod hd108;
 use hd108::HD108;
 
 use embassy_executor::Spawner;
-use embassy_sync::blocking_mutex::Mutex;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::channel::Receiver;
 use embassy_sync::channel::Sender;
 use embassy_sync::signal::Signal;
+use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use esp_backtrace as _;
@@ -30,8 +30,7 @@ use esp_hal::{
 use esp_println::println;
 use panic_halt as _;
 use static_cell::StaticCell;
-use core::cell::RefCell;
-use core::sync::atomic::{AtomicBool, Ordering};
+
 
 struct RGBColor {
     r: u8,
