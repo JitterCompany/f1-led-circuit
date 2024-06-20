@@ -3,11 +3,9 @@
 #![feature(type_alias_impl_trait)]
 
 mod hd108;
+use hd108::HD108;
 
-use core::cell::RefCell;
 use embassy_executor::Spawner;
-use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
-use embassy_sync::mutex::Mutex;
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use esp_backtrace as _;
@@ -16,8 +14,7 @@ use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
-    gpio::Gpio10,
-    gpio::{GpioPin, Input, Io},
+    gpio::{Event, GpioPin, Input, Io, Pull},
     peripherals::Peripherals,
     prelude::*,
     spi::{master::Spi, SpiMode},
@@ -25,7 +22,6 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
-use hd108::HD108;
 use panic_halt as _;
 use static_cell::StaticCell;
 
@@ -169,10 +165,11 @@ async fn main(spawner: Spawner) {
 
     let hd108 = HD108::new(spi);
 
-    // Initialize the button pin as input
-    let mut button_pin = io.pins.gpio10;
-    // Set the pin high
-    button_pin.set_high();
+    // Initialize the button pin as input with interrupt and pull-up resistor
+    let mut button_pin = Input::new(io.pins.gpio10, Pull::Up);
+
+    // Enable interrupts for the button pin
+    button_pin.listen(Event::FallingEdge);
 
     // Spawn the button task with ownership of the button pin
     spawner.spawn(button_task(button_pin)).unwrap();
@@ -193,13 +190,10 @@ async fn led_task(mut hd108: HD108<impl SpiBus<u8> + 'static>) {
 }
 
 #[embassy_executor::task]
-async fn button_task(button_pin: GpioPin<10>) {
+async fn button_task(mut button_pin: Input<'static, GpioPin<10>>) {
     loop {
-        if button_pin.is_low() {
-            println!("Button pressed...");
-            Timer::after(Duration::from_millis(500)).await; // Debounce delay
-        }
-
-        Timer::after(Duration::from_millis(10)).await; // Polling delay
+        button_pin.wait_for_falling_edge().await;
+        println!("Button pressed...");
+        Timer::after(Duration::from_millis(500)).await; // Debounce delay
     }
 }

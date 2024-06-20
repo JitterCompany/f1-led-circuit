@@ -5,8 +5,9 @@ edition = "2021"
 
 [dependencies]
 esp-hal = { version = "0.18.0", features = ["esp32c3", "async"] }
+#esp32c3-hal = { version = "0.15.1", features = ["embassy_executor"] }
 embedded-hal-async = "1.0.0"
-embassy-executor = "0.5.0"
+embassy-executor = { version = "0.5.0", features = ["executor-thread"] }
 embedded-hal = "1.0.0"
 embedded-hal-bus = "0.2.0"
 esp-hal-embassy = { version = "0.1.0", features = ["esp32c3", "time-timg0"] }
