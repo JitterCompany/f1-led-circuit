@@ -8,9 +8,10 @@ use core::cell::RefCell;
 use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
-use esp_hal::spi::master::dma::SpiDma;
 use embedded_hal_async::spi::SpiBus;
 use esp_hal::dma::DmaDescriptor;
+use esp_hal::spi::master::dma::SpiDma;
+use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 use esp_hal::spi::slave::dma::WithDmaSpi2;
 use esp_hal::{
     clock::ClockControl,
@@ -26,10 +27,9 @@ use esp_hal::{
 use hd108::HD108;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
-use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
-use static_cell::StaticCell;
-use static_cell::ConstStaticCell;
 use static_cell::make_static;
+use static_cell::ConstStaticCell;
+use static_cell::StaticCell;
 
 struct RGBColor {
     r: u8,
@@ -171,8 +171,7 @@ async fn main(spawner: Spawner) {
 
     //let tx_descriptors = make_static!(tx_descriptors);
     //let rx_descriptors = make_static!(rx_descriptors);
-   
-    
+
     static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
     let tx_descriptors = TX_DESC.init([DmaDescriptor::EMPTY; 8]);
 
@@ -189,7 +188,6 @@ async fn main(spawner: Spawner) {
         ));
 
     let hd108 = HD108::new(spi);
-
 
     spawner.spawn(led_task(hd108)).unwrap();
 }
