@@ -11,6 +11,7 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::channel::Receiver;
 use embassy_sync::channel::Sender;
+use embassy_sync::signal::Signal;
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use esp_backtrace as _;
@@ -30,6 +31,7 @@ use esp_println::println;
 use panic_halt as _;
 use static_cell::StaticCell;
 use core::cell::RefCell;
+use core::sync::atomic::{AtomicBool, Ordering};
 
 struct RGBColor {
     r: u8,
@@ -133,8 +135,8 @@ const DRIVER_COLORS: [RGBColor; 20] = [
 ];
 
 static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, (), 1>> = StaticCell::new();
-static RUNNING_STATE: StaticCell<Mutex<NoopRawMutex, RefCell<bool>>> = StaticCell::new();
-static NOTIFICATION: StaticCell<Notification<NoopRawMutex>> = StaticCell::new();
+static RUNNING_STATE: StaticCell<AtomicBool> = StaticCell::new();
+static SIGNAL: StaticCell<Signal<NoopRawMutex, ()>> = StaticCell::new();
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -182,25 +184,26 @@ async fn main(spawner: Spawner) {
     button_pin.listen(Event::FallingEdge);
 
     let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
-    let running_state = RUNNING_STATE.init(Mutex::new(RefCell::new(false)));
+    let running_state = RUNNING_STATE.init(AtomicBool::new(false));
+    let signal = SIGNAL.init(Signal::new());
 
     // Spawn the button task with ownership of the button pin and the sender
-    spawner.spawn(button_task(spawner, button_pin, signal_channel.sender(), running_state)).unwrap();
+    spawner.spawn(button_task(button_pin, signal_channel.sender(), running_state, signal)).unwrap();
 
     // Spawn the led task with the receiver
-    spawner.spawn(led_task(spawner, hd108, signal_channel.receiver(), running_state)).unwrap();
+    spawner.spawn(led_task(hd108, signal_channel.receiver(), running_state, signal)).unwrap();
 }
 
 #[embassy_executor::task]
 async fn led_task(
-    spawner: Spawner,
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
     receiver: Receiver<'static, NoopRawMutex, (), 1>,
-    running_state: &'static Mutex<NoopRawMutex, RefCell<bool>>,
+    running_state: &'static AtomicBool,
+    signal: &'static Signal<NoopRawMutex, ()>,
 ) {
     receiver.receive().await;
 
-    let is_running = running_state.lock(|running| *running.borrow());
+    let is_running = running_state.load(Ordering::SeqCst);
 
     if is_running {
         println!("Starting LED task...");
@@ -213,30 +216,30 @@ async fn led_task(
         println!("LED task is not running...");
     }
 
-    // Re-spawn the task to wait for the next signal
-    spawner.spawn(led_task(spawner, hd108, receiver, running_state)).unwrap();
+    signal.signal(());
 }
 
 #[embassy_executor::task]
 async fn button_task(
-    spawner: Spawner,
     mut button_pin: Input<'static, GpioPin<10>>,
     sender: Sender<'static, NoopRawMutex, (), 1>,
-    running_state: &'static Mutex<NoopRawMutex, RefCell<bool>>,
+    running_state: &'static AtomicBool,
+    signal: &'static Signal<NoopRawMutex, ()>,
 ) {
-    button_pin.wait_for_falling_edge().await;
-    println!("Button pressed...");
-    Timer::after(Duration::from_millis(1000)).await; // Debounce delay
+    loop {
+        button_pin.wait_for_falling_edge().await;
+        println!("Button pressed...");
+        Timer::after(Duration::from_millis(100)).await; // Debounce delay
 
-    // Toggle the running state
-    running_state.lock(|running| {
-        *running.borrow_mut() = !*running.borrow();
-        println!("Running state: {}", *running.borrow());
-    });
+        // Toggle the running state
+        let new_state = !running_state.load(Ordering::SeqCst);
+        running_state.store(new_state, Ordering::SeqCst);
+        println!("Running state: {}", new_state);
 
-    // Send signal to start/stop LED task
-    sender.send(()).await;
+        // Send signal to start/stop LED task
+        sender.send(()).await;
 
-    // Re-spawn the task to wait for the next button press
-    spawner.spawn(button_task(spawner, button_pin, sender, running_state)).unwrap();
+        // Wait for LED task to process the state change
+        signal.wait().await;
+    }
 }
