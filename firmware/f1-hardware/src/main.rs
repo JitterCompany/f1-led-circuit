@@ -4,34 +4,30 @@
 
 mod hd108;
 
-//use core::sync::atomic::{AtomicBool, Ordering};
-use esp_println::println;
-use esp_backtrace as _;
-use panic_halt as _;
-use embassy_executor::Spawner;
-use embassy_time::{Duration, Timer};
-use embassy_sync::mutex::Mutex;
-use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use core::cell::RefCell;
+use embassy_executor::Spawner;
+use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
+use embassy_sync::mutex::Mutex;
+use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
+use esp_backtrace as _;
 use esp_hal::dma::DmaDescriptor;
-//use esp_hal::spi::master::dma::SpiDma;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
-//use esp_hal::spi::slave::dma::WithDmaSpi2;
 use esp_hal::{
     clock::ClockControl,
     dma::{Dma, DmaPriority},
     gpio::Gpio10,
-    gpio::{Io,Input, GpioPin},
+    gpio::{GpioPin, Input, Io},
     peripherals::Peripherals,
     prelude::*,
     spi::{master::Spi, SpiMode},
     system::SystemControl,
     timer::timg::TimerGroup,
 };
+use esp_println::println;
 use hd108::HD108;
+use panic_halt as _;
 use static_cell::StaticCell;
-
 
 struct RGBColor {
     r: u8,
@@ -134,11 +130,8 @@ const DRIVER_COLORS: [RGBColor; 20] = [
     }, // Oscar Piastri
 ];
 
-static BUTTON: Mutex<CriticalSectionRawMutex, RefCell<Option<Input<'static, Gpio10>>>> = Mutex::new(RefCell::new(None));
-
 #[main]
 async fn main(spawner: Spawner) {
-    
     println!("Starting program!...");
 
     let peripherals = Peripherals::take();
@@ -159,7 +152,6 @@ async fn main(spawner: Spawner) {
 
     let dma_channel = dma.channel0;
 
-
     static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
     let tx_descriptors = TX_DESC.init([DmaDescriptor::EMPTY; 8]);
 
@@ -177,7 +169,6 @@ async fn main(spawner: Spawner) {
 
     let hd108 = HD108::new(spi);
 
-    
     // Initialize the button pin as input
     let mut button_pin = io.pins.gpio10;
     // Set the pin high
@@ -185,11 +176,9 @@ async fn main(spawner: Spawner) {
 
     // Spawn the button task with ownership of the button pin
     spawner.spawn(button_task(button_pin)).unwrap();
-    
 
     // Spawn the led task
     //spawner.spawn(led_task(hd108)).unwrap();
-
 }
 
 #[embassy_executor::task]
