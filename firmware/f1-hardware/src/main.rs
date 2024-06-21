@@ -131,8 +131,7 @@ const DRIVER_COLORS: [RGBColor; 20] = [
 ];
 
 enum Message {
-    Start,
-    Stop,
+    ButtonPressed,
 }
 
 static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
@@ -201,34 +200,18 @@ async fn led_task(
     receiver: Receiver<'static, NoopRawMutex, Message, 1>,
 ) {
     loop {
-        match receiver.receive().await {
-            Message::Start => {
-                //println!("Start Message!");
-                for i in 0..96 {
-                    let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
-                    hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
+        // Wait for the start message
+        receiver.receive().await;
+        for i in 0..=96 {
+            let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
+            hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
 
-                    // Check for a stop message
-                    match receiver.try_receive() {
-                        Ok(Message::Start) => {
-                            //println!("Start Message Received During Start!");
-                        }
-                        Ok(Message::Stop) => {
-                            //println!("Stop Message Received During Start!");
-                            hd108.set_off().await.unwrap();
-                            break;
-                        }
-                        Err(_) => {}
-                    }
-
-                    Timer::after(Duration::from_millis(25)).await; // Debounce delay
-                }
-            }
-
-            Message::Stop => {
-                //println!("Stop Message!");
+            // Check for a stop message
+            if receiver.try_receive().is_ok() {
                 hd108.set_off().await.unwrap();
+                break;
             }
+            Timer::after(Duration::from_millis(25)).await; // Debounce delay
         }
     }
 }
@@ -238,24 +221,10 @@ async fn button_task(
     mut button_pin: Input<'static, GpioPin<10>>,
     sender: Sender<'static, NoopRawMutex, Message, 1>,
 ) {
-    let mut is_running = false;
-
     loop {
         // Wait for a button press
-        //println!("Waiting for button press...");
         button_pin.wait_for_falling_edge().await;
-        //println!("Button pressed...");
+        sender.send(Message::ButtonPressed).await;
         Timer::after(Duration::from_millis(400)).await; // Debounce delay
-
-        // Toggle the running state
-        is_running = !is_running;
-        //println!("Running state: {}", is_running);
-
-        // Send signal to start/stop LED task
-        if is_running {
-            sender.send(Message::Start).await;
-        } else {
-            sender.send(Message::Stop).await;
-        }
     }
 }
