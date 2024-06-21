@@ -5,13 +5,11 @@
 mod hd108;
 use hd108::HD108;
 
-use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::channel::Receiver;
 use embassy_sync::channel::Sender;
-use embassy_sync::signal::Signal;
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use esp_backtrace as _;
@@ -132,9 +130,12 @@ const DRIVER_COLORS: [RGBColor; 20] = [
     }, // Oscar Piastri
 ];
 
-static ON_CHANNEL: StaticCell<Channel<NoopRawMutex, (), 1>> = StaticCell::new();
-static OFF_CHANNEL: StaticCell<Channel<NoopRawMutex, (), 1>> = StaticCell::new();
-static RUNNING_STATE: StaticCell<AtomicBool> = StaticCell::new();
+enum Message {
+    Start,
+    Stop,
+}
+
+static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -181,53 +182,43 @@ async fn main(spawner: Spawner) {
     // Enable interrupts for the button pin
     button_pin.listen(Event::FallingEdge);
 
-    let on_channel = ON_CHANNEL.init(Channel::new());
-    let off_channel = OFF_CHANNEL.init(Channel::new());
-    let running_state = RUNNING_STATE.init(AtomicBool::new(false));
+    let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
 
     // Spawn the button task with ownership of the button pin and the sender
-    spawner
-        .spawn(button_task(
-            button_pin,
-            on_channel.sender(),
-            off_channel.sender(),
-            running_state,
-        ))
-        .unwrap();
+    spawner.spawn(button_task(button_pin, signal_channel.sender())).unwrap();
 
     // Spawn the led task with the receiver
-    spawner
-        .spawn(led_task(
-            hd108,
-            on_channel.receiver(),
-            off_channel.receiver(),
-            running_state,
-        ))
-        .unwrap();
+    spawner.spawn(led_task(hd108, signal_channel.receiver())).unwrap();
 }
 
 #[embassy_executor::task]
 async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
-    on_receiver: Receiver<'static, NoopRawMutex, (), 1>,
-    off_receiver: Receiver<'static, NoopRawMutex, (), 1>,
-    running_state: &'static AtomicBool,
+    receiver: Receiver<'static, NoopRawMutex, Message, 1>,
 ) {
-    loop {
-        embassy_futures::select::select(on_receiver.receive(), off_receiver.receive()).await;
+    let mut is_running = false;
 
-        let is_running = running_state.load(Ordering::SeqCst);
+    loop {
+        // Handle the received message
+        match receiver.receive().await {
+            Message::Start => {
+                println!("Starting LED task...");
+                is_running = true;
+            }
+            Message::Stop => {
+                println!("Stopping LED task...");
+                is_running = false;
+                hd108.set_off().await.unwrap();
+            }
+        }
 
         if is_running {
-            println!("Starting LED task...");
             for i in 0..96 {
                 let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
                 hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
-                Timer::after(Duration::from_millis(100)).await; // Wait for 100 milliseconds
+                // Wait for 100 milliseconds or a signal from the receiver
+                embassy_futures::select::select(Timer::after(Duration::from_millis(100)), receiver.receive()).await;
             }
-        } else {
-            println!("Turning off LEDs...");
-            hd108.set_off().await.unwrap();
         }
     }
 }
@@ -235,26 +226,26 @@ async fn led_task(
 #[embassy_executor::task]
 async fn button_task(
     mut button_pin: Input<'static, GpioPin<10>>,
-    on_sender: Sender<'static, NoopRawMutex, (), 1>,
-    off_sender: Sender<'static, NoopRawMutex, (), 1>,
-    running_state: &'static AtomicBool,
+    sender: Sender<'static, NoopRawMutex, Message, 1>,
 ) {
+    let mut is_running = false;
+
     loop {
         // Wait for a button press
+        println!("Waiting for button press...");
         button_pin.wait_for_falling_edge().await;
         println!("Button pressed...");
         Timer::after(Duration::from_millis(100)).await; // Debounce delay
 
         // Toggle the running state
-        let new_state = !running_state.load(Ordering::SeqCst);
-        running_state.store(new_state, Ordering::SeqCst);
-        println!("Running state: {}", new_state);
+        is_running = !is_running;
+        println!("Running state: {}", is_running);
 
         // Send signal to start/stop LED task
-        if new_state {
-            on_sender.send(()).await;
+        if is_running {
+            sender.send(Message::Start).await;
         } else {
-            off_sender.send(()).await;
+            sender.send(Message::Stop).await;
         }
     }
 }
