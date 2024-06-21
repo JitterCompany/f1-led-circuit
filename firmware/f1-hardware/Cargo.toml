@@ -14,6 +14,7 @@ esp-hal-embassy = { version = "0.1.0", features = ["esp32c3", "time-timg0"] }
 embassy-embedded-hal = "0.1.0"
 embassy-time = { version = "0.3.1", features = ["generic-queue"] }
 embassy-sync = "0.6.0"
+embassy-futures = "0.1.1"
 static_cell = { version = "2.1.0", features  = ["nightly"] }
 heapless = "0.8.0"
 esp-println = { version = "0.9.1", features = ["esp32c3"] }

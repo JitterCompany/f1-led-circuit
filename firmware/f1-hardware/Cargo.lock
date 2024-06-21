@@ -530,6 +530,7 @@ version = "0.1.0"
 dependencies = [
  "embassy-embedded-hal",
  "embassy-executor",
+ "embassy-futures",
  "embassy-sync 0.6.0",
  "embassy-time",
  "embedded-hal 1.0.0",
