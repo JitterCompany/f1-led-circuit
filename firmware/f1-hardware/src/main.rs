@@ -186,10 +186,24 @@ async fn main(spawner: Spawner) {
     let running_state = RUNNING_STATE.init(AtomicBool::new(false));
 
     // Spawn the button task with ownership of the button pin and the sender
-    spawner.spawn(button_task(button_pin, on_channel.sender(), off_channel.sender(), running_state)).unwrap();
+    spawner
+        .spawn(button_task(
+            button_pin,
+            on_channel.sender(),
+            off_channel.sender(),
+            running_state,
+        ))
+        .unwrap();
 
     // Spawn the led task with the receiver
-    spawner.spawn(led_task(hd108, on_channel.receiver(), off_channel.receiver(), running_state)).unwrap();
+    spawner
+        .spawn(led_task(
+            hd108,
+            on_channel.receiver(),
+            off_channel.receiver(),
+            running_state,
+        ))
+        .unwrap();
 }
 
 #[embassy_executor::task]
@@ -200,11 +214,7 @@ async fn led_task(
     running_state: &'static AtomicBool,
 ) {
     loop {
-        embassy_futures::select::select(
-            on_receiver.receive(),
-            off_receiver.receive(),
-        )
-        .await;
+        embassy_futures::select::select(on_receiver.receive(), off_receiver.receive()).await;
 
         let is_running = running_state.load(Ordering::SeqCst);
 
