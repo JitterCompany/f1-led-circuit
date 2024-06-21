@@ -386,6 +386,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
 
 [[package]]
+name = "esp-backtrace"
+version = "0.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d5b1720f2275eb87dbde9607cb2ab6a10894a4502045c0924c0f265aaceb3118"
+dependencies = [
+ "esp-build",
+ "esp-println",
+ "rustversion",
+]
+
+[[package]]
 name = "esp-build"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -484,6 +495,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "esp-println"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e98f0f58453dd2ce08d99228fc8757fad39d05dfd26643665d1093b8844f42cc"
+dependencies = [
+ "critical-section",
+]
+
+[[package]]
 name = "esp-riscv-rt"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -510,17 +530,21 @@ version = "0.1.0"
 dependencies = [
  "embassy-embedded-hal",
  "embassy-executor",
+ "embassy-futures",
+ "embassy-sync 0.6.0",
  "embassy-time",
  "embedded-hal 1.0.0",
  "embedded-hal-async",
  "embedded-hal-bus",
+ "esp-backtrace",
  "esp-hal",
  "esp-hal-embassy",
+ "esp-println",
  "heapless",
- "panic-rtt-target",
+ "panic-halt",
  "riscv",
  "riscv-rt",
- "rtt-target",
+ "static_cell",
 ]
 
 [[package]]
@@ -667,14 +691,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8d5439c4ad607c3c23abf66de8c8bf57ba8adcd1f129e699851a6e43935d339d"
 
 [[package]]
-name = "panic-rtt-target"
-version = "0.1.3"
+name = "panic-halt"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "608d1d809dd8960d5e8364981279c7ab280a13d98b99eae049885a7ab2b1cbfe"
-dependencies = [
- "critical-section",
- "rtt-target",
-]
+checksum = "de96540e0ebde571dc55c73d60ef407c653844e6f9a1e2fdbd40c07b9252d812"
 
 [[package]]
 name = "paste"
@@ -824,16 +844,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rtt-target"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10b34c9e6832388e45f3c01f1bb60a016384a0a4ad80cdd7d34913bed25037f0"
-dependencies = [
- "critical-section",
- "ufmt-write",
-]
-
-[[package]]
 name = "rustversion"
 version = "1.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -864,6 +874,15 @@ name = "stable_deref_trait"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
+
+[[package]]
+name = "static_cell"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d89b0684884a883431282db1e4343f34afc2ff6996fe1f4a1664519b66e14c1e"
+dependencies = [
+ "portable-atomic",
+]
 
 [[package]]
 name = "strsim"
@@ -959,12 +978,6 @@ dependencies = [
  "toml_datetime",
  "winnow",
 ]
-
-[[package]]
-name = "ufmt-write"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e87a2ed6b42ec5e28cc3b94c09982969e9227600b2e3dcbc1db927a84c06bd69"
 
 [[package]]
 name = "unicode-ident"

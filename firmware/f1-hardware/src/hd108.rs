@@ -81,4 +81,28 @@ where
 
         Ok(())
     }
+
+    pub async fn set_off(&mut self) -> Result<(), SPI::Error> {
+        // At least 128 bits of zeros for the start frame
+        let start_frame = [0x00; 16];
+
+        // Create data frames for all 96 LEDs
+        let mut data: Vec<u8, 796> = Vec::new();
+        data.extend_from_slice(&start_frame).unwrap();
+
+        // Set all LEDs to off
+        let off_led_frame = Self::create_led_frame(0x0000, 0x0000, 0x0000);
+        for _ in 0..96 {
+            data.extend_from_slice(&off_led_frame).unwrap();
+        }
+
+        // Additional clock pulses equal to the number of LEDs in the strip
+        let additional_clocks = [0x00; 12];
+        data.extend_from_slice(&additional_clocks).unwrap();
+
+        // Write the data to the SPI bus
+        self.spi.write(&data).await?;
+
+        Ok(())
+    }
 }
