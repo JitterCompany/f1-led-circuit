@@ -12,7 +12,6 @@ use embassy_sync::channel::Receiver;
 use embassy_sync::channel::Sender;
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
-use embassy_futures::select::Either;
 use esp_backtrace as _;
 use esp_hal::dma::DmaDescriptor;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
@@ -186,10 +185,14 @@ async fn main(spawner: Spawner) {
     let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
 
     // Spawn the button task with ownership of the button pin and the sender
-    spawner.spawn(button_task(button_pin, signal_channel.sender())).unwrap();
+    spawner
+        .spawn(button_task(button_pin, signal_channel.sender()))
+        .unwrap();
 
     // Spawn the led task with the receiver
-    spawner.spawn(led_task(hd108, signal_channel.receiver())).unwrap();
+    spawner
+        .spawn(led_task(hd108, signal_channel.receiver()))
+        .unwrap();
 }
 
 #[embassy_executor::task]
@@ -198,35 +201,37 @@ async fn led_task(
     receiver: Receiver<'static, NoopRawMutex, Message, 1>,
 ) {
     loop {
-        // Handle the received message
         match receiver.receive().await {
             Message::Start => {
-                println!("Starting LED task...");
-
+                //println!("Start Message!");
                 for i in 0..96 {
                     let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
                     hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
 
-                    // Wait for 100 milliseconds or a signal from the receiver
-                    let result = embassy_futures::select::select(Timer::after(Duration::from_millis(50)), receiver.receive()).await;
-                    if let embassy_futures::select::Either::Second(Message::Stop) = result {
-                        println!("Stopping LED task...");
-                        hd108.set_off().await.unwrap();
-                        break; // Break the loop to stop the task
-                    } else if let embassy_futures::select::Either::Second(_) = result {
-                        println!("Error receiving message");
+                    // Check for a stop message
+                    match receiver.try_receive() {
+                        Ok(Message::Start) => {
+                            //println!("Start Message Received During Start!");
+                        }
+                        Ok(Message::Stop) => {
+                            //println!("Stop Message Received During Start!");
+                            hd108.set_off().await.unwrap();
+                            break;
+                        }
+                        Err(_) => {}
                     }
+
+                    Timer::after(Duration::from_millis(25)).await; // Debounce delay
                 }
             }
+
             Message::Stop => {
-                println!("Stopping LED task number two - why two times...");
+                //println!("Stop Message!");
                 hd108.set_off().await.unwrap();
             }
         }
     }
 }
-
-
 
 #[embassy_executor::task]
 async fn button_task(
@@ -237,14 +242,14 @@ async fn button_task(
 
     loop {
         // Wait for a button press
-        println!("Waiting for button press...");
+        //println!("Waiting for button press...");
         button_pin.wait_for_falling_edge().await;
-        println!("Button pressed...");
-        Timer::after(Duration::from_millis(100)).await; // Debounce delay
+        //println!("Button pressed...");
+        Timer::after(Duration::from_millis(400)).await; // Debounce delay
 
         // Toggle the running state
         is_running = !is_running;
-        println!("Running state: {}", is_running);
+        //println!("Running state: {}", is_running);
 
         // Send signal to start/stop LED task
         if is_running {
