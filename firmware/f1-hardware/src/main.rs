@@ -12,6 +12,7 @@ use embassy_sync::channel::Receiver;
 use embassy_sync::channel::Sender;
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
+use embassy_futures::select::Either;
 use esp_backtrace as _;
 use esp_hal::dma::DmaDescriptor;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
@@ -196,32 +197,36 @@ async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
     receiver: Receiver<'static, NoopRawMutex, Message, 1>,
 ) {
-    let mut is_running = false;
-
     loop {
         // Handle the received message
         match receiver.receive().await {
             Message::Start => {
                 println!("Starting LED task...");
-                is_running = true;
+
+                for i in 0..96 {
+                    let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
+                    hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
+
+                    // Wait for 100 milliseconds or a signal from the receiver
+                    let result = embassy_futures::select::select(Timer::after(Duration::from_millis(50)), receiver.receive()).await;
+                    if let embassy_futures::select::Either::Second(Message::Stop) = result {
+                        println!("Stopping LED task...");
+                        hd108.set_off().await.unwrap();
+                        break; // Break the loop to stop the task
+                    } else if let embassy_futures::select::Either::Second(_) = result {
+                        println!("Error receiving message");
+                    }
+                }
             }
             Message::Stop => {
-                println!("Stopping LED task...");
-                is_running = false;
+                println!("Stopping LED task number two - why two times...");
                 hd108.set_off().await.unwrap();
-            }
-        }
-
-        if is_running {
-            for i in 0..96 {
-                let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
-                hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
-                // Wait for 100 milliseconds or a signal from the receiver
-                embassy_futures::select::select(Timer::after(Duration::from_millis(100)), receiver.receive()).await;
             }
         }
     }
 }
+
+
 
 #[embassy_executor::task]
 async fn button_task(
