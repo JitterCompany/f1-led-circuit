@@ -26,9 +26,9 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
+use heapleass::{String, Vec};
 use panic_halt as _;
 use static_cell::StaticCell;
-use heapleass::{Vec, String};
 
 #[derive(Debug)]
 struct DriverData {
