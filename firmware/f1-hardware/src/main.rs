@@ -2,9 +2,9 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
+mod data;
 mod hd108;
-use hd108::HD108;
-
+use data::VISUALIZATION_DATA;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
@@ -26,26 +26,10 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
+use hd108::HD108;
 use heapless::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
-
-#[derive(Debug)]
-struct DriverData {
-    driver_number: u32,
-    led_num: u32,
-}
-
-#[derive(Debug)]
-struct UpdateFrame {
-    drivers: Vec<DriverData, 20>,
-}
-
-#[derive(Debug)]
-struct VisualizationData {
-    update_rate_ms: u32,
-    frames: Vec<UpdateFrame, 1547>,
-}
 
 struct RGBColor {
     r: u8,
@@ -157,6 +141,9 @@ static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCel
 #[main]
 async fn main(spawner: Spawner) {
     println!("Starting program!...");
+
+    let drivers = &VISUALIZATION_DATA.frames.drivers;
+    println!("{:?}", drivers);
 
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
