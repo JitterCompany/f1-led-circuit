@@ -26,7 +26,7 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
-use heapleass::{String, Vec};
+use heapless::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
 
@@ -38,13 +38,13 @@ struct DriverData {
 
 #[derive(Debug)]
 struct UpdateFrame {
-    drivers: Vec<DriverData>,
+    drivers: Vec<DriverData, 20>,
 }
 
 #[derive(Debug)]
 struct VisualizationData {
     update_rate_ms: u32,
-    frames: Vec<UpdateFrame>,
+    frames: Vec<UpdateFrame, 1547>,
 }
 
 struct RGBColor {
