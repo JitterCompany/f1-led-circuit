@@ -28,6 +28,24 @@ use esp_hal::{
 use esp_println::println;
 use panic_halt as _;
 use static_cell::StaticCell;
+use heapleass::{Vec, String};
+
+#[derive(Debug)]
+struct DriverData {
+    driver_number: u32,
+    led_num: u32,
+}
+
+#[derive(Debug)]
+struct UpdateFrame {
+    drivers: Vec<DriverData>,
+}
+
+#[derive(Debug)]
+struct VisualizationData {
+    update_rate_ms: u32,
+    frames: Vec<UpdateFrame>,
+}
 
 struct RGBColor {
     r: u8,
