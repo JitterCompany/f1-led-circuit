@@ -14,7 +14,7 @@ pub struct UpdateFrame {
 #[derive(Debug)]
 pub struct VisualizationData {
     pub update_rate_ms: u32,
-    pub frames: UpdateFrame,
+    pub frames: Vec<UpdateFrame, 2048>,
 }
 
 
