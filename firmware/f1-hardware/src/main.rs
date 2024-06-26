@@ -2,9 +2,9 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
+mod data;
 mod hd108;
-use hd108::HD108;
-
+use data::VISUALIZATION_DATA;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
@@ -26,6 +26,8 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
+use hd108::HD108;
+use heapless::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
 
