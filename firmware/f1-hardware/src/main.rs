@@ -142,9 +142,6 @@ static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCel
 async fn main(spawner: Spawner) {
     println!("Starting program!...");
 
-    let drivers = &VISUALIZATION_DATA.frames.drivers;
-    println!("{:?}", drivers);
-
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
