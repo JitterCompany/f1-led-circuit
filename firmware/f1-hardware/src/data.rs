@@ -22,18 +22,18 @@ pub const VISUALIZATION_DATA: VisualizationData = VisualizationData {
     update_rate_ms: 1000,
     frames: {
         UpdateFrame {
-            drivers: [
+            drivers: {
                 DriverData { driver_number: 1, led_num: 1 },
                 DriverData { driver_number: 2, led_num: 2 },
                 DriverData { driver_number: 3, led_num: 3 },
-            ],
+            },
         },
         UpdateFrame {
-            drivers: [
+            drivers: {
                 DriverData { driver_number: 4, led_num: 4 },
                 DriverData { driver_number: 5, led_num: 5 },
                 DriverData { driver_number: 6, led_num: 6 },
-            ],
+            },
         },
     },
 };
