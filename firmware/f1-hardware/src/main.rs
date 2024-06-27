@@ -49,37 +49,61 @@ const driver_info: [DriverInfo; 20] = [
         number: 1,
         name: "Max Verstappen",
         team: "Red Bull",
-        color: RGBColor { r: 30, g: 65, b: 255 },
+        color: RGBColor {
+            r: 30,
+            g: 65,
+            b: 255,
+        },
     },
     DriverInfo {
         number: 2,
         name: "Logan Sargeant",
         team: "Williams",
-        color: RGBColor { r: 0, g: 82, b: 255 },
+        color: RGBColor {
+            r: 0,
+            g: 82,
+            b: 255,
+        },
     },
     DriverInfo {
         number: 4,
         name: "Lando Norris",
         team: "McLaren",
-        color: RGBColor { r: 255, g: 135, b: 0 },
+        color: RGBColor {
+            r: 255,
+            g: 135,
+            b: 0,
+        },
     },
     DriverInfo {
         number: 10,
         name: "Pierre Gasly",
         team: "Alpine",
-        color: RGBColor { r: 2, g: 144, b: 240 },
+        color: RGBColor {
+            r: 2,
+            g: 144,
+            b: 240,
+        },
     },
     DriverInfo {
         number: 11,
         name: "Sergio Perez",
         team: "Red Bull",
-        color: RGBColor { r: 30, g: 65, b: 255 },
+        color: RGBColor {
+            r: 30,
+            g: 65,
+            b: 255,
+        },
     },
     DriverInfo {
         number: 14,
         name: "Fernando Alonso",
         team: "Aston Martin",
-        color: RGBColor { r: 0, g: 110, b: 120 },
+        color: RGBColor {
+            r: 0,
+            g: 110,
+            b: 120,
+        },
     },
     DriverInfo {
         number: 16,
@@ -91,55 +115,91 @@ const driver_info: [DriverInfo; 20] = [
         number: 18,
         name: "Lance Stroll",
         team: "Aston Martin",
-        color: RGBColor { r: 0, g: 110, b: 120 },
+        color: RGBColor {
+            r: 0,
+            g: 110,
+            b: 120,
+        },
     },
     DriverInfo {
         number: 20,
         name: "Kevin Magnussen",
         team: "Haas",
-        color: RGBColor { r: 160, g: 207, b: 205 },
+        color: RGBColor {
+            r: 160,
+            g: 207,
+            b: 205,
+        },
     },
     DriverInfo {
         number: 22,
         name: "Yuki Tsunoda",
         team: "AlphaTauri",
-        color: RGBColor { r: 60, g: 130, b: 200 },
+        color: RGBColor {
+            r: 60,
+            g: 130,
+            b: 200,
+        },
     },
     DriverInfo {
         number: 23,
         name: "Alex Albon",
         team: "Williams",
-        color: RGBColor { r: 0, g: 82, b: 255 },
+        color: RGBColor {
+            r: 0,
+            g: 82,
+            b: 255,
+        },
     },
     DriverInfo {
         number: 24,
         name: "Zhou Guanyu",
         team: "Stake F1",
-        color: RGBColor { r: 165, g: 160, b: 155 },
+        color: RGBColor {
+            r: 165,
+            g: 160,
+            b: 155,
+        },
     },
     DriverInfo {
         number: 27,
         name: "Nico Hulkenberg",
         team: "Haas",
-        color: RGBColor { r: 160, g: 207, b: 205 },
+        color: RGBColor {
+            r: 160,
+            g: 207,
+            b: 205,
+        },
     },
     DriverInfo {
         number: 31,
         name: "Esteban Ocon",
         team: "Alpine",
-        color: RGBColor { r: 2, g: 144, b: 240 },
+        color: RGBColor {
+            r: 2,
+            g: 144,
+            b: 240,
+        },
     },
     DriverInfo {
         number: 40,
         name: "Liam Lawson",
         team: "AlphaTauri",
-        color: RGBColor { r: 60, g: 130, b: 200 },
+        color: RGBColor {
+            r: 60,
+            g: 130,
+            b: 200,
+        },
     },
     DriverInfo {
         number: 44,
         name: "Lewis Hamilton",
         team: "Mercedes",
-        color: RGBColor { r: 0, g: 210, b: 190 },
+        color: RGBColor {
+            r: 0,
+            g: 210,
+            b: 190,
+        },
     },
     DriverInfo {
         number: 55,
@@ -151,22 +211,33 @@ const driver_info: [DriverInfo; 20] = [
         number: 63,
         name: "George Russell",
         team: "Mercedes",
-        color: RGBColor { r: 0, g: 210, b: 190 },
+        color: RGBColor {
+            r: 0,
+            g: 210,
+            b: 190,
+        },
     },
     DriverInfo {
         number: 77,
         name: "Valtteri Bottas",
         team: "Stake F1",
-        color: RGBColor { r: 165, g: 160, b: 155 },
+        color: RGBColor {
+            r: 165,
+            g: 160,
+            b: 155,
+        },
     },
     DriverInfo {
         number: 81,
         name: "Oscar Piastri",
         team: "McLaren",
-        color: RGBColor { r: 255, g: 135, b: 0 },
+        color: RGBColor {
+            r: 255,
+            g: 135,
+            b: 0,
+        },
     },
 ];
-
 
 enum Message {
     ButtonPressed,
@@ -226,13 +297,13 @@ async fn main(spawner: Spawner) {
         .spawn(button_task(button_pin, signal_channel.sender()))
         .unwrap();
 
-     // Spawn the run_race_task with the receiver
-     spawner
-     .spawn(run_race_task(hd108, signal_channel.receiver()))
-     .unwrap();
+    // Spawn the run_race_task with the receiver
+    spawner
+        .spawn(run_race_task(hd108, signal_channel.receiver()))
+        .unwrap();
 }
 
-/* 
+/*
 #[embassy_executor::task]
 async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
@@ -255,7 +326,7 @@ async fn led_task(
     }
 }
 */
-/* 
+/*
 
 #[embassy_executor::task]
 async fn multi_led_task(
@@ -297,8 +368,18 @@ async fn run_race_task(
 
             for driver_data in frame.drivers.iter().flatten() {
                 // Find the corresponding driver info
-                if let Some(driver) = driver_info.iter().find(|d| u32::from(d.number) == driver_data.driver_number) {
-                    led_updates.push((driver_data.led_num.try_into().unwrap(), driver.color.r, driver.color.g, driver.color.b)).unwrap();
+                if let Some(driver) = driver_info
+                    .iter()
+                    .find(|d| u32::from(d.number) == driver_data.driver_number)
+                {
+                    led_updates
+                        .push((
+                            driver_data.led_num.try_into().unwrap(),
+                            driver.color.r,
+                            driver.color.g,
+                            driver.color.b,
+                        ))
+                        .unwrap();
                 }
             }
 
@@ -306,7 +387,10 @@ async fn run_race_task(
             hd108.set_leds(&led_updates).await.unwrap();
 
             // Wait for the update rate duration
-            Timer::after(Duration::from_millis(data::VISUALIZATION_DATA.update_rate_ms as u64)).await;
+            Timer::after(Duration::from_millis(
+                data::VISUALIZATION_DATA.update_rate_ms as u64,
+            ))
+            .await;
 
             // Check for a stop message to turn off the LEDs
             if receiver.try_receive().is_ok() {
@@ -319,8 +403,6 @@ async fn run_race_task(
         hd108.set_off().await.unwrap();
     }
 }
-
-
 
 #[embassy_executor::task]
 async fn button_task(
