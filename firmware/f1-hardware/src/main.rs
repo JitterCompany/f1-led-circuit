@@ -191,8 +191,31 @@ async fn main(spawner: Spawner) {
         .unwrap();
 
     // Spawn the led task with the receiver
+    let led_numbers_and_colors: &[(usize, u8, u8, u8); 20] = &[
+        (0, 30, 65, 255),   // Max Verstappen
+        (1, 0, 82, 255),    // Logan Sargeant
+        (2, 255, 135, 0),   // Lando Norris
+        (3, 2, 144, 240),   // Pierre Gasly
+        (4, 30, 65, 255),   // Sergio Perez
+        (5, 0, 110, 120),   // Fernando Alonso
+        (6, 220, 0, 0),     // Charles Leclerc
+        (7, 0, 110, 120),   // Lance Stroll
+        (8, 160, 207, 205), // Kevin Magnussen
+        (9, 60, 130, 200),  // Yuki Tsunoda
+        (10, 0, 82, 255),   // Alex Albon
+        (11, 165, 160, 155),// Zhou Guanyu
+        (12, 160, 207, 205),// Nico Hulkenberg
+        (13, 2, 144, 240),  // Esteban Ocon
+        (14, 60, 130, 200), // Liam Lawson
+        (15, 0, 210, 190),  // Lewis Hamilton
+        (16, 220, 0, 0),    // Carlos Sainz
+        (17, 0, 210, 190),  // George Russell
+        (18, 165, 160, 155),// Valtteri Bottas
+        (19, 255, 135, 0),  // Oscar Piastri
+    ];
+    
     spawner
-        .spawn(led_task(hd108, signal_channel.receiver()))
+        .spawn(multi_led_task(hd108, signal_channel.receiver(), led_numbers_and_colors))
         .unwrap();
 }
 
@@ -215,6 +238,29 @@ async fn led_task(
             }
             Timer::after(Duration::from_millis(25)).await; // Debounce delay
         }
+    }
+}
+
+#[embassy_executor::task]
+async fn multi_led_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, Message, 1>,
+    led_nums_and_colors: &'static [(usize, u8, u8, u8)],
+) {
+    loop {
+        // Wait for the start message
+        receiver.receive().await;
+
+        // Set the specified LEDs to the given colors
+        hd108.set_leds(led_nums_and_colors).await.unwrap();
+
+        // Check for a stop message to turn off the LEDs
+        if receiver.try_receive().is_ok() {
+            hd108.set_off().await.unwrap();
+            break;
+        }
+
+        Timer::after(Duration::from_millis(25)).await; // Debounce delay
     }
 }
 
