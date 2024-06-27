@@ -31,106 +31,142 @@ use heapless::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
 
+struct DriverInfo {
+    number: u8,
+    name: &'static str,
+    team: &'static str,
+    color: RGBColor,
+}
+
 struct RGBColor {
     r: u8,
     g: u8,
     b: u8,
 }
 
-const DRIVER_COLORS: [RGBColor; 20] = [
-    RGBColor {
-        r: 30,
-        g: 65,
-        b: 255,
-    }, // Max Verstappen
-    RGBColor {
-        r: 0,
-        g: 82,
-        b: 255,
-    }, // Logan Sargeant
-    RGBColor {
-        r: 255,
-        g: 135,
-        b: 0,
-    }, // Lando Norris
-    RGBColor {
-        r: 2,
-        g: 144,
-        b: 240,
-    }, // Pierre Gasly
-    RGBColor {
-        r: 30,
-        g: 65,
-        b: 255,
-    }, // Sergio Perez
-    RGBColor {
-        r: 0,
-        g: 110,
-        b: 120,
-    }, // Fernando Alonso
-    RGBColor { r: 220, g: 0, b: 0 }, // Charles Leclerc
-    RGBColor {
-        r: 0,
-        g: 110,
-        b: 120,
-    }, // Lance Stroll
-    RGBColor {
-        r: 160,
-        g: 207,
-        b: 205,
-    }, // Kevin Magnussen
-    RGBColor {
-        r: 60,
-        g: 130,
-        b: 200,
-    }, // Yuki Tsunoda
-    RGBColor {
-        r: 0,
-        g: 82,
-        b: 255,
-    }, // Alex Albon
-    RGBColor {
-        r: 165,
-        g: 160,
-        b: 155,
-    }, // Zhou Guanyu
-    RGBColor {
-        r: 160,
-        g: 207,
-        b: 205,
-    }, // Nico Hulkenberg
-    RGBColor {
-        r: 2,
-        g: 144,
-        b: 240,
-    }, // Esteban Ocon
-    RGBColor {
-        r: 60,
-        g: 130,
-        b: 200,
-    }, // Liam Lawson
-    RGBColor {
-        r: 0,
-        g: 210,
-        b: 190,
-    }, // Lewis Hamilton
-    RGBColor { r: 220, g: 0, b: 0 }, // Carlos Sainz
-    RGBColor {
-        r: 0,
-        g: 210,
-        b: 190,
-    }, // George Russell
-    RGBColor {
-        r: 165,
-        g: 160,
-        b: 155,
-    }, // Valtteri Bottas
-    RGBColor {
-        r: 255,
-        g: 135,
-        b: 0,
-    }, // Oscar Piastri
+const driver_info: [DriverInfo; 20] = [
+    DriverInfo {
+        number: 1,
+        name: "Max Verstappen",
+        team: "Red Bull",
+        color: RGBColor { r: 30, g: 65, b: 255 },
+    },
+    DriverInfo {
+        number: 2,
+        name: "Logan Sargeant",
+        team: "Williams",
+        color: RGBColor { r: 0, g: 82, b: 255 },
+    },
+    DriverInfo {
+        number: 4,
+        name: "Lando Norris",
+        team: "McLaren",
+        color: RGBColor { r: 255, g: 135, b: 0 },
+    },
+    DriverInfo {
+        number: 10,
+        name: "Pierre Gasly",
+        team: "Alpine",
+        color: RGBColor { r: 2, g: 144, b: 240 },
+    },
+    DriverInfo {
+        number: 11,
+        name: "Sergio Perez",
+        team: "Red Bull",
+        color: RGBColor { r: 30, g: 65, b: 255 },
+    },
+    DriverInfo {
+        number: 14,
+        name: "Fernando Alonso",
+        team: "Aston Martin",
+        color: RGBColor { r: 0, g: 110, b: 120 },
+    },
+    DriverInfo {
+        number: 16,
+        name: "Charles Leclerc",
+        team: "Ferrari",
+        color: RGBColor { r: 220, g: 0, b: 0 },
+    },
+    DriverInfo {
+        number: 18,
+        name: "Lance Stroll",
+        team: "Aston Martin",
+        color: RGBColor { r: 0, g: 110, b: 120 },
+    },
+    DriverInfo {
+        number: 20,
+        name: "Kevin Magnussen",
+        team: "Haas",
+        color: RGBColor { r: 160, g: 207, b: 205 },
+    },
+    DriverInfo {
+        number: 22,
+        name: "Yuki Tsunoda",
+        team: "AlphaTauri",
+        color: RGBColor { r: 60, g: 130, b: 200 },
+    },
+    DriverInfo {
+        number: 23,
+        name: "Alex Albon",
+        team: "Williams",
+        color: RGBColor { r: 0, g: 82, b: 255 },
+    },
+    DriverInfo {
+        number: 24,
+        name: "Zhou Guanyu",
+        team: "Stake F1",
+        color: RGBColor { r: 165, g: 160, b: 155 },
+    },
+    DriverInfo {
+        number: 27,
+        name: "Nico Hulkenberg",
+        team: "Haas",
+        color: RGBColor { r: 160, g: 207, b: 205 },
+    },
+    DriverInfo {
+        number: 31,
+        name: "Esteban Ocon",
+        team: "Alpine",
+        color: RGBColor { r: 2, g: 144, b: 240 },
+    },
+    DriverInfo {
+        number: 40,
+        name: "Liam Lawson",
+        team: "AlphaTauri",
+        color: RGBColor { r: 60, g: 130, b: 200 },
+    },
+    DriverInfo {
+        number: 44,
+        name: "Lewis Hamilton",
+        team: "Mercedes",
+        color: RGBColor { r: 0, g: 210, b: 190 },
+    },
+    DriverInfo {
+        number: 55,
+        name: "Carlos Sainz",
+        team: "Ferrari",
+        color: RGBColor { r: 220, g: 0, b: 0 },
+    },
+    DriverInfo {
+        number: 63,
+        name: "George Russell",
+        team: "Mercedes",
+        color: RGBColor { r: 0, g: 210, b: 190 },
+    },
+    DriverInfo {
+        number: 77,
+        name: "Valtteri Bottas",
+        team: "Stake F1",
+        color: RGBColor { r: 165, g: 160, b: 155 },
+    },
+    DriverInfo {
+        number: 81,
+        name: "Oscar Piastri",
+        team: "McLaren",
+        color: RGBColor { r: 255, g: 135, b: 0 },
+    },
 ];
+
 
 enum Message {
     ButtonPressed,
@@ -190,35 +226,13 @@ async fn main(spawner: Spawner) {
         .spawn(button_task(button_pin, signal_channel.sender()))
         .unwrap();
 
-    // Spawn the led task with the receiver
-    let led_numbers_and_colors: &[(usize, u8, u8, u8); 20] = &[
-        (0, 30, 65, 255),   // Max Verstappen
-        (1, 0, 82, 255),    // Logan Sargeant
-        (2, 255, 135, 0),   // Lando Norris
-        (3, 2, 144, 240),   // Pierre Gasly
-        (4, 30, 65, 255),   // Sergio Perez
-        (5, 0, 110, 120),   // Fernando Alonso
-        (6, 220, 0, 0),     // Charles Leclerc
-        (7, 0, 110, 120),   // Lance Stroll
-        (8, 160, 207, 205), // Kevin Magnussen
-        (9, 60, 130, 200),  // Yuki Tsunoda
-        (10, 0, 82, 255),   // Alex Albon
-        (11, 165, 160, 155),// Zhou Guanyu
-        (12, 160, 207, 205),// Nico Hulkenberg
-        (13, 2, 144, 240),  // Esteban Ocon
-        (14, 60, 130, 200), // Liam Lawson
-        (15, 0, 210, 190),  // Lewis Hamilton
-        (16, 220, 0, 0),    // Carlos Sainz
-        (17, 0, 210, 190),  // George Russell
-        (18, 165, 160, 155),// Valtteri Bottas
-        (19, 255, 135, 0),  // Oscar Piastri
-    ];
-    
-    spawner
-        .spawn(multi_led_task(hd108, signal_channel.receiver(), led_numbers_and_colors))
-        .unwrap();
+     // Spawn the run_race_task with the receiver
+     spawner
+     .spawn(run_race_task(hd108, signal_channel.receiver()))
+     .unwrap();
 }
 
+/* 
 #[embassy_executor::task]
 async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
@@ -240,6 +254,8 @@ async fn led_task(
         }
     }
 }
+*/
+/* 
 
 #[embassy_executor::task]
 async fn multi_led_task(
@@ -263,6 +279,48 @@ async fn multi_led_task(
         Timer::after(Duration::from_millis(25)).await; // Debounce delay
     }
 }
+*/
+
+#[embassy_executor::task]
+async fn run_race_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, Message, 1>,
+) {
+    loop {
+        // Wait for the start message
+        receiver.receive().await;
+
+        // Iterate through each frame in the visualization data
+        for frame in &data::VISUALIZATION_DATA.frames {
+            // Collect the LED updates for the current frame
+            let mut led_updates: Vec<(usize, u8, u8, u8), 20> = Vec::new();
+
+            for driver_data in frame.drivers.iter().flatten() {
+                // Find the corresponding driver info
+                if let Some(driver) = driver_info.iter().find(|d| u32::from(d.number) == driver_data.driver_number) {
+                    led_updates.push((driver_data.led_num.try_into().unwrap(), driver.color.r, driver.color.g, driver.color.b)).unwrap();
+                }
+            }
+
+            // Set the LEDs for the current frame
+            hd108.set_leds(&led_updates).await.unwrap();
+
+            // Wait for the update rate duration
+            Timer::after(Duration::from_millis(data::VISUALIZATION_DATA.update_rate_ms as u64)).await;
+
+            // Check for a stop message to turn off the LEDs
+            if receiver.try_receive().is_ok() {
+                hd108.set_off().await.unwrap();
+                break;
+            }
+        }
+
+        // Turn off LEDs after finishing the frames
+        hd108.set_off().await.unwrap();
+    }
+}
+
+
 
 #[embassy_executor::task]
 async fn button_task(
