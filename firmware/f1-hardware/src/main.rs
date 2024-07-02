@@ -239,6 +239,212 @@ const driver_info: [DriverInfo; 20] = [
     },
 ];
 
+/* For testing purposes
+const driver_info: [DriverInfo; 20] = [
+    //Red
+    DriverInfo {
+        number: 1,
+        name: "Max Verstappen",
+        team: "Red Bull",
+        color: RGBColor { r: 0, g: 0, b: 255 },
+    },
+    DriverInfo {
+        number: 2,
+        name: "Logan Sargeant",
+        team: "Williams",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    //Orange
+    DriverInfo {
+        number: 4,
+        name: "Lando Norris",
+        team: "McLaren",
+        color: RGBColor {
+            r: 242,
+            g: 140,
+            b: 40,
+        },
+    },
+    DriverInfo {
+        number: 10,
+        name: "Pierre Gasly",
+        team: "Alpine",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 11,
+        name: "Sergio Perez",
+        team: "Red Bull",
+        color: RGBColor {
+            r: 210,
+            g: 43,
+            b: 43,
+        },
+    },
+    //Orange
+    DriverInfo {
+        number: 14,
+        name: "Fernando Alonso",
+        team: "Aston Martin",
+        color: RGBColor {
+            r: 242,
+            g: 140,
+            b: 40,
+        },
+    },
+    DriverInfo {
+        number: 16,
+        name: "Charles Leclerc",
+        team: "Ferrari",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 18,
+        name: "Lance Stroll",
+        team: "Aston Martin",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 20,
+        name: "Kevin Magnussen",
+        team: "Haas",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 22,
+        name: "Yuki Tsunoda",
+        team: "AlphaTauri",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 23,
+        name: "Alex Albon",
+        team: "Williams",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 24,
+        name: "Zhou Guanyu",
+        team: "Stake F1",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 27,
+        name: "Nico Hulkenberg",
+        team: "Haas",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 31,
+        name: "Esteban Ocon",
+        team: "Alpine",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 40,
+        name: "Liam Lawson",
+        team: "AlphaTauri",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 44,
+        name: "Lewis Hamilton",
+        team: "Mercedes",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 55,
+        name: "Carlos Sainz",
+        team: "Ferrari",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    //Green
+    DriverInfo {
+        number: 63,
+        name: "George Russell",
+        team: "Mercedes",
+        color: RGBColor {
+            r: 80,
+            g: 200,
+            b: 120,
+        },
+    },
+    DriverInfo {
+        number: 77,
+        name: "Valtteri Bottas",
+        team: "Stake F1",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+    DriverInfo {
+        number: 81,
+        name: "Oscar Piastri",
+        team: "McLaren",
+        color: RGBColor {
+            r: 255,
+            g: 255,
+            b: 255,
+        },
+    },
+];
+
+*/
+
 enum Message {
     ButtonPressed,
 }

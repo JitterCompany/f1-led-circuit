@@ -115,7 +115,7 @@ where
         data.extend_from_slice(&start_frame).unwrap();
 
         // Set the specified LEDs to the given colors and all others to off
-        for i in 0..96 {
+        for i in 1..=96 {
             if let Some(&(_led_num, red, green, blue)) =
                 leds.iter().find(|&&(led_num, _, _, _)| led_num == i)
             {
