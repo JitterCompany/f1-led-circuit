@@ -1,4 +1,4 @@
-//Handmade dataset
+//Handmade dataset - sample of 10 frames
 
 #[derive(Debug)]
 pub struct DriverData {

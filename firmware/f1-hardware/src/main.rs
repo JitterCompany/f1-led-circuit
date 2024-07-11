@@ -44,6 +44,7 @@ struct RGBColor {
     b: u8,
 }
 
+/* Actual racing team colors 
 const driver_info: [DriverInfo; 20] = [
     DriverInfo {
         number: 1,
@@ -239,7 +240,9 @@ const driver_info: [DriverInfo; 20] = [
     },
 ];
 
-/* For testing purposes
+*/
+
+// For testing purposes
 const driver_info: [DriverInfo; 20] = [
     //Red
     DriverInfo {
@@ -253,9 +256,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Logan Sargeant",
         team: "Williams",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     //Orange
@@ -274,9 +277,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Pierre Gasly",
         team: "Alpine",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -305,9 +308,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Charles Leclerc",
         team: "Ferrari",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -315,9 +318,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Lance Stroll",
         team: "Aston Martin",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -325,9 +328,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Kevin Magnussen",
         team: "Haas",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -335,9 +338,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Yuki Tsunoda",
         team: "AlphaTauri",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -345,9 +348,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Alex Albon",
         team: "Williams",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -355,9 +358,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Zhou Guanyu",
         team: "Stake F1",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -365,9 +368,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Nico Hulkenberg",
         team: "Haas",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -375,9 +378,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Esteban Ocon",
         team: "Alpine",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -385,9 +388,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Liam Lawson",
         team: "AlphaTauri",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -395,9 +398,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Lewis Hamilton",
         team: "Mercedes",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -405,9 +408,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Carlos Sainz",
         team: "Ferrari",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     //Green
@@ -426,9 +429,9 @@ const driver_info: [DriverInfo; 20] = [
         name: "Valtteri Bottas",
         team: "Stake F1",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
     DriverInfo {
@@ -436,14 +439,14 @@ const driver_info: [DriverInfo; 20] = [
         name: "Oscar Piastri",
         team: "McLaren",
         color: RGBColor {
-            r: 255,
-            g: 255,
-            b: 255,
+            r: 0,
+            g: 0,
+            b: 0,
         },
     },
 ];
 
-*/
+
 
 enum Message {
     ButtonPressed,
