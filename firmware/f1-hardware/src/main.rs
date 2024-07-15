@@ -422,7 +422,8 @@ async fn main(spawner: Spawner) {
 
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
-    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+    //let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+    let clocks = ClockControl::max(system.clock_control).freeze();
 
     let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
 
@@ -459,10 +460,8 @@ async fn main(spawner: Spawner) {
     // Initialize the button pin as input with interrupt and pull-up resistor
     let mut button_pin = Input::new(io.pins.gpio10, Pull::Up);
 
-    println!("Before falling edge...");
     // Enable interrupts for the button pin
     button_pin.listen(Event::FallingEdge);
-    println!("After falling edge...");
 
     let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
 
