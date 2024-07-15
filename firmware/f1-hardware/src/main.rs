@@ -24,12 +24,36 @@ use esp_hal::{
     spi::{master::Spi, SpiMode},
     system::SystemControl,
     timer::timg::TimerGroup,
+    rng::Rng,
 };
 use esp_println::println;
 use hd108::HD108;
 use heapless::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
+
+//Wifi
+use embassy_net::{tcp::TcpSocket, Config, Ipv4Address, Stack, StackResources};
+use esp_wifi::{
+    initialize,
+    wifi::{
+        ClientConfiguration, Configuration, WifiController, WifiDevice, WifiEvent, WifiStaDevice,
+        WifiState,
+    },
+    EspWifiInitFor,
+};
+
+macro_rules! mk_static {
+    ($t:path,$val:expr) => {{
+        static STATIC_CELL: static_cell::StaticCell<$t> = static_cell::StaticCell::new();
+        #[deny(unused_attributes)]
+        let x = STATIC_CELL.uninit().write(($val));
+        x
+    }};
+}
+
+const SSID: &str = "SSID";
+const PASSWORD: &str = "PASSWORD";
 
 struct DriverInfo {
     number: u8,
@@ -401,6 +425,7 @@ async fn main(spawner: Spawner) {
     let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
 
     let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
+
     esp_hal_embassy::init(&clocks, timg0);
 
     let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
@@ -434,70 +459,136 @@ async fn main(spawner: Spawner) {
     // Initialize the button pin as input with interrupt and pull-up resistor
     let mut button_pin = Input::new(io.pins.gpio10, Pull::Up);
 
+    println!("Before falling edge...");
     // Enable interrupts for the button pin
     button_pin.listen(Event::FallingEdge);
+    println!("After falling edge...");
 
     let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
 
     // Spawn the button task with ownership of the button pin and the sender
     spawner
-        .spawn(button_task(button_pin, signal_channel.sender()))
-        .unwrap();
+    .spawn(button_task(button_pin, signal_channel.sender()))
+    .unwrap();
 
     // Spawn the run_race_task with the receiver
     spawner
         .spawn(run_race_task(hd108, signal_channel.receiver()))
         .unwrap();
-}
 
-/*
-#[embassy_executor::task]
-async fn led_task(
-    mut hd108: HD108<impl SpiBus<u8> + 'static>,
-    receiver: Receiver<'static, NoopRawMutex, Message, 1>,
-) {
-    loop {
-        // Wait for the start message
-        receiver.receive().await;
-        for i in 0..=96 {
-            let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
-            hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
+    // Wifi
+    //#[cfg(target_arch = "xtensa")]
+    //let timer = esp_hal::timer::timg::TimerGroup::new(peripherals.TIMG1, &clocks, None).timer0;
+    //#[cfg(target_arch = "riscv32")]
+    let timer = esp_hal::timer::systimer::SystemTimer::new(peripherals.SYSTIMER).alarm0;
 
-            // Check for a stop message
-            if receiver.try_receive().is_ok() {
-                hd108.set_off().await.unwrap();
-                break;
+    println!("Initializing WiFi...");
+
+    match initialize(
+        EspWifiInitFor::Wifi,
+        timer,
+        Rng::new(peripherals.RNG),
+        peripherals.RADIO_CLK,
+        &clocks,
+    ) {
+        Ok(init_wifi) => {
+            println!("WiFi initialized...");
+            let wifi = peripherals.WIFI;
+            match esp_wifi::wifi::new_with_mode(&init_wifi, wifi, WifiStaDevice) {
+                Ok((wifi_interface, controller)) => {
+                    println!("WiFi controller and interface created...");
+                    // Continue with the rest of the setup
+
+                    let config = Config::dhcpv4(Default::default());
+                    let seed = 1234; // very random, very secure seed
+
+                    // Init network stack
+                    let stack = &*mk_static!(
+                        Stack<WifiDevice<'_, WifiStaDevice>>,
+                        Stack::new(
+                            wifi_interface,
+                            config,
+                            mk_static!(StackResources<3>, StackResources::<3>::new()),
+                            seed
+                        )
+                    );
+
+                    println!("Spawning connection...");
+
+                    spawner.spawn(connection(controller)).ok();
+                    spawner.spawn(net_task(&stack)).ok();
+
+                    let mut rx_buffer = [0; 4096];
+                    let mut tx_buffer = [0; 4096];
+
+                    loop {
+                        if stack.is_link_up() {
+                            break;
+                        }
+                        Timer::after(Duration::from_millis(500)).await;
+                    }
+
+                    println!("Waiting to get IP address...");
+                    loop {
+                        if let Some(config) = stack.config_v4() {
+                            println!("Got IP: {}", config.address);
+                            break;
+                        }
+                        Timer::after(Duration::from_millis(500)).await;
+                    }
+
+                    loop {
+                        Timer::after(Duration::from_millis(1_000)).await;
+
+                        let mut socket = TcpSocket::new(&stack, &mut rx_buffer, &mut tx_buffer);
+
+                        socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
+
+                        let remote_endpoint = (Ipv4Address::new(142, 250, 185, 115), 80);
+                        println!("connecting...");
+                        let r = socket.connect(remote_endpoint).await;
+                        if let Err(e) = r {
+                            println!("connect error: {:?}", e);
+                            continue;
+                        }
+                        println!("connected!");
+                        let mut buf = [0; 1024];
+                        loop {
+                            use embedded_io_async::Write;
+                            let r = socket
+                                .write_all(b"GET / HTTP/1.0\r\nHost: www.mobile-j.de\r\n\r\n")
+                                .await;
+                            if let Err(e) = r {
+                                println!("write error: {:?}", e);
+                                break;
+                            }
+                            let n = match socket.read(&mut buf).await {
+                                Ok(0) => {
+                                    println!("read EOF");
+                                    break;
+                                }
+                                Ok(n) => n,
+                                Err(e) => {
+                                    println!("read error: {:?}", e);
+                                    break;
+                                }
+                            };
+                            println!("{}", core::str::from_utf8(&buf[..n]).unwrap());
+                        }
+                        Timer::after(Duration::from_millis(3000)).await;
+                    }
+                }
+                Err(e) => {
+                    println!("Failed to create WiFi controller and interface: {:?}", e);
+                }
             }
-            Timer::after(Duration::from_millis(25)).await; // Debounce delay
+        }
+        Err(e) => {
+            println!("Failed to initialize WiFi: {:?}", e);
         }
     }
 }
-*/
-/*
 
-#[embassy_executor::task]
-async fn multi_led_task(
-    mut hd108: HD108<impl SpiBus<u8> + 'static>,
-    receiver: Receiver<'static, NoopRawMutex, Message, 1>,
-    led_nums_and_colors: &'static [(usize, u8, u8, u8)],
-) {
-    loop {
-        // Wait for the start message
-        receiver.receive().await;
-
-        // Set the specified LEDs to the given colors
-        hd108.set_leds(led_nums_and_colors).await.unwrap();
-
-        // Check for a stop message to turn off the LEDs
-        if receiver.try_receive().is_ok() {
-            hd108.set_off().await.unwrap();
-            break;
-        }
-
-        Timer::after(Duration::from_millis(25)).await; // Debounce delay
-    }
-}
-*/
 
 #[embassy_executor::task]
 async fn run_race_task(
@@ -562,4 +653,45 @@ async fn button_task(
         sender.send(Message::ButtonPressed).await;
         Timer::after(Duration::from_millis(400)).await; // Debounce delay
     }
+}
+
+#[embassy_executor::task]
+async fn connection(mut controller: WifiController<'static>) {
+    println!("start connection task");
+    println!("Device capabilities: {:?}", controller.get_capabilities());
+    loop {
+        match esp_wifi::wifi::get_wifi_state() {
+            WifiState::StaConnected => {
+                // wait until we're no longer connected
+                controller.wait_for_event(WifiEvent::StaDisconnected).await;
+                Timer::after(Duration::from_millis(5000)).await
+            }
+            _ => {}
+        }
+        if !matches!(controller.is_started(), Ok(true)) {
+            let client_config = Configuration::Client(ClientConfiguration {
+                ssid: SSID.try_into().unwrap(),
+                password: PASSWORD.try_into().unwrap(),
+                ..Default::default()
+            });
+            controller.set_configuration(&client_config).unwrap();
+            println!("Starting wifi");
+            controller.start().await.unwrap();
+            println!("Wifi started!");
+        }
+        println!("About to connect...");
+
+        match controller.connect().await {
+            Ok(_) => println!("Wifi connected!"),
+            Err(e) => {
+                println!("Failed to connect to wifi: {e:?}");
+                Timer::after(Duration::from_millis(5000)).await
+            }
+        }
+    }
+}
+
+#[embassy_executor::task]
+async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
+    stack.run().await
 }
