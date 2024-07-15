@@ -36,7 +36,6 @@ use hd108::HD108;
 use panic_halt as _;
 use static_cell::StaticCell;
 use embedded_io_async::Write;
-use embedded_nal_async::TcpClientStack;
 use heapless::{String, Vec};
 use serde::{Deserialize, Serialize};
 use postcard::{to_vec, from_bytes};
@@ -50,6 +49,7 @@ use esp_wifi::{
         WifiState,
     },
     EspWifiInitFor,
+    wifi::get_sta_state,
 };
 
 macro_rules! mk_static {
@@ -61,8 +61,8 @@ macro_rules! mk_static {
     }};
 }
 
-const SSID: &str = "SSID";
-const PASSWORD: &str = "PASSWORD";
+const SSID: &str = env!("SSID");
+const PASSWORD: &str = env!("PASSWORD");
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {

@@ -4,6 +4,8 @@
 f1-hardware/debug/
 f1-hardware/target/
 f1-hardware/Cargo.lock/
+f1-hardware/.cargo/
+f1-hardware/.cargo/config.toml/
 f1-logic/debug/
 f1-logic/target/
 f1-logic/Cargo.lock/
