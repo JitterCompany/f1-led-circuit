@@ -104,7 +104,6 @@ static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = Sta
 static WIFI_CHANNEL: StaticCell<Channel<NoopRawMutex, WifiMessage, 1>> = StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
 
-
 #[main]
 async fn main(spawner: Spawner) {
     println!("Starting program!...");
@@ -200,7 +199,7 @@ async fn main(spawner: Spawner) {
 
                     println!("Spawning wifi connection...");
 
-                    spawner.spawn(connection(controller, stack, wifi_channel.sender())).ok();
+                    spawner.spawn(wifi_connection(controller, stack, wifi_channel.sender())).ok();
                     spawner.spawn(net_task(stack)).ok();
                     spawner.spawn(fetch_update_frames(wifi_channel.receiver(), stack)).ok();
                 }
@@ -284,6 +283,7 @@ async fn button_task(
 }
 
 #[embassy_executor::task]
+
 async fn wifi_connection(
     mut controller: WifiController<'static>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
