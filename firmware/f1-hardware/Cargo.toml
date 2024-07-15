@@ -46,8 +46,9 @@ smoltcp = { version = "0.11.0", default-features = false, features = [
 panic-halt = "0.2.0"
 riscv-rt = "0.12.2"
 riscv = "0.11.1"
-heapless = "0.8.0"
-serde-json-core = "0.5.1"
+heapless = "0.7.1"
+postcard = "1.0.8"
+serde = { version = "1.0.204", default-features = false }
 
 [profile.dev]
 # Rust debug is too slow. 

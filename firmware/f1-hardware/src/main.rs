@@ -38,8 +38,8 @@ use static_cell::StaticCell;
 use embedded_io_async::Write;
 use embedded_nal_async::TcpClientStack;
 use heapless::{String, Vec};
-use serde_json_core::from_slice;
-use serde_json_core::de::Deserializer;
+use serde::{Deserialize, Serialize};
+use postcard::{to_vec, from_bytes};
 
 // Wifi
 use embassy_net::{tcp::TcpSocket, Config, StackResources};
@@ -64,7 +64,7 @@ macro_rules! mk_static {
 const SSID: &str = "SSID";
 const PASSWORD: &str = "PASSWORD";
 
-#[derive(Debug, Clone, serde_json_core::de::Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
     date: String<32>,
     driver_number: u32,
@@ -75,11 +75,13 @@ struct FetchedData {
     z: i32,
 }
 
-
 impl FetchedData {
-    fn from_json(json: &[u8]) -> Result<Self, &'static str> {
-        let result: Result<(_, usize), serde_json_core::de::Error> = from_slice(json);
-        result.map(|(data, _)| data).map_err(|_| "Failed to deserialize")
+    fn from_postcard(bytes: &[u8]) -> Result<Self, &'static str> {
+        from_bytes(bytes).map_err(|_| "Failed to deserialize")
+    }
+
+    fn to_postcard(&self) -> Result<Vec<u8, 128>, &'static str> {
+        to_vec(self).map_err(|_| "Failed to serialize")
     }
 }
 
@@ -99,7 +101,7 @@ static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = Sta
 static WIFI_CHANNEL: StaticCell<Channel<NoopRawMutex, WifiMessage, 1>> = StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
 
-#[embassy_executor::main]
+#[main]
 async fn main(spawner: Spawner) {
     println!("Starting program!...");
 
@@ -371,10 +373,10 @@ async fn fetch_update_frames(
                                     let mut response = [0u8; 2048];
                                     let n = socket.read(&mut response).await.unwrap();
 
-                                    let fetched_data = FetchedData::from_json(&response[..n]);
+                                    let fetched_data = FetchedData::from_postcard(&response[..n]);
                                     match fetched_data {
                                         Ok(data) => {
-                                            sender.send(FetchMessage::FetchedData([data, data])).await; // Adjust as necessary
+                                            sender.send(FetchMessage::FetchedData([data.clone(), data])).await;
                                         }
                                         Err(e) => {
                                             println!("Failed to parse response: {:?}", e);
