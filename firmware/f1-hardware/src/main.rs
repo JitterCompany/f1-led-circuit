@@ -38,6 +38,9 @@ use static_cell::StaticCell;
 use embedded_io_async::Write;
 use heapless::{String, Vec};
 use serde::{Deserialize, Serialize};
+use postcard::accumulator::{CobsAccumulator, FeedResult};
+use postcard::from_bytes;
+use postcard::to_vec;
 
 // Wifi
 use embassy_net::{tcp::TcpSocket, Config, StackResources};
@@ -50,9 +53,6 @@ use esp_wifi::{
     EspWifiInitFor,
     wifi::get_sta_state,
 };
-use postcard::accumulator::{CobsAccumulator, FeedResult};
-use postcard::from_bytes;
-use postcard::to_vec;
 
 macro_rules! mk_static {
     ($t:path,$val:expr) => {{
@@ -87,7 +87,6 @@ impl FetchedData {
     }
 }
 
-
 enum ButtonMessage {
     ButtonPressed,
 }
@@ -95,7 +94,6 @@ enum ButtonMessage {
 enum WifiMessage {
     WifiConnected,
 }
-
 
 enum FetchMessage {
     FetchedData([FetchedData; 2]), // Fixed-size array for the fetched data
@@ -163,7 +161,6 @@ async fn main(spawner: Spawner) {
 
     spawner.spawn(store_data(fetch_channel.receiver())).ok();
 
-
     // Wifi
     let timer = esp_hal::timer::systimer::SystemTimer::new(peripherals.SYSTIMER).alarm0;
 
@@ -202,7 +199,7 @@ async fn main(spawner: Spawner) {
 
                     spawner.spawn(wifi_connection(controller, stack, wifi_channel.sender())).ok();
                     spawner.spawn(net_task(stack)).ok();
-                    spawner.spawn(fetch_update_frames(wifi_channel.receiver(), stack)).ok();
+                    spawner.spawn(fetch_update_frames(wifi_channel.receiver(), stack, fetch_channel.sender())).ok();
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
