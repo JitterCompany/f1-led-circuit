@@ -38,7 +38,6 @@ use static_cell::StaticCell;
 use embedded_io_async::Write;
 use heapless::{String, Vec};
 use serde::{Deserialize, Serialize};
-use postcard::{to_vec, from_bytes};
 
 // Wifi
 use embassy_net::{tcp::TcpSocket, Config, StackResources};
@@ -51,6 +50,9 @@ use esp_wifi::{
     EspWifiInitFor,
     wifi::get_sta_state,
 };
+use postcard::accumulator::{CobsAccumulator, FeedResult};
+use postcard::from_bytes;
+use postcard::to_vec;
 
 macro_rules! mk_static {
     ($t:path,$val:expr) => {{
@@ -63,7 +65,6 @@ macro_rules! mk_static {
 
 const SSID: &str = env!("SSID");
 const PASSWORD: &str = env!("PASSWORD");
-
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
@@ -283,7 +284,6 @@ async fn button_task(
 }
 
 #[embassy_executor::task]
-
 async fn wifi_connection(
     mut controller: WifiController<'static>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
@@ -347,7 +347,7 @@ async fn fetch_update_frames(
 ) {
     let dns_socket = DnsSocket::new(stack);
     let hostname = "api.openf1.org"; // Replace with your hostname
-) {
+
     loop {
         // Wait for the WifiConnected message
         match receiver.receive().await {
@@ -373,19 +373,36 @@ async fn fetch_update_frames(
                                     println!("Connected to {}..", hostname);
                                     // Fetch data from the URL
                                     let url = "GET /v1/location?session_key=9161&driver_number=81&date>2023-09-16T13:03:35.200&date<2023-09-16T13:03:35.800 HTTP/1.1\r\nHost: api.openf1.org\r\n\r\n";
+                                    println!("Sending request: {}", url);
                                     socket.write_all(url.as_bytes()).await.unwrap();
 
                                     let mut response = [0u8; 2048];
                                     let n = socket.read(&mut response).await.unwrap();
+                                    println!("Raw response: {:?}", &response[..n]);
 
-                                    let fetched_data = FetchedData::from_postcard(&response[..n]);
-                                    match fetched_data {
-                                        Ok(data) => {
-                                            sender.send(FetchMessage::FetchedData([data.clone(), data])).await;
+                                    // Extract the body from the HTTP response
+                                    if let Some(body_start) = find_http_body(&response[..n]) {
+                                        let body = &response[body_start..n];
+                                        println!("Body: {:?}", body);
+
+                                        let mut cobs_accumulator: CobsAccumulator<256> = CobsAccumulator::new();
+
+                                        let mut window = body;
+
+                                        'cobs: while !window.is_empty() {
+                                            window = match cobs_accumulator.feed::<FetchedData>(&window) {
+                                                FeedResult::Consumed => break 'cobs,
+                                                FeedResult::OverFull(new_wind) => new_wind,
+                                                FeedResult::DeserError(new_wind) => new_wind,
+                                                FeedResult::Success { data, remaining } => {
+                                                    println!("Parsed data: {:?}", data);
+                                                    sender.send(FetchMessage::FetchedData([data.clone(), data])).await;
+                                                    remaining
+                                                }
+                                            };
                                         }
-                                        Err(e) => {
-                                            println!("Failed to parse response: {:?}", e);
-                                        }
+                                    } else {
+                                        println!("Failed to find body in HTTP response.");
                                     }
                                 }
                                 Err(e) => {
@@ -403,6 +420,11 @@ async fn fetch_update_frames(
             }
         }
     }
+}
+
+fn find_http_body(response: &[u8]) -> Option<usize> {
+    let header_end = b"\r\n\r\n";
+    response.windows(header_end.len()).position(|window| window == header_end).map(|pos| pos + header_end.len())
 }
 
 #[embassy_executor::task]
