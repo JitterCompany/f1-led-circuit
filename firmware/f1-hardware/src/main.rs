@@ -64,6 +64,7 @@ macro_rules! mk_static {
 const SSID: &str = env!("SSID");
 const PASSWORD: &str = env!("PASSWORD");
 
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
     date: String<32>,
@@ -85,6 +86,7 @@ impl FetchedData {
     }
 }
 
+
 enum ButtonMessage {
     ButtonPressed,
 }
@@ -93,6 +95,7 @@ enum WifiMessage {
     WifiConnected,
 }
 
+
 enum FetchMessage {
     FetchedData([FetchedData; 2]), // Fixed-size array for the fetched data
 }
@@ -100,6 +103,7 @@ enum FetchMessage {
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
 static WIFI_CHANNEL: StaticCell<Channel<NoopRawMutex, WifiMessage, 1>> = StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
+
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -159,6 +163,7 @@ async fn main(spawner: Spawner) {
 
     spawner.spawn(store_data(fetch_channel.receiver())).ok();
 
+
     // Wifi
     let timer = esp_hal::timer::systimer::SystemTimer::new(peripherals.SYSTIMER).alarm0;
 
@@ -195,9 +200,9 @@ async fn main(spawner: Spawner) {
 
                     println!("Spawning wifi connection...");
 
-                    spawner.spawn(wifi_connection(controller, stack, wifi_channel.sender())).ok();
+                    spawner.spawn(connection(controller, stack, wifi_channel.sender())).ok();
                     spawner.spawn(net_task(stack)).ok();
-                    spawner.spawn(fetch_update_frames(wifi_channel.receiver(), stack, fetch_channel.sender())).ok();
+                    spawner.spawn(fetch_update_frames(wifi_channel.receiver(), stack)).ok();
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
@@ -342,7 +347,7 @@ async fn fetch_update_frames(
 ) {
     let dns_socket = DnsSocket::new(stack);
     let hostname = "api.openf1.org"; // Replace with your hostname
-
+) {
     loop {
         // Wait for the WifiConnected message
         match receiver.receive().await {
