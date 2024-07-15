@@ -53,6 +53,9 @@ use esp_wifi::{
     EspWifiInitFor,
     wifi::get_sta_state,
 };
+use postcard::accumulator::{CobsAccumulator, FeedResult};
+use postcard::from_bytes;
+use postcard::to_vec;
 
 macro_rules! mk_static {
     ($t:path,$val:expr) => {{
