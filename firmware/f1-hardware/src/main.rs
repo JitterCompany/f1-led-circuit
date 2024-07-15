@@ -54,8 +54,8 @@ macro_rules! mk_static {
     }};
 }
 
-const SSID: &str = "SSID";
-const PASSWORD: &str = "PASSWORD";
+const SSID: &str = "NOS-C8C0 Plumes";
+const PASSWORD: &str = "AGYQ24VR";
 
 enum Message {
     ButtonPressed,
@@ -70,7 +70,6 @@ async fn main(spawner: Spawner) {
 
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
-    //let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
     let clocks = ClockControl::max(system.clock_control).freeze();
 
     let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
@@ -114,28 +113,15 @@ async fn main(spawner: Spawner) {
     let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
 
     // Spawn the button task with ownership of the button pin and the sender
-    spawner
-    .spawn(button_task(button_pin, signal_channel.sender()))
-    .unwrap();
+    spawner.spawn(button_task(button_pin, signal_channel.sender())).unwrap();
 
     // Spawn the run_race_task with the receiver
-    spawner
-        .spawn(run_race_task(hd108, signal_channel.receiver()))
-        .unwrap();
-
-    // Spawn the fetch_update_frames task with the receiver
-    spawner
-        .spawn(fetch_update_frames(signal_channel.receiver()))
-        .unwrap();
+    spawner.spawn(run_race_task(hd108, signal_channel.receiver())).unwrap();
 
     // Wifi
-    //#[cfg(target_arch = "xtensa")]
-    //let timer = esp_hal::timer::timg::TimerGroup::new(peripherals.TIMG1, &clocks, None).timer0;
-    //#[cfg(target_arch = "riscv32")]
     let timer = esp_hal::timer::systimer::SystemTimer::new(peripherals.SYSTIMER).alarm0;
 
     println!("Initializing WiFi...");
-
 
     match initialize(
         EspWifiInitFor::Wifi,
@@ -168,8 +154,9 @@ async fn main(spawner: Spawner) {
 
                     println!("Spawning connection...");
 
-                    spawner.spawn(connection(controller, signal_channel.sender())).ok();
-                    spawner.spawn(net_task(&stack)).ok();
+                    spawner.spawn(connection(controller, stack, signal_channel.sender())).ok();
+                    spawner.spawn(net_task(stack)).ok();
+                    spawner.spawn(fetch_update_frames(signal_channel.receiver(), stack)).ok();  // Corrected line
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
@@ -181,6 +168,7 @@ async fn main(spawner: Spawner) {
         }
     }
 }
+
 
 #[embassy_executor::task]
 async fn run_race_task(
@@ -249,7 +237,7 @@ async fn button_task(
 }
 
 #[embassy_executor::task]
-async fn connection(mut controller: WifiController<'static>, sender: Sender<'static, NoopRawMutex, Message, 1>) {
+async fn connection(mut controller: WifiController<'static>, stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>, sender: Sender<'static, NoopRawMutex, Message, 1>) {
     println!("start connection task");
     println!("Device capabilities: {:?}", controller.get_capabilities());
     loop {
@@ -277,7 +265,15 @@ async fn connection(mut controller: WifiController<'static>, sender: Sender<'sta
         match controller.connect().await {
             Ok(_) => {
                 println!("Wifi connected!");
-                sender.send(Message::WifiConnected).await;
+                // Wait for an IP address
+                loop {
+                    if let Some(config) = stack.config_v4() {
+                        println!("Got IP: {}", config.address);
+                        sender.send(Message::WifiConnected).await;
+                        break;
+                    }
+                    Timer::after(Duration::from_millis(500)).await;
+                }
             },
             Err(e) => {
                 println!("Failed to connect to wifi: {e:?}");
@@ -288,16 +284,33 @@ async fn connection(mut controller: WifiController<'static>, sender: Sender<'sta
 }
 
 
+
+
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
     stack.run().await
 }
 
 #[embassy_executor::task]
-async fn fetch_update_frames(receiver: Receiver<'static, NoopRawMutex, Message, 1>) {
+async fn fetch_update_frames(receiver: Receiver<'static, NoopRawMutex, Message, 1>, stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
     loop {
         receiver.receive().await;
         println!("Fetching update frames started...");
-        // Add your frame fetching logic here
+
+        // Connect to 8.8.8.8
+        let mut rx_buffer = [0; 4096];
+        let mut tx_buffer = [0; 4096];
+
+        let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+        socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
+
+        let remote_endpoint = (Ipv4Address::new(8, 8, 8, 8), 80);
+        println!("connecting to Google...");
+        let r = socket.connect(remote_endpoint).await;
+        if let Err(e) = r {
+            println!("connect error: {:?}", e);
+            continue;
+        }
+        println!("Connected to Google..");
     }
 }
