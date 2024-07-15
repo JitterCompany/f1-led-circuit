@@ -5,12 +5,11 @@
 mod data;
 mod hd108;
 mod driver_info;
-//Test
-use embassy_net::dns::{DnsSocket, DnsQueryType};
-use embassy_net::Stack;
-//Test
 use driver_info::DRIVERS;
 use data::VISUALIZATION_DATA;
+
+use embassy_net::dns::{DnsSocket, DnsQueryType};
+use embassy_net::Stack;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
@@ -34,12 +33,16 @@ use esp_hal::{
 };
 use esp_println::println;
 use hd108::HD108;
-use heapless::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
+use embedded_io_async::Write;
+use embedded_nal_async::TcpClientStack;
+use heapless::{String, Vec};
+use serde_json_core::from_slice;
+use serde_json_core::de::Deserializer;
 
 // Wifi
-use embassy_net::{tcp::TcpSocket, Config, Ipv4Address, StackResources};
+use embassy_net::{tcp::TcpSocket, Config, StackResources};
 use esp_wifi::{
     initialize,
     wifi::{
@@ -58,8 +61,27 @@ macro_rules! mk_static {
     }};
 }
 
-const SSID: &str = "NOS-C8C0 Plumes";
-const PASSWORD: &str = "AGYQ24VR";
+const SSID: &str = "SSID";
+const PASSWORD: &str = "PASSWORD";
+
+#[derive(Debug, Clone, serde_json_core::de::Deserialize)]
+struct FetchedData {
+    date: String<32>,
+    driver_number: u32,
+    meeting_key: u32,
+    session_key: u32,
+    x: i32,
+    y: i32,
+    z: i32,
+}
+
+
+impl FetchedData {
+    fn from_json(json: &[u8]) -> Result<Self, &'static str> {
+        let result: Result<(_, usize), serde_json_core::de::Error> = from_slice(json);
+        result.map(|(data, _)| data).map_err(|_| "Failed to deserialize")
+    }
+}
 
 enum ButtonMessage {
     ButtonPressed,
@@ -69,10 +91,15 @@ enum WifiMessage {
     WifiConnected,
 }
 
+enum FetchMessage {
+    FetchedData([FetchedData; 2]), // Fixed-size array for the fetched data
+}
+
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
 static WIFI_CHANNEL: StaticCell<Channel<NoopRawMutex, WifiMessage, 1>> = StaticCell::new();
+static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
 
-#[main]
+#[embassy_executor::main]
 async fn main(spawner: Spawner) {
     println!("Starting program!...");
 
@@ -120,12 +147,15 @@ async fn main(spawner: Spawner) {
 
     let button_channel = BUTTON_CHANNEL.init(Channel::new());
     let wifi_channel = WIFI_CHANNEL.init(Channel::new());
+    let fetch_channel = FETCH_CHANNEL.init(Channel::new());
 
     // Spawn the button task with ownership of the button pin and the sender
     spawner.spawn(button_task(button_pin, button_channel.sender())).unwrap();
 
     // Spawn the run_race_task with the receiver
     spawner.spawn(run_race_task(hd108, button_channel.receiver())).unwrap();
+
+    spawner.spawn(store_data(fetch_channel.receiver())).ok();
 
     // Wifi
     let timer = esp_hal::timer::systimer::SystemTimer::new(peripherals.SYSTIMER).alarm0;
@@ -161,11 +191,11 @@ async fn main(spawner: Spawner) {
                         )
                     );
 
-                    println!("Spawning connection...");
+                    println!("Spawning wifi connection...");
 
-                    spawner.spawn(connection(controller, stack, wifi_channel.sender())).ok();
+                    spawner.spawn(wifi_connection(controller, stack, wifi_channel.sender())).ok();
                     spawner.spawn(net_task(stack)).ok();
-                    spawner.spawn(fetch_update_frames(wifi_channel.receiver(), stack)).ok();
+                    spawner.spawn(fetch_update_frames(wifi_channel.receiver(), stack, fetch_channel.sender())).ok();
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
@@ -247,12 +277,12 @@ async fn button_task(
 }
 
 #[embassy_executor::task]
-async fn connection(
+async fn wifi_connection(
     mut controller: WifiController<'static>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     sender: Sender<'static, NoopRawMutex, WifiMessage, 1>,
 ) {
-    println!("start connection task");
+    println!("start wifi connection task");
     println!("Device capabilities: {:?}", controller.get_capabilities());
     loop {
         match esp_wifi::wifi::get_wifi_state() {
@@ -306,6 +336,7 @@ async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
 async fn fetch_update_frames(
     receiver: Receiver<'static, NoopRawMutex, WifiMessage, 1>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
     let dns_socket = DnsSocket::new(stack);
     let hostname = "api.openf1.org"; // Replace with your hostname
@@ -333,6 +364,22 @@ async fn fetch_update_frames(
                             match socket.connect(remote_endpoint).await {
                                 Ok(_) => {
                                     println!("Connected to {}..", hostname);
+                                    // Fetch data from the URL
+                                    let url = "GET /v1/location?session_key=9161&driver_number=81&date>2023-09-16T13:03:35.200&date<2023-09-16T13:03:35.800 HTTP/1.1\r\nHost: api.openf1.org\r\n\r\n";
+                                    socket.write_all(url.as_bytes()).await.unwrap();
+
+                                    let mut response = [0u8; 2048];
+                                    let n = socket.read(&mut response).await.unwrap();
+
+                                    let fetched_data = FetchedData::from_json(&response[..n]);
+                                    match fetched_data {
+                                        Ok(data) => {
+                                            sender.send(FetchMessage::FetchedData([data, data])).await; // Adjust as necessary
+                                        }
+                                        Err(e) => {
+                                            println!("Failed to parse response: {:?}", e);
+                                        }
+                                    }
                                 }
                                 Err(e) => {
                                     println!("Connect error: {:?}", e);
@@ -346,6 +393,21 @@ async fn fetch_update_frames(
                         println!("DNS resolve error: {:?}", e);
                     }
                 }
+            }
+        }
+    }
+}
+
+#[embassy_executor::task]
+async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) {
+    let mut data_to_be_visualized: Option<[FetchedData; 2]> = None;
+
+    loop {
+        match receiver.receive().await {
+            FetchMessage::FetchedData(data) => {
+                println!("Received data: {:?}", data);
+                data_to_be_visualized = Some(data);
+                // Perform any additional processing if necessary
             }
         }
     }
