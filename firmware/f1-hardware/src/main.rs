@@ -62,7 +62,7 @@ enum Message {
     WifiConnected,
 }
 
-static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new(); // Updated capacity to 1
+static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -156,7 +156,7 @@ async fn main(spawner: Spawner) {
 
                     spawner.spawn(connection(controller, stack, signal_channel.sender())).ok();
                     spawner.spawn(net_task(stack)).ok();
-                    spawner.spawn(fetch_update_frames(signal_channel.receiver(), stack)).ok(); // Corrected line
+                    spawner.spawn(fetch_update_frames(signal_channel.receiver(), stack)).ok();
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
@@ -176,47 +176,52 @@ async fn run_race_task(
 ) {
     loop {
         // Wait for the ButtonPressed message
-        if let Message::ButtonPressed = receiver.receive().await {
-            // Iterate through each frame in the visualization data
-            for frame in &data::VISUALIZATION_DATA.frames {
-                // Collect the LED updates for the current frame
-                let mut led_updates: Vec<(usize, u8, u8, u8), 20> = Vec::new();
+        match receiver.receive().await {
+            Message::ButtonPressed => {
+                // Iterate through each frame in the visualization data
+                for frame in &data::VISUALIZATION_DATA.frames {
+                    // Collect the LED updates for the current frame
+                    let mut led_updates: Vec<(usize, u8, u8, u8), 20> = Vec::new();
 
-                for driver_data in frame.drivers.iter().flatten() {
-                    // Find the corresponding driver info
-                    if let Some(driver) = DRIVERS
-                        .iter()
-                        .find(|d| d.number == driver_data.driver_number)
-                    {
-                        led_updates
-                            .push((
-                                driver_data.led_num.try_into().unwrap(),
-                                driver.color.0,
-                                driver.color.1,
-                                driver.color.2,
-                            ))
-                            .unwrap();
+                    for driver_data in frame.drivers.iter().flatten() {
+                        // Find the corresponding driver info
+                        if let Some(driver) = DRIVERS
+                            .iter()
+                            .find(|d| d.number == driver_data.driver_number)
+                        {
+                            led_updates
+                                .push((
+                                    driver_data.led_num.try_into().unwrap(),
+                                    driver.color.0,
+                                    driver.color.1,
+                                    driver.color.2,
+                                ))
+                                .unwrap();
+                        }
+                    }
+
+                    // Set the LEDs for the current frame
+                    hd108.set_leds(&led_updates).await.unwrap();
+
+                    // Wait for the update rate duration
+                    Timer::after(Duration::from_millis(
+                        data::VISUALIZATION_DATA.update_rate_ms as u64,
+                    ))
+                    .await;
+
+                    // Check for a stop message to turn off the LEDs
+                    if receiver.try_receive().is_ok() {
+                        hd108.set_off().await.unwrap();
+                        break;
                     }
                 }
 
-                // Set the LEDs for the current frame
-                hd108.set_leds(&led_updates).await.unwrap();
-
-                // Wait for the update rate duration
-                Timer::after(Duration::from_millis(
-                    data::VISUALIZATION_DATA.update_rate_ms as u64,
-                ))
-                .await;
-
-                // Check for a stop message to turn off the LEDs
-                if receiver.try_receive().is_ok() {
-                    hd108.set_off().await.unwrap();
-                    break;
-                }
+                // Turn off LEDs after finishing the frames
+                hd108.set_off().await.unwrap();
             }
-
-            // Turn off LEDs after finishing the frames
-            hd108.set_off().await.unwrap();
+            Message::WifiConnected => {
+                println!("Received WifiConnected in run_race_task");
+            }
         }
     }
 }
@@ -230,12 +235,17 @@ async fn button_task(
         // Wait for a button press
         button_pin.wait_for_falling_edge().await;
         sender.send(Message::ButtonPressed).await;
+        println!("Button pressed, message sent.");
         Timer::after(Duration::from_millis(400)).await; // Debounce delay
     }
 }
 
 #[embassy_executor::task]
-async fn connection(mut controller: WifiController<'static>, stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>, sender: Sender<'static, NoopRawMutex, Message, 1>) {
+async fn connection(
+    mut controller: WifiController<'static>,
+    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    sender: Sender<'static, NoopRawMutex, Message, 1>,
+) {
     println!("start connection task");
     println!("Device capabilities: {:?}", controller.get_capabilities());
     loop {
@@ -272,7 +282,7 @@ async fn connection(mut controller: WifiController<'static>, stack: &'static Sta
                     }
                     Timer::after(Duration::from_millis(500)).await;
                 }
-            },
+            }
             Err(e) => {
                 println!("Failed to connect to wifi: {e:?}");
                 Timer::after(Duration::from_millis(5000)).await
@@ -287,27 +297,35 @@ async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
 }
 
 #[embassy_executor::task]
-async fn fetch_update_frames(receiver: Receiver<'static, NoopRawMutex, Message, 1>, stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
+async fn fetch_update_frames(
+    receiver: Receiver<'static, NoopRawMutex, Message, 1>,
+    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+) {
     loop {
         // Wait for the WifiConnected message
-        if let Message::WifiConnected = receiver.receive().await {
-            println!("Fetching update frames started...");
+        match receiver.receive().await {
+            Message::WifiConnected => {
+                println!("Fetching update frames started...");
 
-            // Connect to 8.8.8.8
-            let mut rx_buffer = [0; 4096];
-            let mut tx_buffer = [0; 4096];
+                // Connect to 8.8.8.8
+                let mut rx_buffer = [0; 4096];
+                let mut tx_buffer = [0; 4096];
 
-            let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
-            socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
+                let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+                socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
 
-            let remote_endpoint = (Ipv4Address::new(8, 8, 8, 8), 80);
-            println!("connecting to Google...");
-            let r = socket.connect(remote_endpoint).await;
-            if let Err(e) = r {
-                println!("connect error: {:?}", e);
-                continue;
+                let remote_endpoint = (Ipv4Address::new(8, 8, 8, 8), 80);
+                println!("connecting to Google...");
+                let r = socket.connect(remote_endpoint).await;
+                if let Err(e) = r {
+                    println!("connect error: {:?}", e);
+                    continue;
+                }
+                println!("Connected to Google..");
             }
-            println!("Connected to Google..");
+            Message::ButtonPressed => {
+                println!("Received ButtonPressed in fetch_update_frames");
+            }
         }
     }
 }
