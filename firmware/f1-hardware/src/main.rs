@@ -4,7 +4,7 @@
 
 mod data;
 mod hd108;
-mod driver_info; 
+mod driver_info;
 use driver_info::DRIVERS;
 use data::VISUALIZATION_DATA;
 use embassy_executor::Spawner;
@@ -34,7 +34,7 @@ use heapless::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
 
-//Wifi
+// Wifi
 use embassy_net::{tcp::TcpSocket, Config, Ipv4Address, Stack, StackResources};
 use esp_wifi::{
     initialize,
@@ -62,7 +62,7 @@ enum Message {
     WifiConnected,
 }
 
-static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
+static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new(); // Updated capacity to 1
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -156,7 +156,7 @@ async fn main(spawner: Spawner) {
 
                     spawner.spawn(connection(controller, stack, signal_channel.sender())).ok();
                     spawner.spawn(net_task(stack)).ok();
-                    spawner.spawn(fetch_update_frames(signal_channel.receiver(), stack)).ok();  // Corrected line
+                    spawner.spawn(fetch_update_frames(signal_channel.receiver(), stack)).ok(); // Corrected line
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
@@ -169,57 +169,55 @@ async fn main(spawner: Spawner) {
     }
 }
 
-
 #[embassy_executor::task]
 async fn run_race_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
     receiver: Receiver<'static, NoopRawMutex, Message, 1>,
 ) {
     loop {
-        // Wait for the start message
-        receiver.receive().await;
+        // Wait for the ButtonPressed message
+        if let Message::ButtonPressed = receiver.receive().await {
+            // Iterate through each frame in the visualization data
+            for frame in &data::VISUALIZATION_DATA.frames {
+                // Collect the LED updates for the current frame
+                let mut led_updates: Vec<(usize, u8, u8, u8), 20> = Vec::new();
 
-        // Iterate through each frame in the visualization data
-        for frame in &data::VISUALIZATION_DATA.frames {
-            // Collect the LED updates for the current frame
-            let mut led_updates: Vec<(usize, u8, u8, u8), 20> = Vec::new();
+                for driver_data in frame.drivers.iter().flatten() {
+                    // Find the corresponding driver info
+                    if let Some(driver) = DRIVERS
+                        .iter()
+                        .find(|d| d.number == driver_data.driver_number)
+                    {
+                        led_updates
+                            .push((
+                                driver_data.led_num.try_into().unwrap(),
+                                driver.color.0,
+                                driver.color.1,
+                                driver.color.2,
+                            ))
+                            .unwrap();
+                    }
+                }
 
-            for driver_data in frame.drivers.iter().flatten() {
-                // Find the corresponding driver info
-                if let Some(driver) = DRIVERS
-                    .iter()
-                    .find(|d| d.number == driver_data.driver_number)
-                {
-                    led_updates
-                        .push((
-                            driver_data.led_num.try_into().unwrap(),
-                            driver.color.0,
-                            driver.color.1,
-                            driver.color.2,
-                        ))
-                        .unwrap();
+                // Set the LEDs for the current frame
+                hd108.set_leds(&led_updates).await.unwrap();
+
+                // Wait for the update rate duration
+                Timer::after(Duration::from_millis(
+                    data::VISUALIZATION_DATA.update_rate_ms as u64,
+                ))
+                .await;
+
+                // Check for a stop message to turn off the LEDs
+                if receiver.try_receive().is_ok() {
+                    hd108.set_off().await.unwrap();
+                    break;
                 }
             }
-            
 
-            // Set the LEDs for the current frame
-            hd108.set_leds(&led_updates).await.unwrap();
-
-            // Wait for the update rate duration
-            Timer::after(Duration::from_millis(
-                data::VISUALIZATION_DATA.update_rate_ms as u64,
-            ))
-            .await;
-
-            // Check for a stop message to turn off the LEDs
-            if receiver.try_receive().is_ok() {
-                hd108.set_off().await.unwrap();
-                break;
-            }
+            // Turn off LEDs after finishing the frames
+            hd108.set_off().await.unwrap();
         }
-
-        // Turn off LEDs after finishing the frames
-        hd108.set_off().await.unwrap();
     }
 }
 
@@ -283,9 +281,6 @@ async fn connection(mut controller: WifiController<'static>, stack: &'static Sta
     }
 }
 
-
-
-
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
     stack.run().await
@@ -294,23 +289,25 @@ async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
 #[embassy_executor::task]
 async fn fetch_update_frames(receiver: Receiver<'static, NoopRawMutex, Message, 1>, stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
     loop {
-        receiver.receive().await;
-        println!("Fetching update frames started...");
+        // Wait for the WifiConnected message
+        if let Message::WifiConnected = receiver.receive().await {
+            println!("Fetching update frames started...");
 
-        // Connect to 8.8.8.8
-        let mut rx_buffer = [0; 4096];
-        let mut tx_buffer = [0; 4096];
+            // Connect to 8.8.8.8
+            let mut rx_buffer = [0; 4096];
+            let mut tx_buffer = [0; 4096];
 
-        let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
-        socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
+            let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+            socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
 
-        let remote_endpoint = (Ipv4Address::new(8, 8, 8, 8), 80);
-        println!("connecting to Google...");
-        let r = socket.connect(remote_endpoint).await;
-        if let Err(e) = r {
-            println!("connect error: {:?}", e);
-            continue;
+            let remote_endpoint = (Ipv4Address::new(8, 8, 8, 8), 80);
+            println!("connecting to Google...");
+            let r = socket.connect(remote_endpoint).await;
+            if let Err(e) = r {
+                println!("connect error: {:?}", e);
+                continue;
+            }
+            println!("Connected to Google..");
         }
-        println!("Connected to Google..");
     }
 }
