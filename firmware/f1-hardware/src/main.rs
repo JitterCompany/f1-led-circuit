@@ -5,6 +5,10 @@
 mod data;
 mod hd108;
 mod driver_info;
+//Test
+use embassy_net::dns::{DnsSocket, DnsQueryType};
+use embassy_net::Stack;
+//Test
 use driver_info::DRIVERS;
 use data::VISUALIZATION_DATA;
 use embassy_executor::Spawner;
@@ -35,7 +39,7 @@ use panic_halt as _;
 use static_cell::StaticCell;
 
 // Wifi
-use embassy_net::{tcp::TcpSocket, Config, Ipv4Address, Stack, StackResources};
+use embassy_net::{tcp::TcpSocket, Config, Ipv4Address, StackResources};
 use esp_wifi::{
     initialize,
     wifi::{
@@ -303,27 +307,45 @@ async fn fetch_update_frames(
     receiver: Receiver<'static, NoopRawMutex, WifiMessage, 1>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
 ) {
+    let dns_socket = DnsSocket::new(stack);
+    let hostname = "api.openf1.org"; // Replace with your hostname
+
     loop {
         // Wait for the WifiConnected message
         match receiver.receive().await {
             WifiMessage::WifiConnected => {
                 println!("Fetching update frames started...");
 
-                // Connect to 8.8.8.8
-                let mut rx_buffer = [0; 4096];
-                let mut tx_buffer = [0; 4096];
+                // Resolve the hostname to an IP address
+                match dns_socket.query(hostname, DnsQueryType::A).await {
+                    Ok(ip_addresses) => {
+                        if let Some(ip_address) = ip_addresses.get(0) {
+                            // Use the first IP address returned
+                            let remote_endpoint = (*ip_address, 80);
 
-                let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
-                socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
+                            // Connect to the resolved IP address
+                            let mut rx_buffer = [0; 4096];
+                            let mut tx_buffer = [0; 4096];
+                            let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+                            socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
 
-                let remote_endpoint = (Ipv4Address::new(8, 8, 8, 8), 80);
-                println!("connecting to Google...");
-                let r = socket.connect(remote_endpoint).await;
-                if let Err(e) = r {
-                    println!("connect error: {:?}", e);
-                    continue;
+                            println!("Connecting to {}...", hostname);
+                            match socket.connect(remote_endpoint).await {
+                                Ok(_) => {
+                                    println!("Connected to {}..", hostname);
+                                }
+                                Err(e) => {
+                                    println!("Connect error: {:?}", e);
+                                }
+                            }
+                        } else {
+                            println!("No IP addresses found for {}", hostname);
+                        }
+                    }
+                    Err(e) => {
+                        println!("DNS resolve error: {:?}", e);
+                    }
                 }
-                println!("Connected to Google..");
             }
         }
     }
