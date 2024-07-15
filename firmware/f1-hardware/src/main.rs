@@ -4,6 +4,8 @@
 
 mod data;
 mod hd108;
+mod driver_info; 
+use driver_info::DRIVERS;
 use data::VISUALIZATION_DATA;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
@@ -55,363 +57,9 @@ macro_rules! mk_static {
 const SSID: &str = "SSID";
 const PASSWORD: &str = "PASSWORD";
 
-struct DriverInfo {
-    number: u8,
-    name: &'static str,
-    team: &'static str,
-    color: RGBColor,
-}
-
-struct RGBColor {
-    r: u8,
-    g: u8,
-    b: u8,
-}
-
-/* Actual racing team colors
-const driver_info: [DriverInfo; 20] = [
-    DriverInfo {
-        number: 1,
-        name: "Max Verstappen",
-        team: "Red Bull",
-        color: RGBColor {
-            r: 30,
-            g: 65,
-            b: 255,
-        },
-    },
-    DriverInfo {
-        number: 2,
-        name: "Logan Sargeant",
-        team: "Williams",
-        color: RGBColor {
-            r: 0,
-            g: 82,
-            b: 255,
-        },
-    },
-    DriverInfo {
-        number: 4,
-        name: "Lando Norris",
-        team: "McLaren",
-        color: RGBColor {
-            r: 255,
-            g: 135,
-            b: 0,
-        },
-    },
-    DriverInfo {
-        number: 10,
-        name: "Pierre Gasly",
-        team: "Alpine",
-        color: RGBColor {
-            r: 2,
-            g: 144,
-            b: 240,
-        },
-    },
-    DriverInfo {
-        number: 11,
-        name: "Sergio Perez",
-        team: "Red Bull",
-        color: RGBColor {
-            r: 30,
-            g: 65,
-            b: 255,
-        },
-    },
-    DriverInfo {
-        number: 14,
-        name: "Fernando Alonso",
-        team: "Aston Martin",
-        color: RGBColor {
-            r: 0,
-            g: 110,
-            b: 120,
-        },
-    },
-    DriverInfo {
-        number: 16,
-        name: "Charles Leclerc",
-        team: "Ferrari",
-        color: RGBColor { r: 220, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 18,
-        name: "Lance Stroll",
-        team: "Aston Martin",
-        color: RGBColor {
-            r: 0,
-            g: 110,
-            b: 120,
-        },
-    },
-    DriverInfo {
-        number: 20,
-        name: "Kevin Magnussen",
-        team: "Haas",
-        color: RGBColor {
-            r: 160,
-            g: 207,
-            b: 205,
-        },
-    },
-    DriverInfo {
-        number: 22,
-        name: "Yuki Tsunoda",
-        team: "AlphaTauri",
-        color: RGBColor {
-            r: 60,
-            g: 130,
-            b: 200,
-        },
-    },
-    DriverInfo {
-        number: 23,
-        name: "Alex Albon",
-        team: "Williams",
-        color: RGBColor {
-            r: 0,
-            g: 82,
-            b: 255,
-        },
-    },
-    DriverInfo {
-        number: 24,
-        name: "Zhou Guanyu",
-        team: "Stake F1",
-        color: RGBColor {
-            r: 165,
-            g: 160,
-            b: 155,
-        },
-    },
-    DriverInfo {
-        number: 27,
-        name: "Nico Hulkenberg",
-        team: "Haas",
-        color: RGBColor {
-            r: 160,
-            g: 207,
-            b: 205,
-        },
-    },
-    DriverInfo {
-        number: 31,
-        name: "Esteban Ocon",
-        team: "Alpine",
-        color: RGBColor {
-            r: 2,
-            g: 144,
-            b: 240,
-        },
-    },
-    DriverInfo {
-        number: 40,
-        name: "Liam Lawson",
-        team: "AlphaTauri",
-        color: RGBColor {
-            r: 60,
-            g: 130,
-            b: 200,
-        },
-    },
-    DriverInfo {
-        number: 44,
-        name: "Lewis Hamilton",
-        team: "Mercedes",
-        color: RGBColor {
-            r: 0,
-            g: 210,
-            b: 190,
-        },
-    },
-    DriverInfo {
-        number: 55,
-        name: "Carlos Sainz",
-        team: "Ferrari",
-        color: RGBColor { r: 220, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 63,
-        name: "George Russell",
-        team: "Mercedes",
-        color: RGBColor {
-            r: 0,
-            g: 210,
-            b: 190,
-        },
-    },
-    DriverInfo {
-        number: 77,
-        name: "Valtteri Bottas",
-        team: "Stake F1",
-        color: RGBColor {
-            r: 165,
-            g: 160,
-            b: 155,
-        },
-    },
-    DriverInfo {
-        number: 81,
-        name: "Oscar Piastri",
-        team: "McLaren",
-        color: RGBColor {
-            r: 255,
-            g: 135,
-            b: 0,
-        },
-    },
-];
-
-*/
-
-// For testing purposes
-const driver_info: [DriverInfo; 20] = [
-    //Red
-    DriverInfo {
-        number: 1,
-        name: "Max Verstappen",
-        team: "Red Bull",
-        color: RGBColor { r: 0, g: 0, b: 255 },
-    },
-    DriverInfo {
-        number: 2,
-        name: "Logan Sargeant",
-        team: "Williams",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    //Orange
-    DriverInfo {
-        number: 4,
-        name: "Lando Norris",
-        team: "McLaren",
-        color: RGBColor {
-            r: 242,
-            g: 140,
-            b: 40,
-        },
-    },
-    DriverInfo {
-        number: 10,
-        name: "Pierre Gasly",
-        team: "Alpine",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 11,
-        name: "Sergio Perez",
-        team: "Red Bull",
-        color: RGBColor {
-            r: 210,
-            g: 43,
-            b: 43,
-        },
-    },
-    //Orange
-    DriverInfo {
-        number: 14,
-        name: "Fernando Alonso",
-        team: "Aston Martin",
-        color: RGBColor {
-            r: 242,
-            g: 140,
-            b: 40,
-        },
-    },
-    DriverInfo {
-        number: 16,
-        name: "Charles Leclerc",
-        team: "Ferrari",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 18,
-        name: "Lance Stroll",
-        team: "Aston Martin",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 20,
-        name: "Kevin Magnussen",
-        team: "Haas",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 22,
-        name: "Yuki Tsunoda",
-        team: "AlphaTauri",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 23,
-        name: "Alex Albon",
-        team: "Williams",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 24,
-        name: "Zhou Guanyu",
-        team: "Stake F1",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 27,
-        name: "Nico Hulkenberg",
-        team: "Haas",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 31,
-        name: "Esteban Ocon",
-        team: "Alpine",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 40,
-        name: "Liam Lawson",
-        team: "AlphaTauri",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 44,
-        name: "Lewis Hamilton",
-        team: "Mercedes",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 55,
-        name: "Carlos Sainz",
-        team: "Ferrari",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    //Green
-    DriverInfo {
-        number: 63,
-        name: "George Russell",
-        team: "Mercedes",
-        color: RGBColor {
-            r: 80,
-            g: 200,
-            b: 120,
-        },
-    },
-    DriverInfo {
-        number: 77,
-        name: "Valtteri Bottas",
-        team: "Stake F1",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-    DriverInfo {
-        number: 81,
-        name: "Oscar Piastri",
-        team: "McLaren",
-        color: RGBColor { r: 0, g: 0, b: 0 },
-    },
-];
-
 enum Message {
     ButtonPressed,
+    WifiConnected,
 }
 
 static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
@@ -475,6 +123,11 @@ async fn main(spawner: Spawner) {
         .spawn(run_race_task(hd108, signal_channel.receiver()))
         .unwrap();
 
+    // Spawn the fetch_update_frames task with the receiver
+    spawner
+        .spawn(fetch_update_frames(signal_channel.receiver()))
+        .unwrap();
+
     // Wifi
     //#[cfg(target_arch = "xtensa")]
     //let timer = esp_hal::timer::timg::TimerGroup::new(peripherals.TIMG1, &clocks, None).timer0;
@@ -482,6 +135,7 @@ async fn main(spawner: Spawner) {
     let timer = esp_hal::timer::systimer::SystemTimer::new(peripherals.SYSTIMER).alarm0;
 
     println!("Initializing WiFi...");
+
 
     match initialize(
         EspWifiInitFor::Wifi,
@@ -514,68 +168,8 @@ async fn main(spawner: Spawner) {
 
                     println!("Spawning connection...");
 
-                    spawner.spawn(connection(controller)).ok();
+                    spawner.spawn(connection(controller, signal_channel.sender())).ok();
                     spawner.spawn(net_task(&stack)).ok();
-
-                    let mut rx_buffer = [0; 4096];
-                    let mut tx_buffer = [0; 4096];
-
-                    loop {
-                        if stack.is_link_up() {
-                            break;
-                        }
-                        Timer::after(Duration::from_millis(500)).await;
-                    }
-
-                    println!("Waiting to get IP address...");
-                    loop {
-                        if let Some(config) = stack.config_v4() {
-                            println!("Got IP: {}", config.address);
-                            break;
-                        }
-                        Timer::after(Duration::from_millis(500)).await;
-                    }
-
-                    loop {
-                        Timer::after(Duration::from_millis(1_000)).await;
-
-                        let mut socket = TcpSocket::new(&stack, &mut rx_buffer, &mut tx_buffer);
-
-                        socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
-
-                        let remote_endpoint = (Ipv4Address::new(142, 250, 185, 115), 80);
-                        println!("connecting...");
-                        let r = socket.connect(remote_endpoint).await;
-                        if let Err(e) = r {
-                            println!("connect error: {:?}", e);
-                            continue;
-                        }
-                        println!("connected!");
-                        let mut buf = [0; 1024];
-                        loop {
-                            use embedded_io_async::Write;
-                            let r = socket
-                                .write_all(b"GET / HTTP/1.0\r\nHost: www.mobile-j.de\r\n\r\n")
-                                .await;
-                            if let Err(e) = r {
-                                println!("write error: {:?}", e);
-                                break;
-                            }
-                            let n = match socket.read(&mut buf).await {
-                                Ok(0) => {
-                                    println!("read EOF");
-                                    break;
-                                }
-                                Ok(n) => n,
-                                Err(e) => {
-                                    println!("read error: {:?}", e);
-                                    break;
-                                }
-                            };
-                            println!("{}", core::str::from_utf8(&buf[..n]).unwrap());
-                        }
-                        Timer::after(Duration::from_millis(3000)).await;
-                    }
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
@@ -587,7 +181,6 @@ async fn main(spawner: Spawner) {
         }
     }
 }
-
 
 #[embassy_executor::task]
 async fn run_race_task(
@@ -605,20 +198,21 @@ async fn run_race_task(
 
             for driver_data in frame.drivers.iter().flatten() {
                 // Find the corresponding driver info
-                if let Some(driver) = driver_info
+                if let Some(driver) = DRIVERS
                     .iter()
-                    .find(|d| u32::from(d.number) == driver_data.driver_number)
+                    .find(|d| d.number == driver_data.driver_number)
                 {
                     led_updates
                         .push((
                             driver_data.led_num.try_into().unwrap(),
-                            driver.color.r,
-                            driver.color.g,
-                            driver.color.b,
+                            driver.color.0,
+                            driver.color.1,
+                            driver.color.2,
                         ))
                         .unwrap();
                 }
             }
+            
 
             // Set the LEDs for the current frame
             hd108.set_leds(&led_updates).await.unwrap();
@@ -655,7 +249,7 @@ async fn button_task(
 }
 
 #[embassy_executor::task]
-async fn connection(mut controller: WifiController<'static>) {
+async fn connection(mut controller: WifiController<'static>, sender: Sender<'static, NoopRawMutex, Message, 1>) {
     println!("start connection task");
     println!("Device capabilities: {:?}", controller.get_capabilities());
     loop {
@@ -681,7 +275,10 @@ async fn connection(mut controller: WifiController<'static>) {
         println!("About to connect...");
 
         match controller.connect().await {
-            Ok(_) => println!("Wifi connected!"),
+            Ok(_) => {
+                println!("Wifi connected!");
+                sender.send(Message::WifiConnected).await;
+            },
             Err(e) => {
                 println!("Failed to connect to wifi: {e:?}");
                 Timer::after(Duration::from_millis(5000)).await
@@ -690,7 +287,17 @@ async fn connection(mut controller: WifiController<'static>) {
     }
 }
 
+
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
     stack.run().await
+}
+
+#[embassy_executor::task]
+async fn fetch_update_frames(receiver: Receiver<'static, NoopRawMutex, Message, 1>) {
+    loop {
+        receiver.receive().await;
+        println!("Fetching update frames started...");
+        // Add your frame fetching logic here
+    }
 }
