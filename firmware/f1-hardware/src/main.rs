@@ -41,6 +41,7 @@ use serde::{Deserialize, Serialize};
 use postcard::from_bytes;
 use postcard::to_vec;
 use serde_json_core::from_slice;
+use core::fmt::Write as FmtWrite; // Importing core::fmt::Write trait with alias
 
 // Wifi
 use embassy_net::{tcp::TcpSocket, Config, StackResources};
@@ -401,9 +402,9 @@ async fn fetch_data(socket: &mut TcpSocket<'_>, sender: Sender<'static, NoopRawM
         url.push_str(session_key).unwrap();
         url.push_str("&driver_number=").unwrap();
         push_u32(&mut url, driver_number).unwrap();
-        url.push_str("&date>").unwrap();
+        url.push_str("&date%3E").unwrap();  // Encoding for '>'
         url.push_str(start_time).unwrap();
-        url.push_str("&date<").unwrap();
+        url.push_str("&date%3C").unwrap();  // Encoding for '<'
         url.push_str(end_time).unwrap();
         url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n").unwrap();
         
@@ -441,7 +442,8 @@ async fn fetch_data(socket: &mut TcpSocket<'_>, sender: Sender<'static, NoopRawM
 fn push_u32(buf: &mut String<256>, num: u32) -> Result<(), ()> {
     let mut temp: String<10> = String::new();
     write!(temp, "{}", num).unwrap();
-    buf.push_str(&temp)
+    buf.push_str(&temp).unwrap();
+    Ok(())
 }
 
 fn find_http_body(response: &[u8]) -> Option<usize> {
