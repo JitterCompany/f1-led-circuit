@@ -49,6 +49,7 @@ riscv = "0.11.1"
 heapless = "0.7.1"
 postcard = "1.0.8"
 serde = { version = "1.0.204", default-features = false }
+serde-json-core = "0.5.1"
 
 [profile.dev]
 # Rust debug is too slow. 

@@ -3,8 +3,8 @@ runner = "espflash flash --monitor"
 
 [env]
 ESP_LOGLEVEL="INFO"
-SSID = "SSID"
-PASSWORD = "PASSWORD"
+SSID = "NOS-C8C0 Plumes"
+PASSWORD = "AGYQ24VR"
 
 [build]
 rustflags = [

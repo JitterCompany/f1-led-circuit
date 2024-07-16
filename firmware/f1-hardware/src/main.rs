@@ -38,9 +38,9 @@ use static_cell::StaticCell;
 use embedded_io_async::Write;
 use heapless::{String, Vec};
 use serde::{Deserialize, Serialize};
-use postcard::accumulator::{CobsAccumulator, FeedResult};
 use postcard::from_bytes;
 use postcard::to_vec;
+use serde_json_core::from_slice;
 
 // Wifi
 use embassy_net::{tcp::TcpSocket, Config, StackResources};
@@ -51,7 +51,6 @@ use esp_wifi::{
         WifiState,
     },
     EspWifiInitFor,
-    wifi::get_sta_state,
 };
 
 macro_rules! mk_static {
@@ -369,7 +368,7 @@ async fn fetch_update_frames(
                                 Ok(_) => {
                                     println!("Connected to {}..", hostname);
                                     // Fetch data from the URL
-                                    let url = "GET /v1/location?session_key=9161&driver_number=81&date>2023-09-16T13:03:35.200&date<2023-09-16T13:03:35.800 HTTP/1.1\r\nHost: api.openf1.org\r\n\r\n";
+                                    let url = "GET /v1/location?session_key=9149&driver_number=1&date>2023-08-27T12:58:56.234Z&date<2023-08-27T13:20:54.214Z HTTP/1.1\r\nHost: api.openf1.org\r\n\r\n";
                                     println!("Sending request: {}", url);
                                     socket.write_all(url.as_bytes()).await.unwrap();
 
@@ -382,21 +381,18 @@ async fn fetch_update_frames(
                                         let body = &response[body_start..n];
                                         println!("Body: {:?}", body);
 
-                                        let mut cobs_accumulator: CobsAccumulator<256> = CobsAccumulator::new();
-
-                                        let mut window = body;
-
-                                        'cobs: while !window.is_empty() {
-                                            window = match cobs_accumulator.feed::<FetchedData>(&window) {
-                                                FeedResult::Consumed => break 'cobs,
-                                                FeedResult::OverFull(new_wind) => new_wind,
-                                                FeedResult::DeserError(new_wind) => new_wind,
-                                                FeedResult::Success { data, remaining } => {
-                                                    println!("Parsed data: {:?}", data);
-                                                    sender.send(FetchMessage::FetchedData([data.clone(), data])).await;
-                                                    remaining
-                                                }
-                                            };
+                                        // Deserialize JSON response
+                                        let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+                                        match data {
+                                            Ok(data) => {
+                                                println!("Parsed data: {:?}", data);
+                                                // Assuming you can only send a fixed-size array
+                                                let data_array: [FetchedData; 2] = data.into_array().expect("Data slice to array conversion failed");
+                                                sender.send(FetchMessage::FetchedData(data_array)).await;
+                                            }
+                                            Err(e) => {
+                                                println!("Failed to parse JSON: {:?}", e);
+                                            }
                                         }
                                     } else {
                                         println!("Failed to find body in HTTP response.");
