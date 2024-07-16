@@ -95,7 +95,7 @@ enum WifiMessage {
 }
 
 enum FetchMessage {
-    FetchedData([FetchedData; 2]), // Fixed-size array for the fetched data
+    FetchedData(Vec<FetchedData, 64>), // Dynamically sized vector for the fetched data
 }
 
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
@@ -368,35 +368,7 @@ async fn fetch_update_frames(
                                 Ok(_) => {
                                     println!("Connected to {}..", hostname);
                                     // Fetch data from the URL
-                                    let url = "GET /v1/location?session_key=9149&driver_number=1&date>2023-08-27T12:58:56.234Z&date<2023-08-27T13:20:54.214Z HTTP/1.1\r\nHost: api.openf1.org\r\n\r\n";
-                                    println!("Sending request: {}", url);
-                                    socket.write_all(url.as_bytes()).await.unwrap();
-
-                                    let mut response = [0u8; 2048];
-                                    let n = socket.read(&mut response).await.unwrap();
-                                    println!("Raw response: {:?}", &response[..n]);
-
-                                    // Extract the body from the HTTP response
-                                    if let Some(body_start) = find_http_body(&response[..n]) {
-                                        let body = &response[body_start..n];
-                                        println!("Body: {:?}", body);
-
-                                        // Deserialize JSON response
-                                        let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
-                                        match data {
-                                            Ok(data) => {
-                                                println!("Parsed data: {:?}", data);
-                                                // Assuming you can only send a fixed-size array
-                                                let data_array: [FetchedData; 2] = data.into_array().expect("Data slice to array conversion failed");
-                                                sender.send(FetchMessage::FetchedData(data_array)).await;
-                                            }
-                                            Err(e) => {
-                                                println!("Failed to parse JSON: {:?}", e);
-                                            }
-                                        }
-                                    } else {
-                                        println!("Failed to find body in HTTP response.");
-                                    }
+                                    fetch_data(&mut socket, sender).await;
                                 }
                                 Err(e) => {
                                     println!("Connect error: {:?}", e);
@@ -415,6 +387,63 @@ async fn fetch_update_frames(
     }
 }
 
+async fn fetch_data(socket: &mut TcpSocket<'_>, sender: Sender<'static, NoopRawMutex, FetchMessage, 1>) {
+    let session_key = "9149";
+    let driver_numbers = [1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81];
+    let start_time = "2023-08-27T12:58:56.234Z";
+    let end_time = "2023-08-27T13:20:54.214Z";
+    
+    let mut all_data = Vec::<FetchedData, 64>::new();
+    
+    for &driver_number in &driver_numbers {
+        let mut url: String<256> = String::new();
+        url.push_str("GET /v1/location?session_key=").unwrap();
+        url.push_str(session_key).unwrap();
+        url.push_str("&driver_number=").unwrap();
+        push_u32(&mut url, driver_number).unwrap();
+        url.push_str("&date>").unwrap();
+        url.push_str(start_time).unwrap();
+        url.push_str("&date<").unwrap();
+        url.push_str(end_time).unwrap();
+        url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n").unwrap();
+        
+        println!("Sending request: {}", url);
+        socket.write_all(url.as_bytes()).await.unwrap();
+
+        let mut response = [0u8; 2048];
+        let n = socket.read(&mut response).await.unwrap();
+        println!("Raw response: {:?}", &response[..n]);
+
+        if let Some(body_start) = find_http_body(&response[..n]) {
+            let body = &response[body_start..n];
+            println!("Body: {:?}", body);
+
+            let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+            match data {
+                Ok(data) => {
+                    println!("Parsed data: {:?}", data);
+                    for item in data {
+                        all_data.push(item).unwrap();
+                    }
+                }
+                Err(e) => {
+                    println!("Failed to parse JSON: {:?}", e);
+                }
+            }
+        } else {
+            println!("Failed to find body in HTTP response.");
+        }
+    }
+
+    sender.send(FetchMessage::FetchedData(all_data)).await;
+}
+
+fn push_u32(buf: &mut String<256>, num: u32) -> Result<(), ()> {
+    let mut temp: String<10> = String::new();
+    write!(temp, "{}", num).unwrap();
+    buf.push_str(&temp)
+}
+
 fn find_http_body(response: &[u8]) -> Option<usize> {
     let header_end = b"\r\n\r\n";
     response.windows(header_end.len()).position(|window| window == header_end).map(|pos| pos + header_end.len())
@@ -422,7 +451,7 @@ fn find_http_body(response: &[u8]) -> Option<usize> {
 
 #[embassy_executor::task]
 async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) {
-    let mut data_to_be_visualized: Option<[FetchedData; 2]> = None;
+    let mut data_to_be_visualized: Option<Vec<FetchedData, 64>> = None;
 
     loop {
         match receiver.receive().await {
