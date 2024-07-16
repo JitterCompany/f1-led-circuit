@@ -313,23 +313,52 @@ async fn wifi_connection(
         match controller.connect().await {
             Ok(_) => {
                 println!("Wifi connected!");
+
+                // Log specific attributes of the controller if possible
+                if let Ok(configuration) = controller.get_configuration() {
+                    println!("Controller configuration: {:?}", configuration);
+                }
+
+                if let Ok(capabilities) = controller.get_capabilities() {
+                    println!("Controller capabilities: {:?}", capabilities);
+                }
+
+                println!("Checking initial config_v4...");
+                if let Some(config) = stack.config_v4() {
+                    println!("Initial config_v4 found: {:?}", config);
+                } else {
+                    println!("No initial config_v4 found, will wait for IP address...");
+                }
+
                 // Wait for an IP address
+                let mut retries = 0;
                 loop {
+                    println!("Current stack config_v4 state: {:?}", stack.config_v4());
+
                     if let Some(config) = stack.config_v4() {
                         println!("Got IP: {}", config.address);
                         sender.send(WifiMessage::WifiConnected).await;
                         break;
+                    } else {
+                        println!("IP connection attempt -- retry {}", retries);
+                        retries += 1;
+                        if retries > 20 {
+                            println!("Failed to get IP address after {} retries. Restarting WiFi connection...", retries);
+                            controller.stop().await.unwrap();
+                            break;
+                        }
                     }
-                    Timer::after(Duration::from_millis(500)).await;
+                    Timer::after(Duration::from_millis(2000)).await;
                 }
             }
             Err(e) => {
                 println!("Failed to connect to wifi: {e:?}");
-                Timer::after(Duration::from_millis(5000)).await
+                Timer::after(Duration::from_millis(5000)).await;
             }
         }
     }
 }
+
 
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
