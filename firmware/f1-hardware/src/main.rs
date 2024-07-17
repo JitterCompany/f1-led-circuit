@@ -33,7 +33,8 @@ use esp_hal::{
 };
 use esp_println::println;
 use hd108::HD108;
-use heapless07::{String, Vec};
+use heapless07::{String as Heapless07String, Vec as Heapless07Vec};
+use heapless08::{String as Heapless08String, Vec as Heapless08Vec};
 use panic_halt as _;
 use postcard::{from_bytes, to_vec};
 use serde::{Deserialize, Serialize};
@@ -49,13 +50,12 @@ use esp_wifi::{
     initialize,
     wifi::{
         ClientConfiguration, Configuration, WifiController, WifiDevice, WifiEvent, WifiStaDevice,
-        WifiState,
     },
     EspWifiInitFor,
 };
 use embassy_net::tcp::TcpSocket;
 
-type HeaplessVec08<T, const N: usize> = heapless08::Vec<T, N>;
+type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
 macro_rules! mk_static {
     ($t:path,$val:expr) => {{
@@ -76,7 +76,7 @@ const DNS_SERVER: &str = "8.8.8.8";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
-    date: String<32>,
+    date: Heapless08String<32>,
     driver_number: u32,
     meeting_key: u32,
     session_key: u32,
@@ -92,7 +92,7 @@ impl FetchedData {
     }
 
     #[allow(dead_code)]
-    fn to_postcard(&self) -> Result<Vec<u8, 128>, &'static str> {
+    fn to_postcard(&self) -> Result<Heapless07Vec<u8, 128>, &'static str> {
         to_vec(self).map_err(|_| "Failed to serialize")
     }
 }
@@ -104,10 +104,12 @@ enum ButtonMessage {
 enum WifiMessage {
     WifiConnected,
     WifiInitialized,
+    IpAddressAcquired,
+    Disconnected,
 }
 
 enum FetchMessage {
-    FetchedData(Vec<FetchedData, 64>), // Dynamically sized vector for the fetched data
+    FetchedData(Heapless08Vec<FetchedData, 64>), // Dynamically sized vector for the fetched data
 }
 
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
@@ -196,7 +198,6 @@ async fn main(spawner: Spawner) {
             match esp_wifi::wifi::new_with_mode(&init_wifi, wifi, WifiStaDevice) {
                 Ok((wifi_interface, controller)) => {
                     println!("WiFi controller and interface created...");
-                    // Continue with the rest of the setup
 
                     let static_ip: Ipv4Address = STATIC_IP.parse().unwrap();
                     let subnet_mask: u8 = 24; // For 255.255.255.0
@@ -281,7 +282,7 @@ async fn run_race_task(
                 // Iterate through each frame in the visualization data
                 for frame in &data::VISUALIZATION_DATA.frames {
                     // Collect the LED updates for the current frame
-                    let mut led_updates: Vec<(usize, u8, u8, u8), 20> = Vec::new();
+                    let mut led_updates: Heapless08Vec<(usize, u8, u8, u8), 20> = Heapless08Vec::new();
 
                     for driver_data in frame.drivers.iter().flatten() {
                         // Find the corresponding driver info
@@ -355,82 +356,37 @@ async fn wifi_connection(
         _ => {}
     }
 
+    // Configure the WiFi connection
+    let mut ssid: Heapless08String<32> = Heapless08String::new();
+    ssid.push_str(SSID).unwrap();
+
+    let mut password: Heapless08String<64> = Heapless08String::new();
+    password.push_str(PASSWORD).unwrap();
+
+    controller.set_configuration(&Configuration::Client(ClientConfiguration {
+        ssid,
+        password,
+        ..Default::default()
+    })).unwrap();
+
+    // Connect to WiFi
+    controller.connect().await.unwrap();
+
     loop {
-        match esp_wifi::wifi::get_wifi_state() {
-            WifiState::StaConnected => {
-                controller.wait_for_event(WifiEvent::StaDisconnected).await;
-                Timer::after(Duration::from_millis(5000)).await;
+        match controller.wait_for_event(WifiEvent::StaConnected).await {
+            WifiEvent::StaConnected => {
+                println!("WiFi connected.");
+                sender.send(WifiMessage::WifiConnected).await;
+            }
+            WifiEvent::StaDisconnected => {
+                println!("WiFi disconnected.");
+                sender.send(WifiMessage::Disconnected).await;
             }
             _ => {}
         }
-
-        if !matches!(controller.is_started(), Ok(true)) {
-            println!("Configuring wifi client");
-            let client_config = Configuration::Client(ClientConfiguration {
-                ssid: SSID.try_into().unwrap(),
-                password: PASSWORD.try_into().unwrap(),
-                ..Default::default()
-            });
-
-            controller.set_configuration(&client_config).unwrap();
-            println!("Client config: {:?}", &client_config);
-            println!("Starting wifi");
-            controller.start().await.unwrap();
-        }
-
-        println!("About to connect...");
-        match controller.connect().await {
-            Ok(_) => {
-                println!("Wifi connected!");
-
-                // Log specific attributes of the controller if possible
-                if let Ok(configuration) = controller.get_configuration() {
-                    println!("Controller configuration: {:?}", configuration);
-                }
-
-                if let Ok(capabilities) = controller.get_capabilities() {
-                    println!("Controller capabilities: {:?}", capabilities);
-                }
-
-                println!("Checking initial config_v4...");
-                if let Some(config) = stack.config_v4() {
-                    println!("Initial config_v4 found: {:?}", config);
-                } else {
-                    println!("No initial config_v4 found, will wait for IP address...");
-                }
-
-                // Wait for an IP address
-                let mut retries = 0;
-                loop {
-                    println!("Current stack config_v4 state: {:?}", stack.config_v4());
-
-                    if stack.is_link_up() {
-                        println!("Link is up...");
-                    }
-
-                    if let Some(config) = stack.config_v4() {
-                        println!("Got IP: {}", config.address);
-                        sender.send(WifiMessage::WifiConnected).await;
-                        break;
-                    } else {
-                        println!("IP connection attempt -- retry {}", retries);
-                        retries += 1;
-                        if retries > 20 {
-                            println!("Failed to get IP address after {} retries. Restarting WiFi connection...", retries);
-                            controller.stop().await.unwrap();
-                            break;
-                        }
-                    }
-                    Timer::after(Duration::from_millis(3000)).await;
-                }
-            }
-            Err(e) => {
-                println!("Failed to connect to wifi: {e:?}");
-                Timer::after(Duration::from_millis(5000)).await;
-            }
-        }
     }
 }
+
 
 #[embassy_executor::task]
 async fn run_network_stack(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
@@ -449,7 +405,7 @@ async fn fetch_update_frames(
     let hostname = "api.openf1.org"; // Replace with your hostname
 
     loop {
-        // Wait for the WifiConnected message
+        // Wait for the WifiConnected and IpAddressAcquired messages
         match receiver.receive().await {
             WifiMessage::WifiConnected => {
                 println!("Fetching update frames started...");
@@ -487,6 +443,10 @@ async fn fetch_update_frames(
                     }
                 }
             }
+            WifiMessage::Disconnected => {
+                println!("Handling disconnection...");
+                // Handle disconnection if needed
+            }
             _ => {}
         }
     }
@@ -504,7 +464,7 @@ async fn fetch_data_https<'a>(
     let start_time = "2023-08-27T12:58:56.234Z";
     let end_time = "2023-08-27T13:20:54.214Z";
 
-    let mut all_data = Vec::<FetchedData, 64>::new();
+    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
 
     // Set debug level for TLS
     set_debug(0);
@@ -530,7 +490,7 @@ async fn fetch_data_https<'a>(
     println!("TLS connection established");
 
     for &driver_number in &driver_numbers {
-        let mut url: String<256> = String::new();
+        let mut url: Heapless08String<256> = Heapless08String::new();
         write!(
             url,
             "GET /v1/location?session_key={}&driver_number={}&date%3E{}&date%3C{} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n",
@@ -552,7 +512,7 @@ async fn fetch_data_https<'a>(
             println!("Body length: {}", body.len());
             println!("Body: {:?}", body);
 
-            let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+            let data: Result<Heapless08Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
             match data {
                 Ok(data) => {
                     println!("Parsed data length: {}", data.len());
@@ -573,8 +533,8 @@ async fn fetch_data_https<'a>(
     sender.send(FetchMessage::FetchedData(all_data)).await;
 }
 
-fn push_u32(buf: &mut String<256>, num: u32) -> Result<(), ()> {
-    let mut temp: String<10> = String::new();
+fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
+    let mut temp: Heapless08String<10> = Heapless08String::new();
     write!(temp, "{}", num).unwrap();
     buf.push_str(&temp).unwrap();
     Ok(())
@@ -590,7 +550,7 @@ fn find_http_body(response: &[u8]) -> Option<usize> {
 
 #[embassy_executor::task]
 async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) {
-    let mut data_to_be_visualized: Option<Vec<FetchedData, 64>> = None;
+    let mut data_to_be_visualized: Option<Heapless08Vec<FetchedData, 64>> = None;
 
     loop {
         match receiver.receive().await {

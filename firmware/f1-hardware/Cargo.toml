@@ -48,7 +48,7 @@ panic-halt = "0.2.0"
 riscv-rt = "0.12.2"
 riscv = "0.11.1"
 heapless07 = { package = "heapless", version = "0.7.1" }
-heapless08 = { package = "heapless", version = "0.8.0" }
+heapless08 = { package = "heapless", version = "0.8.0", features = ["serde"] }
 postcard = "1.0.8"
 serde = { version = "1.0.204", default-features = false }
 serde-json-core = "0.5.1"
