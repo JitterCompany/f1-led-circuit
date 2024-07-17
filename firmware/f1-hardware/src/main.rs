@@ -11,7 +11,7 @@ use driver_info::DRIVERS;
 use core::fmt::Write as FmtWrite;
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
-use embassy_net::Stack;
+use embassy_net::{Stack, Ipv4Address, Ipv4Cidr};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::channel::Receiver;
@@ -207,6 +207,7 @@ async fn main(spawner: Spawner) {
                     spawner.spawn(net_task(stack)).ok();
                     spawner
                         .spawn(fetch_update_frames(
+                            spawner,
                             wifi_channel.receiver(),
                             stack,
                             fetch_channel.sender(),
@@ -316,11 +317,10 @@ async fn wifi_connection(
                 ..Default::default()
             });
             controller.set_configuration(&client_config).unwrap();
-            //println!("Starting wifi");
             controller.start().await.unwrap();
-            //println!("Wifi started!");
+
         }
-        println!("WiFi connection attemp...");
+        println!("WiFi connection attempt...");
 
         match controller.connect().await {
             Ok(_) => {
@@ -378,6 +378,7 @@ async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
 
 #[embassy_executor::task]
 async fn fetch_update_frames(
+    spawner: Spawner,
     receiver: Receiver<'static, NoopRawMutex, WifiMessage, 1>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
@@ -409,7 +410,7 @@ async fn fetch_update_frames(
                                 Ok(_) => {
                                     println!("Connected to {}..", hostname);
                                     // Fetch data from the URL
-                                    fetch_data(&mut socket, sender).await;
+                                    spawner.spawn(fetch_data(stack, sender)).unwrap();
                                 }
                                 Err(e) => {
                                     println!("Connect error: {:?}", e);
@@ -428,8 +429,9 @@ async fn fetch_update_frames(
     }
 }
 
+#[embassy_executor::task]
 async fn fetch_data(
-    socket: &mut TcpSocket<'_>,
+    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
     let session_key = "9149";
@@ -443,7 +445,7 @@ async fn fetch_data(
 
     for &driver_number in &driver_numbers {
         let mut url: String<256> = String::new();
-        url.push_str("https://api.openf1.org/v1/location?session_key=")
+        url.push_str("GET /v1/location?session_key=")
             .unwrap();
         url.push_str(session_key).unwrap();
         url.push_str("&driver_number=").unwrap();
@@ -452,36 +454,74 @@ async fn fetch_data(
         url.push_str(start_time).unwrap();
         url.push_str("&date%3C").unwrap(); // Encoding for '<'
         url.push_str(end_time).unwrap();
+        url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n").unwrap();
 
         println!("Sending request: {}", url);
-        socket.write_all(url.as_bytes()).await.unwrap();
 
-        let mut response = [0u8; 2048];
-        let n = socket.read(&mut response).await.unwrap();
-        println!("Raw response: {:?}", &response[..n]);
+        // Reopen the socket for each request since `Connection: close` is used
+        let mut rx_buffer = [0; 4096];
+        let mut tx_buffer = [0; 4096];
+        let remote_endpoint = (Ipv4Address::new(192, 168, 1, 1), 80); // example IP, replace with actual resolved IP
+        let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+        socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
 
-        if let Some(body_start) = find_http_body(&response[..n]) {
-            let body = &response[body_start..n];
-            println!("Body: {:?}", body);
+        match socket.connect(remote_endpoint).await {
+            Ok(_) => {
+                println!("Connected to api.openf1.org");
+                socket.write_all(url.as_bytes()).await.unwrap();
 
-            let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
-            match data {
-                Ok(data) => {
-                    println!("Parsed data: {:?}", data);
-                    for item in data {
-                        all_data.push(item).unwrap();
+                let mut response = [0u8; 4096];  // Increased buffer size to handle larger responses
+                let mut total_read = 0;
+
+                loop {
+                    match socket.read(&mut response[total_read..]).await {
+                        Ok(0) => break, // Connection closed
+                        Ok(n) => total_read += n,
+                        Err(e) => {
+                            println!("Error reading response: {:?}", e);
+                            break;
+                        }
                     }
                 }
-                Err(e) => {
-                    println!("Failed to parse JSON: {:?}", e);
+
+                println!("Raw response: {:?}", &response[..total_read]);
+
+                if total_read > 0 {
+                    // Check the HTTP status code
+                    if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                        if let Some(body_start) = find_http_body(&response[..total_read]) {
+                            let body = &response[body_start..total_read];
+                            println!("Body: {:?}", body);
+
+                            let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+                            match data {
+                                Ok(data) => {
+                                    println!("Parsed data: {:?}", data);
+                                    for item in data {
+                                        all_data.push(item).unwrap();
+                                    }
+                                }
+                                Err(e) => {
+                                    println!("Failed to parse JSON: {:?}", e);
+                                }
+                            }
+                        } else {
+                            println!("Failed to find body in HTTP response.");
+                        }
+                    } else {
+                        println!("Non-200 HTTP response: {:?}", &response[..total_read]);
+                    }
+                } else {
+                    println!("Empty response received.");
                 }
             }
-        } else {
-            println!("Failed to find body in HTTP response.");
+            Err(e) => {
+                println!("Connect error: {:?}", e);
+            }
         }
     }
 
-    sender.send(FetchMessage::FetchedData(all_data)).await;
+    sender.send(FetchMessage::FetchedData(all_data)).await; 
 }
 
 fn push_u32(buf: &mut String<256>, num: u32) -> Result<(), ()> {
