@@ -376,7 +376,7 @@ async fn wifi_connection(
                 match controller.connect().await {
                     Ok(_) => {
                         println!("WiFi connected successfully.");
-                        sender.send(WifiMessage::WifiConnected).await;
+                        //sender.send(WifiMessage::WifiConnected).await;
                         break;
                     }
                     Err(e) => {
@@ -432,7 +432,18 @@ async fn fetch_update_frames(
     let dns_socket = DnsSocket::new(stack);
     let hostname = "api.openf1.org"; // Replace with your hostname
 
-    loop {
+    match receiver.receive().await {
+        WifiMessage::IpAddressAcquired => {
+            // Handle the case where the IP address is acquired
+            println!("IP Address acquired.");
+        },
+        _ => {
+            // Handle the case where other Wifi message is received
+            println!("Other WiFi message received.");
+        }
+    }
+
+    /* loop {
         // Wait for the WifiConnected and IpAddressAcquired messages
         match receiver.receive().await {
             WifiMessage::IpAddressAcquired => {
@@ -476,9 +487,8 @@ async fn fetch_update_frames(
                 // Handle disconnection if needed
             }
             _ => {}
-        }
-    }
-}
+        } */
+    } 
 
 async fn fetch_data_https<'a>(
     mut socket: TcpSocket<'a>,
