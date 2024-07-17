@@ -419,63 +419,74 @@ async fn fetch_data(
 
         println!("Sending request: {}", url);
 
-        let mut rx_buffer = [0; 4096];
-        let mut tx_buffer = [0; 4096];
-        let remote_endpoint = (ip_address, 80); // Use the resolved IP address here
-        let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
-        socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
+        let mut retries = 0;
+        loop {
+            let mut rx_buffer = [0; 4096];
+            let mut tx_buffer = [0; 4096];
+            let remote_endpoint = (ip_address, 80); // Use the resolved IP address here
+            let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+            socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
 
-        match socket.connect(remote_endpoint).await {
-            Ok(_) => {
-                println!("Connected to api.openf1.org");
-                socket.write_all(url.as_bytes()).await.unwrap();
+            match socket.connect(remote_endpoint).await {
+                Ok(_) => {
+                    println!("Connected to api.openf1.org");
+                    socket.write_all(url.as_bytes()).await.unwrap();
 
-                let mut response = [0u8; 4096];  // Increased buffer size to handle larger responses
-                let mut total_read = 0;
+                    let mut response = [0u8; 4096];  // Increased buffer size to handle larger responses
+                    let mut total_read = 0;
 
-                loop {
-                    match socket.read(&mut response[total_read..]).await {
-                        Ok(0) => break, // Connection closed
-                        Ok(n) => total_read += n,
-                        Err(e) => {
-                            println!("Error reading response: {:?}", e);
-                            break;
+                    loop {
+                        match socket.read(&mut response[total_read..]).await {
+                            Ok(0) => break, // Connection closed
+                            Ok(n) => total_read += n,
+                            Err(e) => {
+                                println!("Error reading response: {:?}", e);
+                                break;
+                            }
                         }
                     }
-                }
 
-                println!("Raw response: {:?}", &response[..total_read]);
+                    println!("Raw response: {:?}", &response[..total_read]);
 
-                if total_read > 0 {
-                    if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
-                        if let Some(body_start) = find_http_body(&response[..total_read]) {
-                            let body = &response[body_start..total_read];
-                            println!("Body: {:?}", body);
+                    if total_read > 0 {
+                        if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                            if let Some(body_start) = find_http_body(&response[..total_read]) {
+                                let body = &response[body_start..total_read];
+                                println!("Body: {:?}", body);
 
-                            let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
-                            match data {
-                                Ok(data) => {
-                                    println!("Parsed data: {:?}", data);
-                                    for item in data {
-                                        all_data.push(item).unwrap();
+                                let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+                                match data {
+                                    Ok(data) => {
+                                        println!("Parsed data: {:?}", data);
+                                        for item in data {
+                                            all_data.push(item).unwrap();
+                                        }
+                                    }
+                                    Err(e) => {
+                                        println!("Failed to parse JSON: {:?}", e);
                                     }
                                 }
-                                Err(e) => {
-                                    println!("Failed to parse JSON: {:?}", e);
-                                }
+                            } else {
+                                println!("Failed to find body in HTTP response.");
                             }
                         } else {
-                            println!("Failed to find body in HTTP response.");
+                            // Log the non-200 HTTP response and move on
+                            println!("Non-200 HTTP response received");
                         }
                     } else {
-                        println!("Non-200 HTTP response: {:?}", &response[..total_read]);
+                        println!("Empty response received.");
                     }
-                } else {
-                    println!("Empty response received.");
+                    break;
                 }
-            }
-            Err(e) => {
-                println!("Connect error: {:?}", e);
+                Err(e) => {
+                    retries += 1;
+                    if retries > 5 {
+                        println!("Failed to connect after 5 retries: {:?}", e);
+                        break;
+                    }
+                    println!("Connect error: {:?}. Retrying... ({}/5)", e, retries);
+                    Timer::after(Duration::from_millis(2000)).await;
+                }
             }
         }
     }
