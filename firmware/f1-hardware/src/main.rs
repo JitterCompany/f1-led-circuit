@@ -11,11 +11,9 @@ use driver_info::DRIVERS;
 use core::fmt::Write as FmtWrite;
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
-use embassy_net::Stack;
+use embassy_net::{Config, Ipv4Address, Ipv4Cidr, StaticConfigV4, Stack, StackResources};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::channel::Channel;
-use embassy_sync::channel::Receiver;
-use embassy_sync::channel::Sender;
+use embassy_sync::channel::{Channel, Receiver, Sender};
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use embedded_io_async::Write;
@@ -35,10 +33,9 @@ use esp_hal::{
 };
 use esp_println::println;
 use hd108::HD108;
-use heapless::{String, Vec};
+use heapless07::{String, Vec};
 use panic_halt as _;
-use postcard::from_bytes;
-use postcard::to_vec;
+use postcard::{from_bytes, to_vec};
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
@@ -48,7 +45,6 @@ use embedded_io_async::Read;
 use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
 
 // Wifi
-use embassy_net::{tcp::TcpSocket, Config, StackResources};
 use esp_wifi::{
     initialize,
     wifi::{
@@ -57,6 +53,9 @@ use esp_wifi::{
     },
     EspWifiInitFor,
 };
+use embassy_net::tcp::TcpSocket;
+
+type HeaplessVec08<T, const N: usize> = heapless08::Vec<T, N>;
 
 macro_rules! mk_static {
     ($t:path,$val:expr) => {{
@@ -69,6 +68,11 @@ macro_rules! mk_static {
 
 const SSID: &str = env!("SSID");
 const PASSWORD: &str = env!("PASSWORD");
+
+const STATIC_IP: &str = "192.168.1.100";
+const SUBNET_MASK: &str = "255.255.255.0";
+const GATEWAY: &str = "192.168.1.1";
+const DNS_SERVER: &str = "8.8.8.8";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
@@ -194,7 +198,16 @@ async fn main(spawner: Spawner) {
                     println!("WiFi controller and interface created...");
                     // Continue with the rest of the setup
 
-                    let config = Config::dhcpv4(Default::default());
+                    let static_ip: Ipv4Address = STATIC_IP.parse().unwrap();
+                    let subnet_mask: u8 = 24; // For 255.255.255.0
+                    let gateway: Ipv4Address = GATEWAY.parse().unwrap();
+                    let dns_server: Ipv4Address = DNS_SERVER.parse().unwrap();
+
+                    let config = Config::ipv4_static(StaticConfigV4 {
+                        address: Ipv4Cidr::new(static_ip, subnet_mask),
+                        gateway: Some(gateway),
+                        dns_servers: HeaplessVec08::from_slice(&[dns_server]).unwrap(),
+                    });
                     let seed = 1234; // very random, very secure seed
 
                     // Init network stack
@@ -391,6 +404,10 @@ async fn wifi_connection(
                 loop {
                     println!("Current stack config_v4 state: {:?}", stack.config_v4());
 
+                    if stack.is_link_up() {
+                        println!("Link is up...");
+                    }
+
                     if let Some(config) = stack.config_v4() {
                         println!("Got IP: {}", config.address);
                         sender.send(WifiMessage::WifiConnected).await;
@@ -421,7 +438,6 @@ async fn run_network_stack(stack: &'static Stack<WifiDevice<'static, WifiStaDevi
     stack.run().await;
     println!("Network stack exited...");
 }
-
 
 #[embassy_executor::task]
 async fn fetch_update_frames(
@@ -476,8 +492,8 @@ async fn fetch_update_frames(
     }
 }
 
-async fn fetch_data_https(
-    mut socket: TcpSocket<'_>,
+async fn fetch_data_https<'a>(
+    mut socket: TcpSocket<'a>,
     hostname: &str,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {

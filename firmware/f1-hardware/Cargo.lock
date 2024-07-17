@@ -741,6 +741,7 @@ dependencies = [
  "esp-println",
  "esp-wifi",
  "heapless 0.7.17",
+ "heapless 0.8.0",
  "panic-halt",
  "postcard",
  "riscv",

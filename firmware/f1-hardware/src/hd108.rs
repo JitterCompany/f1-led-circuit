@@ -1,5 +1,5 @@
 use embedded_hal_async::spi::SpiBus;
-use heapless::Vec;
+use heapless07::Vec;
 
 pub struct HD108<SPI> {
     pub spi: SPI,
