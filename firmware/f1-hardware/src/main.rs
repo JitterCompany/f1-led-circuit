@@ -404,7 +404,7 @@ async fn wifi_connection(
                             break;
                         }
                     }
-                    Timer::after(Duration::from_millis(2000)).await;
+                    Timer::after(Duration::from_millis(3000)).await;
                 }
             }
             Err(e) => {
