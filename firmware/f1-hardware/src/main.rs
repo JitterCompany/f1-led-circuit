@@ -3,20 +3,22 @@
 #![feature(type_alias_impl_trait)]
 
 mod data;
-mod hd108;
 mod driver_info;
-use driver_info::DRIVERS;
+mod hd108;
 use data::VISUALIZATION_DATA;
+use driver_info::DRIVERS;
 
-use embassy_net::dns::{DnsSocket, DnsQueryType};
-use embassy_net::Stack;
+use core::fmt::Write as FmtWrite;
 use embassy_executor::Spawner;
+use embassy_net::dns::{DnsQueryType, DnsSocket};
+use embassy_net::Stack;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::channel::Receiver;
 use embassy_sync::channel::Sender;
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
+use embedded_io_async::Write;
 use esp_backtrace as _;
 use esp_hal::dma::DmaDescriptor;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
@@ -26,22 +28,20 @@ use esp_hal::{
     gpio::{Event, GpioPin, Input, Io, Pull},
     peripherals::Peripherals,
     prelude::*,
+    rng::Rng,
     spi::{master::Spi, SpiMode},
     system::SystemControl,
     timer::timg::TimerGroup,
-    rng::Rng,
 };
 use esp_println::println;
 use hd108::HD108;
-use panic_halt as _;
-use static_cell::StaticCell;
-use embedded_io_async::Write;
 use heapless::{String, Vec};
-use serde::{Deserialize, Serialize};
+use panic_halt as _;
 use postcard::from_bytes;
 use postcard::to_vec;
+use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
-use core::fmt::Write as FmtWrite; // Importing core::fmt::Write trait with alias
+use static_cell::StaticCell; // Importing core::fmt::Write trait with alias
 
 // Wifi
 use embassy_net::{tcp::TcpSocket, Config, StackResources};
@@ -154,10 +154,14 @@ async fn main(spawner: Spawner) {
     let fetch_channel = FETCH_CHANNEL.init(Channel::new());
 
     // Spawn the button task with ownership of the button pin and the sender
-    spawner.spawn(button_task(button_pin, button_channel.sender())).unwrap();
+    spawner
+        .spawn(button_task(button_pin, button_channel.sender()))
+        .unwrap();
 
     // Spawn the run_race_task with the receiver
-    spawner.spawn(run_race_task(hd108, button_channel.receiver())).unwrap();
+    spawner
+        .spawn(run_race_task(hd108, button_channel.receiver()))
+        .unwrap();
 
     spawner.spawn(store_data(fetch_channel.receiver())).ok();
 
@@ -197,9 +201,17 @@ async fn main(spawner: Spawner) {
 
                     println!("Spawning wifi connection...");
 
-                    spawner.spawn(wifi_connection(controller, stack, wifi_channel.sender())).ok();
+                    spawner
+                        .spawn(wifi_connection(controller, stack, wifi_channel.sender()))
+                        .ok();
                     spawner.spawn(net_task(stack)).ok();
-                    spawner.spawn(fetch_update_frames(wifi_channel.receiver(), stack, fetch_channel.sender())).ok();
+                    spawner
+                        .spawn(fetch_update_frames(
+                            wifi_channel.receiver(),
+                            stack,
+                            fetch_channel.sender(),
+                        ))
+                        .ok();
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
@@ -304,11 +316,11 @@ async fn wifi_connection(
                 ..Default::default()
             });
             controller.set_configuration(&client_config).unwrap();
-            println!("Starting wifi");
+            //println!("Starting wifi");
             controller.start().await.unwrap();
-            println!("Wifi started!");
+            //println!("Wifi started!");
         }
-        println!("About to connect...");
+        println!("WiFi connection attemp...");
 
         match controller.connect().await {
             Ok(_) => {
@@ -358,7 +370,6 @@ async fn wifi_connection(
         }
     }
 }
-
 
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
@@ -417,26 +428,31 @@ async fn fetch_update_frames(
     }
 }
 
-async fn fetch_data(socket: &mut TcpSocket<'_>, sender: Sender<'static, NoopRawMutex, FetchMessage, 1>) {
+async fn fetch_data(
+    socket: &mut TcpSocket<'_>,
+    sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+) {
     let session_key = "9149";
-    let driver_numbers = [1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81];
-    let start_time = "2023-08-27T12:58:56.234Z";
-    let end_time = "2023-08-27T13:20:54.214Z";
-    
+    let driver_numbers = [
+        1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
+    ];
+    let start_time = "2023-08-27T12:58:56.234";
+    let end_time = "2023-08-27T12:58:57.154";
+
     let mut all_data = Vec::<FetchedData, 64>::new();
-    
+
     for &driver_number in &driver_numbers {
         let mut url: String<256> = String::new();
-        url.push_str("GET /v1/location?session_key=").unwrap();
+        url.push_str("https://api.openf1.org/v1/location?session_key=")
+            .unwrap();
         url.push_str(session_key).unwrap();
         url.push_str("&driver_number=").unwrap();
         push_u32(&mut url, driver_number).unwrap();
-        url.push_str("&date%3E").unwrap();  // Encoding for '>'
+        url.push_str("&date%3E").unwrap(); // Encoding for '>'
         url.push_str(start_time).unwrap();
-        url.push_str("&date%3C").unwrap();  // Encoding for '<'
+        url.push_str("&date%3C").unwrap(); // Encoding for '<'
         url.push_str(end_time).unwrap();
-        url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n").unwrap();
-        
+
         println!("Sending request: {}", url);
         socket.write_all(url.as_bytes()).await.unwrap();
 
@@ -477,7 +493,10 @@ fn push_u32(buf: &mut String<256>, num: u32) -> Result<(), ()> {
 
 fn find_http_body(response: &[u8]) -> Option<usize> {
     let header_end = b"\r\n\r\n";
-    response.windows(header_end.len()).position(|window| window == header_end).map(|pos| pos + header_end.len())
+    response
+        .windows(header_end.len())
+        .position(|window| window == header_end)
+        .map(|pos| pos + header_end.len())
 }
 
 #[embassy_executor::task]
