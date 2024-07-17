@@ -373,19 +373,24 @@ async fn wifi_connection(
     controller.connect().await.unwrap();
 
     loop {
-        match controller.wait_for_event(WifiEvent::StaConnected).await {
-            WifiEvent::StaConnected => {
-                println!("WiFi connected.");
-                sender.send(WifiMessage::WifiConnected).await;
+        match controller.is_connected() {
+            Ok(is_connected) => {
+                if is_connected {
+                    println!("WiFi connected.");
+                    sender.send(WifiMessage::WifiConnected).await;
+                    
+                }
             }
-            WifiEvent::StaDisconnected => {
-                println!("WiFi disconnected.");
-                sender.send(WifiMessage::Disconnected).await;
+            Err(e) => {
+                println!("Failed to check WiFi connection status: {:?}", e);
+                // Handle the error appropriately, e.g., retry logic, logging, etc.
             }
-            _ => {}
         }
+    
+        Timer::after(Duration::from_secs(1)).await;
     }
 }
+
 
 
 #[embassy_executor::task]
