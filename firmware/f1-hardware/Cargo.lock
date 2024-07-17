@@ -145,6 +145,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7059fff8937831a9ae6f0fe4d658ffabf58f2ca96aa9dec1c889f936f705f216"
 
 [[package]]
+name = "crypto-bigint"
+version = "0.5.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0dc92fb57ca44df6db8059111ab3af99a63d5d0f8375d9972e319a379c6bab76"
+dependencies = [
+ "subtle",
+]
+
+[[package]]
 name = "darling"
 version = "0.20.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -602,6 +611,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "esp-mbedtls"
+version = "0.1.0"
+source = "git+https://github.com/esp-rs/esp-mbedtls#27c781fd7a4178e574072aee7ce8821c9ab07335"
+dependencies = [
+ "cfg-if",
+ "crypto-bigint",
+ "embedded-io",
+ "embedded-io-async",
+ "esp-hal",
+ "esp-mbedtls-sys",
+ "log",
+]
+
+[[package]]
+name = "esp-mbedtls-sys"
+version = "0.1.0"
+source = "git+https://github.com/esp-rs/esp-mbedtls#27c781fd7a4178e574072aee7ce8821c9ab07335"
+dependencies = [
+ "anyhow",
+]
+
+[[package]]
 name = "esp-metadata"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -706,6 +737,7 @@ dependencies = [
  "esp-backtrace",
  "esp-hal",
  "esp-hal-embassy",
+ "esp-mbedtls",
  "esp-println",
  "esp-wifi",
  "heapless 0.7.17",
@@ -1367,6 +1399,12 @@ dependencies = [
  "rustversion",
  "syn 2.0.66",
 ]
+
+[[package]]
+name = "subtle"
+version = "2.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
 name = "syn"

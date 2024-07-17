@@ -43,6 +43,7 @@ smoltcp = { version = "0.11.0", default-features = false, features = [
     "socket-tcp",
     "socket-udp",
 ] }
+esp-mbedtls = { git = "https://github.com/esp-rs/esp-mbedtls", features = ["esp32c3", "async"]}
 panic-halt = "0.2.0"
 riscv-rt = "0.12.2"
 riscv = "0.11.1"
