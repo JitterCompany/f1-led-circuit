@@ -11,7 +11,7 @@ use driver_info::DRIVERS;
 use core::fmt::Write as FmtWrite;
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
-use embassy_net::{Stack, Ipv4Address, Ipv4Cidr};
+use embassy_net::{Stack, Ipv4Address, Ipv4Cidr, IpAddress};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::channel::Receiver;
@@ -41,7 +41,7 @@ use postcard::from_bytes;
 use postcard::to_vec;
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
-use static_cell::StaticCell; // Importing core::fmt::Write trait with alias
+use static_cell::StaticCell;
 
 // Wifi
 use embassy_net::{tcp::TcpSocket, Config, StackResources};
@@ -54,6 +54,7 @@ use esp_wifi::{
     EspWifiInitFor,
 };
 
+// Macro to create a static cell for the stack
 macro_rules! mk_static {
     ($t:path,$val:expr) => {{
         static STATIC_CELL: static_cell::StaticCell<$t> = static_cell::StaticCell::new();
@@ -63,9 +64,11 @@ macro_rules! mk_static {
     }};
 }
 
+// WiFi credentials
 const SSID: &str = env!("SSID");
 const PASSWORD: &str = env!("PASSWORD");
 
+// Struct to hold fetched data
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
     date: String<32>,
@@ -78,31 +81,38 @@ struct FetchedData {
 }
 
 impl FetchedData {
+    // Deserialize data from bytes
     fn from_postcard(bytes: &[u8]) -> Result<Self, &'static str> {
         from_bytes(bytes).map_err(|_| "Failed to deserialize")
     }
 
+    // Serialize data to bytes
     fn to_postcard(&self) -> Result<Vec<u8, 128>, &'static str> {
         to_vec(self).map_err(|_| "Failed to serialize")
     }
 }
 
+// Enum to handle button messages
 enum ButtonMessage {
     ButtonPressed,
 }
 
+// Enum to handle WiFi messages
 enum WifiMessage {
     WifiConnected,
 }
 
+// Enum to handle fetch messages
 enum FetchMessage {
-    FetchedData(Vec<FetchedData, 64>), // Dynamically sized vector for the fetched data
+    FetchedData(Vec<FetchedData, 64>),
 }
 
+// Static channels for button, WiFi, and fetch messages
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
 static WIFI_CHANNEL: StaticCell<Channel<NoopRawMutex, WifiMessage, 1>> = StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
 
+// Main function to initialize and spawn tasks
 #[main]
 async fn main(spawner: Spawner) {
     println!("Starting program!...");
@@ -112,7 +122,6 @@ async fn main(spawner: Spawner) {
     let clocks = ClockControl::max(system.clock_control).freeze();
 
     let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
-
     esp_hal_embassy::init(&clocks, timg0);
 
     let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
@@ -123,7 +132,6 @@ async fn main(spawner: Spawner) {
     let cs = io.pins.gpio9;
 
     let dma = Dma::new(peripherals.DMA);
-
     let dma_channel = dma.channel0;
 
     static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
@@ -145,29 +153,19 @@ async fn main(spawner: Spawner) {
 
     // Initialize the button pin as input with interrupt and pull-up resistor
     let mut button_pin = Input::new(io.pins.gpio10, Pull::Up);
-
-    // Enable interrupts for the button pin
     button_pin.listen(Event::FallingEdge);
 
     let button_channel = BUTTON_CHANNEL.init(Channel::new());
     let wifi_channel = WIFI_CHANNEL.init(Channel::new());
     let fetch_channel = FETCH_CHANNEL.init(Channel::new());
 
-    // Spawn the button task with ownership of the button pin and the sender
-    spawner
-        .spawn(button_task(button_pin, button_channel.sender()))
-        .unwrap();
-
-    // Spawn the run_race_task with the receiver
-    spawner
-        .spawn(run_race_task(hd108, button_channel.receiver()))
-        .unwrap();
-
+    // Spawn tasks for button, race, and data storage
+    spawner.spawn(button_task(button_pin, button_channel.sender())).unwrap();
+    spawner.spawn(run_race_task(hd108, button_channel.receiver())).unwrap();
     spawner.spawn(store_data(fetch_channel.receiver())).ok();
 
-    // Wifi
+    // WiFi initialization and connection
     let timer = esp_hal::timer::systimer::SystemTimer::new(peripherals.SYSTIMER).alarm0;
-
     println!("Initializing WiFi...");
 
     match initialize(
@@ -183,12 +181,10 @@ async fn main(spawner: Spawner) {
             match esp_wifi::wifi::new_with_mode(&init_wifi, wifi, WifiStaDevice) {
                 Ok((wifi_interface, controller)) => {
                     println!("WiFi controller and interface created...");
-                    // Continue with the rest of the setup
 
                     let config = Config::dhcpv4(Default::default());
-                    let seed = 1234; // very random, very secure seed
+                    let seed = 1234;
 
-                    // Init network stack
                     let stack = &*mk_static!(
                         Stack<WifiDevice<'_, WifiStaDevice>>,
                         Stack::new(
@@ -201,18 +197,14 @@ async fn main(spawner: Spawner) {
 
                     println!("Spawning wifi connection...");
 
-                    spawner
-                        .spawn(wifi_connection(controller, stack, wifi_channel.sender()))
-                        .ok();
+                    spawner.spawn(wifi_connection(controller, stack, wifi_channel.sender())).ok();
                     spawner.spawn(net_task(stack)).ok();
-                    spawner
-                        .spawn(fetch_update_frames(
-                            spawner,
-                            wifi_channel.receiver(),
-                            stack,
-                            fetch_channel.sender(),
-                        ))
-                        .ok();
+                    spawner.spawn(fetch_update_frames(
+                        spawner,
+                        wifi_channel.receiver(),
+                        stack,
+                        fetch_channel.sender(),
+                    )).ok();
                 }
                 Err(e) => {
                     println!("Failed to create WiFi controller and interface: {:?}", e);
@@ -225,6 +217,7 @@ async fn main(spawner: Spawner) {
     }
 }
 
+// Task to handle the race simulation
 #[embassy_executor::task]
 async fn run_race_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
@@ -234,58 +227,38 @@ async fn run_race_task(
         match receiver.receive().await {
             ButtonMessage::ButtonPressed => {
                 println!("Button pressed, starting race...");
-                // Iterate through each frame in the visualization data
                 for frame in &data::VISUALIZATION_DATA.frames {
-                    // Collect the LED updates for the current frame
                     let mut led_updates: Vec<(usize, u8, u8, u8), 20> = Vec::new();
-
                     for driver_data in frame.drivers.iter().flatten() {
-                        // Find the corresponding driver info
-                        if let Some(driver) = DRIVERS
-                            .iter()
-                            .find(|d| d.number == driver_data.driver_number)
-                        {
-                            led_updates
-                                .push((
-                                    driver_data.led_num.try_into().unwrap(),
-                                    driver.color.0,
-                                    driver.color.1,
-                                    driver.color.2,
-                                ))
-                                .unwrap();
+                        if let Some(driver) = DRIVERS.iter().find(|d| d.number == driver_data.driver_number) {
+                            led_updates.push((
+                                driver_data.led_num.try_into().unwrap(),
+                                driver.color.0,
+                                driver.color.1,
+                                driver.color.2,
+                            )).unwrap();
                         }
                     }
-
-                    // Set the LEDs for the current frame
                     hd108.set_leds(&led_updates).await.unwrap();
-
-                    // Wait for the update rate duration
-                    Timer::after(Duration::from_millis(
-                        data::VISUALIZATION_DATA.update_rate_ms as u64,
-                    ))
-                    .await;
-
-                    // Check for a stop message to turn off the LEDs
+                    Timer::after(Duration::from_millis(data::VISUALIZATION_DATA.update_rate_ms as u64)).await;
                     if receiver.try_receive().is_ok() {
                         hd108.set_off().await.unwrap();
                         break;
                     }
                 }
-
-                // Turn off LEDs after finishing the frames
                 hd108.set_off().await.unwrap();
             }
         }
     }
 }
 
+// Task to handle button presses
 #[embassy_executor::task]
 async fn button_task(
     mut button_pin: Input<'static, GpioPin<10>>,
     sender: Sender<'static, NoopRawMutex, ButtonMessage, 1>,
 ) {
     loop {
-        // Wait for a button press
         button_pin.wait_for_falling_edge().await;
         sender.send(ButtonMessage::ButtonPressed).await;
         println!("Button pressed, message sent.");
@@ -293,6 +266,7 @@ async fn button_task(
     }
 }
 
+// Task to handle WiFi connection
 #[embassy_executor::task]
 async fn wifi_connection(
     mut controller: WifiController<'static>,
@@ -304,7 +278,6 @@ async fn wifi_connection(
     loop {
         match esp_wifi::wifi::get_wifi_state() {
             WifiState::StaConnected => {
-                // wait until we're no longer connected
                 controller.wait_for_event(WifiEvent::StaDisconnected).await;
                 Timer::after(Duration::from_millis(5000)).await
             }
@@ -318,35 +291,27 @@ async fn wifi_connection(
             });
             controller.set_configuration(&client_config).unwrap();
             controller.start().await.unwrap();
-
         }
         println!("WiFi connection attempt...");
 
         match controller.connect().await {
             Ok(_) => {
                 println!("Wifi connected!");
-
-                // Log specific attributes of the controller if possible
                 if let Ok(configuration) = controller.get_configuration() {
                     println!("Controller configuration: {:?}", configuration);
                 }
-
                 if let Ok(capabilities) = controller.get_capabilities() {
                     println!("Controller capabilities: {:?}", capabilities);
                 }
-
                 println!("Checking initial config_v4...");
                 if let Some(config) = stack.config_v4() {
                     println!("Initial config_v4 found: {:?}", config);
                 } else {
                     println!("No initial config_v4 found, will wait for IP address...");
                 }
-
-                // Wait for an IP address
                 let mut retries = 0;
                 loop {
                     println!("Current stack config_v4 state: {:?}", stack.config_v4());
-
                     if let Some(config) = stack.config_v4() {
                         println!("Got IP: {}", config.address);
                         sender.send(WifiMessage::WifiConnected).await;
@@ -371,11 +336,13 @@ async fn wifi_connection(
     }
 }
 
+// Task to run the network stack
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
     stack.run().await
 }
 
+// Task to fetch update frames from the server
 #[embassy_executor::task]
 async fn fetch_update_frames(
     spawner: Spawner,
@@ -384,33 +351,25 @@ async fn fetch_update_frames(
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
     let dns_socket = DnsSocket::new(stack);
-    let hostname = "api.openf1.org"; // Replace with your hostname
+    let hostname = "api.openf1.org";
 
     loop {
-        // Wait for the WifiConnected message
         match receiver.receive().await {
             WifiMessage::WifiConnected => {
                 println!("Fetching update frames started...");
-
-                // Resolve the hostname to an IP address
                 match dns_socket.query(hostname, DnsQueryType::A).await {
                     Ok(ip_addresses) => {
-                        if let Some(ip_address) = ip_addresses.get(0) {
-                            // Use the first IP address returned
+                        if let Some(IpAddress::Ipv4(ip_address)) = ip_addresses.get(0) {
                             let remote_endpoint = (*ip_address, 80);
-
-                            // Connect to the resolved IP address
                             let mut rx_buffer = [0; 4096];
                             let mut tx_buffer = [0; 4096];
                             let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
                             socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
-
                             println!("Connecting to {}...", hostname);
                             match socket.connect(remote_endpoint).await {
                                 Ok(_) => {
                                     println!("Connected to {}..", hostname);
-                                    // Fetch data from the URL
-                                    spawner.spawn(fetch_data(stack, sender)).unwrap();
+                                    spawner.spawn(fetch_data(stack, *ip_address, sender)).unwrap();
                                 }
                                 Err(e) => {
                                     println!("Connect error: {:?}", e);
@@ -429,9 +388,11 @@ async fn fetch_update_frames(
     }
 }
 
+// Task to fetch data from the server
 #[embassy_executor::task]
 async fn fetch_data(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    ip_address: Ipv4Address,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
     let session_key = "9149";
@@ -458,10 +419,9 @@ async fn fetch_data(
 
         println!("Sending request: {}", url);
 
-        // Reopen the socket for each request since `Connection: close` is used
         let mut rx_buffer = [0; 4096];
         let mut tx_buffer = [0; 4096];
-        let remote_endpoint = (Ipv4Address::new(192, 168, 1, 1), 80); // example IP, replace with actual resolved IP
+        let remote_endpoint = (ip_address, 80); // Use the resolved IP address here
         let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
         socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
 
@@ -487,7 +447,6 @@ async fn fetch_data(
                 println!("Raw response: {:?}", &response[..total_read]);
 
                 if total_read > 0 {
-                    // Check the HTTP status code
                     if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
                         if let Some(body_start) = find_http_body(&response[..total_read]) {
                             let body = &response[body_start..total_read];
@@ -524,6 +483,7 @@ async fn fetch_data(
     sender.send(FetchMessage::FetchedData(all_data)).await; 
 }
 
+// Helper function to convert u32 to string and append to buffer
 fn push_u32(buf: &mut String<256>, num: u32) -> Result<(), ()> {
     let mut temp: String<10> = String::new();
     write!(temp, "{}", num).unwrap();
@@ -531,6 +491,7 @@ fn push_u32(buf: &mut String<256>, num: u32) -> Result<(), ()> {
     Ok(())
 }
 
+// Helper function to find the start of the HTTP body
 fn find_http_body(response: &[u8]) -> Option<usize> {
     let header_end = b"\r\n\r\n";
     response
@@ -539,6 +500,7 @@ fn find_http_body(response: &[u8]) -> Option<usize> {
         .map(|pos| pos + header_end.len())
 }
 
+// Task to store fetched data
 #[embassy_executor::task]
 async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) {
     let mut data_to_be_visualized: Option<Vec<FetchedData, 64>> = None;
