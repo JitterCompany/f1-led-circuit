@@ -11,7 +11,7 @@ use driver_info::DRIVERS;
 use core::fmt::Write as FmtWrite;
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
-use embassy_net::{Config, Ipv4Address, Ipv4Cidr, StaticConfigV4, Stack, StackResources};
+use embassy_net::{Config, Ipv4Address, Ipv4Cidr, Stack, StackResources, StaticConfigV4};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::{Channel, Receiver, Sender};
 use embassy_time::{Duration, Timer};
@@ -46,14 +46,12 @@ use embedded_io_async::Read;
 use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
 
 // Wifi
+use embassy_net::tcp::TcpSocket;
 use esp_wifi::{
     initialize,
-    wifi::{
-        ClientConfiguration, Configuration, WifiController, WifiDevice, WifiEvent, WifiStaDevice,
-    },
+    wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
-use embassy_net::tcp::TcpSocket;
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -102,8 +100,8 @@ enum ButtonMessage {
 }
 
 enum WifiMessage {
-    WifiConnected,
     WifiInitialized,
+    WifiConnected,
     IpAddressAcquired,
     Disconnected,
 }
@@ -118,8 +116,6 @@ static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = Stati
 
 #[main]
 async fn main(spawner: Spawner) {
-    println!("Starting program!...");
-
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::max(system.clock_control).freeze();
@@ -282,7 +278,8 @@ async fn run_race_task(
                 // Iterate through each frame in the visualization data
                 for frame in &data::VISUALIZATION_DATA.frames {
                     // Collect the LED updates for the current frame
-                    let mut led_updates: Heapless08Vec<(usize, u8, u8, u8), 20> = Heapless08Vec::new();
+                    let mut led_updates: Heapless08Vec<(usize, u8, u8, u8), 20> =
+                        Heapless08Vec::new();
 
                     for driver_data in frame.drivers.iter().flatten() {
                         // Find the corresponding driver info
@@ -346,51 +343,77 @@ async fn wifi_connection(
     sender: Sender<'static, NoopRawMutex, WifiMessage, 1>,
 ) {
     println!("Starting wifi connection task");
-    println!("Device capabilities: {:?}", controller.get_capabilities());
-
-    // Wait for WifiInitialized message before proceeding
     match receiver.receive().await {
         WifiMessage::WifiInitialized => {
             println!("Wifi initialized message received, proceeding...");
+
+            let mut ssid: Heapless08String<32> = Heapless08String::new();
+            ssid.push_str(SSID).unwrap();
+
+            let mut password: Heapless08String<64> = Heapless08String::new();
+            password.push_str(PASSWORD).unwrap();
+
+            println!("Setting controller configuration...");
+            controller
+                .set_configuration(&Configuration::Client(ClientConfiguration {
+                    ssid,
+                    password,
+                    ..Default::default()
+                }))
+                .unwrap();
+
+          
+            println!("Starting wifi");
+            controller.start().await.unwrap();
+
+            println!("Before WiFi connect...");
+
+            let mut retries = 0;
+            const MAX_RETRIES: u32 = 5;
+
+            while retries < MAX_RETRIES {
+                println!("Retriest count: {}", retries);
+                match controller.connect().await {
+                    Ok(_) => {
+                        println!("WiFi connected successfully.");
+                        sender.send(WifiMessage::WifiConnected).await;
+                        break;
+                    }
+                    Err(e) => {
+                        retries += 1;
+                        println!("Failed to connect to WiFi: {:?}. Retrying {}/{}", e, retries, MAX_RETRIES);
+                        Timer::after(Duration::from_secs(2)).await;
+                    }
+                }
+            }
+
+            if retries >= MAX_RETRIES {
+                println!("Failed to connect to WiFi after {} retries.", MAX_RETRIES);
+                sender.send(WifiMessage::Disconnected).await;
+            }
+
+            // Wait for IP address assignment
+            let mut retries = 0;
+            while retries < 20 {
+                if stack.is_link_up() {
+                    if let Some(config) = stack.config_v4() {
+                        println!("Got IP: {}", config.address);
+                        sender.send(WifiMessage::IpAddressAcquired).await;
+                        break;
+                    }
+                }
+                retries += 1;
+                Timer::after(Duration::from_secs(1)).await;
+            }
+
+            if retries >= 20 {
+                println!("Failed to acquire IP address.");
+                sender.send(WifiMessage::Disconnected).await;
+            }
         }
         _ => {}
     }
-
-    // Configure the WiFi connection
-    let mut ssid: Heapless08String<32> = Heapless08String::new();
-    ssid.push_str(SSID).unwrap();
-
-    let mut password: Heapless08String<64> = Heapless08String::new();
-    password.push_str(PASSWORD).unwrap();
-
-    controller.set_configuration(&Configuration::Client(ClientConfiguration {
-        ssid,
-        password,
-        ..Default::default()
-    })).unwrap();
-
-    // Connect to WiFi
-    controller.connect().await.unwrap();
-
-    loop {
-        match controller.is_connected() {
-            Ok(is_connected) => {
-                if is_connected {
-                    println!("WiFi connected.");
-                    sender.send(WifiMessage::WifiConnected).await;
-                    
-                }
-            }
-            Err(e) => {
-                println!("Failed to check WiFi connection status: {:?}", e);
-                // Handle the error appropriately, e.g., retry logic, logging, etc.
-            }
-        }
-    
-        Timer::after(Duration::from_secs(1)).await;
-    }
 }
-
 
 
 #[embassy_executor::task]
@@ -412,7 +435,7 @@ async fn fetch_update_frames(
     loop {
         // Wait for the WifiConnected and IpAddressAcquired messages
         match receiver.receive().await {
-            WifiMessage::WifiConnected => {
+            WifiMessage::IpAddressAcquired => {
                 println!("Fetching update frames started...");
 
                 // Resolve the hostname to an IP address
@@ -481,10 +504,9 @@ async fn fetch_data_https<'a>(
         Mode::Client,
         TlsVersion::Tls1_2,
         Certificates {
-            ca_chain: X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes())
-                .ok(),
+            ca_chain: X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok(),
             ..Default::default()
-        }
+        },
     )
     .unwrap();
 
