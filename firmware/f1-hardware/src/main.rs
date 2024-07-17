@@ -43,7 +43,7 @@ use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
 
-// Wifi
+// WiFi
 use embassy_net::{tcp::TcpSocket, Config, StackResources};
 use esp_wifi::{
     initialize,
