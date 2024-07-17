@@ -361,20 +361,103 @@ async fn fetch_update_frames(
                     Ok(ip_addresses) => {
                         if let Some(IpAddress::Ipv4(ip_address)) = ip_addresses.get(0) {
                             let remote_endpoint = (*ip_address, 80);
-                            let mut rx_buffer = [0; 4096];
-                            let mut tx_buffer = [0; 4096];
-                            let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
-                            socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
-                            println!("Connecting to {}...", hostname);
-                            match socket.connect(remote_endpoint).await {
-                                Ok(_) => {
-                                    println!("Connected to {}..", hostname);
-                                    spawner.spawn(fetch_data(stack, *ip_address, sender)).unwrap();
-                                }
-                                Err(e) => {
-                                    println!("Connect error: {:?}", e);
+
+                            let session_key = "9149";
+                            let driver_numbers = [
+                                1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
+                            ];
+                            let start_time = "2023-08-27T12:58:56.234";
+                            let end_time = "2023-08-27T12:58:57.154";
+
+                            let mut all_data = Vec::<FetchedData, 64>::new();
+
+                            for &driver_number in &driver_numbers {
+                                let mut url: String<256> = String::new();
+                                url.push_str("GET /v1/location?session_key=")
+                                    .unwrap();
+                                url.push_str(session_key).unwrap();
+                                url.push_str("&driver_number=").unwrap();
+                                push_u32(&mut url, driver_number).unwrap();
+                                url.push_str("&date%3E").unwrap(); // Encoding for '>'
+                                url.push_str(start_time).unwrap();
+                                url.push_str("&date%3C").unwrap(); // Encoding for '<'
+                                url.push_str(end_time).unwrap();
+                                url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n").unwrap();
+
+                                println!("Sending request: {}", url);
+
+                                let mut retries = 0;
+                                loop {
+                                    let mut rx_buffer = [0; 4096];
+                                    let mut tx_buffer = [0; 4096];
+                                    let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+                                    socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
+
+                                    match socket.connect(remote_endpoint).await {
+                                        Ok(_) => {
+                                            println!("Connected to api.openf1.org");
+                                            socket.write_all(url.as_bytes()).await.unwrap();
+
+                                            let mut response = [0u8; 4096];  // Increased buffer size to handle larger responses
+                                            let mut total_read = 0;
+
+                                            loop {
+                                                match socket.read(&mut response[total_read..]).await {
+                                                    Ok(0) => break, // Connection closed
+                                                    Ok(n) => total_read += n,
+                                                    Err(e) => {
+                                                        println!("Error reading response: {:?}", e);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            println!("Raw response: {:?}", &response[..total_read]);
+
+                                            if total_read > 0 {
+                                                if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                                                    if let Some(body_start) = find_http_body(&response[..total_read]) {
+                                                        let body = &response[body_start..total_read];
+                                                        println!("Body: {:?}", body);
+
+                                                        let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+                                                        match data {
+                                                            Ok(data) => {
+                                                                println!("Parsed data: {:?}", data);
+                                                                for item in data {
+                                                                    all_data.push(item).unwrap();
+                                                                }
+                                                            }
+                                                            Err(e) => {
+                                                                println!("Failed to parse JSON: {:?}", e);
+                                                            }
+                                                        }
+                                                    } else {
+                                                        println!("Failed to find body in HTTP response.");
+                                                    }
+                                                } else {
+                                                    // Log the non-200 HTTP response and move on
+                                                    println!("Non-200 HTTP response received");
+                                                }
+                                            } else {
+                                                println!("Empty response received.");
+                                            }
+                                            break;
+                                        }
+                                        Err(e) => {
+                                            retries += 1;
+                                            if retries > 5 {
+                                                println!("Failed to connect after 5 retries: {:?}", e);
+                                                break;
+                                            }
+                                            println!("Connect error: {:?}. Retrying... ({}/5)", e, retries);
+                                            Timer::after(Duration::from_millis(2000)).await;
+                                        }
+                                    }
                                 }
                             }
+
+                            sender.send(FetchMessage::FetchedData(all_data)).await;
                         } else {
                             println!("No IP addresses found for {}", hostname);
                         }
@@ -386,112 +469,6 @@ async fn fetch_update_frames(
             }
         }
     }
-}
-
-// Task to fetch data from the server
-#[embassy_executor::task]
-async fn fetch_data(
-    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
-    ip_address: Ipv4Address,
-    sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-) {
-    let session_key = "9149";
-    let driver_numbers = [
-        1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
-    ];
-    let start_time = "2023-08-27T12:58:56.234";
-    let end_time = "2023-08-27T12:58:57.154";
-
-    let mut all_data = Vec::<FetchedData, 64>::new();
-
-    for &driver_number in &driver_numbers {
-        let mut url: String<256> = String::new();
-        url.push_str("GET /v1/location?session_key=")
-            .unwrap();
-        url.push_str(session_key).unwrap();
-        url.push_str("&driver_number=").unwrap();
-        push_u32(&mut url, driver_number).unwrap();
-        url.push_str("&date%3E").unwrap(); // Encoding for '>'
-        url.push_str(start_time).unwrap();
-        url.push_str("&date%3C").unwrap(); // Encoding for '<'
-        url.push_str(end_time).unwrap();
-        url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n").unwrap();
-
-        println!("Sending request: {}", url);
-
-        let mut retries = 0;
-        loop {
-            let mut rx_buffer = [0; 4096];
-            let mut tx_buffer = [0; 4096];
-            let remote_endpoint = (ip_address, 80); // Use the resolved IP address here
-            let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
-            socket.set_timeout(Some(embassy_time::Duration::from_secs(10)));
-
-            match socket.connect(remote_endpoint).await {
-                Ok(_) => {
-                    println!("Connected to api.openf1.org");
-                    socket.write_all(url.as_bytes()).await.unwrap();
-
-                    let mut response = [0u8; 4096];  // Increased buffer size to handle larger responses
-                    let mut total_read = 0;
-
-                    loop {
-                        match socket.read(&mut response[total_read..]).await {
-                            Ok(0) => break, // Connection closed
-                            Ok(n) => total_read += n,
-                            Err(e) => {
-                                println!("Error reading response: {:?}", e);
-                                break;
-                            }
-                        }
-                    }
-
-                    println!("Raw response: {:?}", &response[..total_read]);
-
-                    if total_read > 0 {
-                        if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
-                            if let Some(body_start) = find_http_body(&response[..total_read]) {
-                                let body = &response[body_start..total_read];
-                                println!("Body: {:?}", body);
-
-                                let data: Result<Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
-                                match data {
-                                    Ok(data) => {
-                                        println!("Parsed data: {:?}", data);
-                                        for item in data {
-                                            all_data.push(item).unwrap();
-                                        }
-                                    }
-                                    Err(e) => {
-                                        println!("Failed to parse JSON: {:?}", e);
-                                    }
-                                }
-                            } else {
-                                println!("Failed to find body in HTTP response.");
-                            }
-                        } else {
-                            // Log the non-200 HTTP response and move on
-                            println!("Non-200 HTTP response received");
-                        }
-                    } else {
-                        println!("Empty response received.");
-                    }
-                    break;
-                }
-                Err(e) => {
-                    retries += 1;
-                    if retries > 5 {
-                        println!("Failed to connect after 5 retries: {:?}", e);
-                        break;
-                    }
-                    println!("Connect error: {:?}. Retrying... ({}/5)", e, retries);
-                    Timer::after(Duration::from_millis(2000)).await;
-                }
-            }
-        }
-    }
-
-    sender.send(FetchMessage::FetchedData(all_data)).await; 
 }
 
 // Helper function to convert u32 to string and append to buffer
