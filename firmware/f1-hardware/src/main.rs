@@ -542,6 +542,8 @@ async fn fetch_data_https<'a>(
     hostname: &str,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
+
+    const BUFFER_SIZE: usize = 4096;
     let session_key = "9149";
     let driver_numbers = [
         1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
@@ -553,6 +555,41 @@ async fn fetch_data_https<'a>(
 
     // Set debug level for TLS
     set_debug(0);
+
+    println!("Checking TLS result");
+
+    let tls_result = esp_mbedtls::asynch::Session::<&mut TcpSocket<'a>, BUFFER_SIZE>::new(
+        socket,
+        hostname,
+        Mode::Client,
+        TlsVersion::Tls1_2,
+        Certificates {
+            ca_chain: X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok(),
+            ..Default::default()
+        },
+    );
+
+    let tls = match tls_result {
+        Ok(session) => {
+            println!("TLS session initialized successfully");
+            session.connect().await.unwrap()
+        },
+        Err(e) => {
+            println!("Failed to initialize TLS session: {:?}", e);
+            return; // or handle the error appropriately
+        }
+    };
+
+    // To verify that the certificate was loaded correctly
+    if let Some(ca_chain) = X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok() {
+        println!("CA chain loaded successfully");
+    } else {
+        println!("Failed to load CA chain");
+    }
+
+    println!("TLS session initialized, proceeding with connection");
+
+    /* 
 
     println!("Initializing TLS session");
     let tls: Session<_, 4096> = Session::new(
@@ -621,6 +658,7 @@ async fn fetch_data_https<'a>(
     }
 
     sender.send(FetchMessage::FetchedData(all_data)).await;
+    */
 }
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
