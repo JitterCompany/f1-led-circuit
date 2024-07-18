@@ -11,7 +11,7 @@ use driver_info::DRIVERS;
 use core::fmt::Write as FmtWrite;
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
-use embassy_net::{Config, Ipv4Address, Ipv4Cidr, Stack, StackResources, StaticConfigV4};
+use embassy_net::{Config, IpAddress, Ipv4Address, Ipv4Cidr, Stack, StackResources, StaticConfigV4};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::{Channel, Receiver, Sender};
 use embassy_time::{Duration, Timer};
@@ -45,13 +45,14 @@ use static_cell::StaticCell;
 use embedded_io_async::Read;
 use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
 
+
 // Wifi
-use embassy_net::tcp::TcpSocket;
 use esp_wifi::{
     initialize,
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
+use embassy_net::tcp::{TcpSocket, ConnectError};
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -249,6 +250,7 @@ async fn main(spawner: Spawner) {
                         wifi_channel.receiver(),
                         stack,
                         fetch_channel.sender(),
+                        spawner,
                     )) {
                         println!("Failed to spawn fetch_update_frames: {:?}", e);
                     } else {
@@ -426,68 +428,77 @@ async fn run_network_stack(stack: &'static Stack<WifiDevice<'static, WifiStaDevi
 
 #[embassy_executor::task]
 async fn fetch_update_frames(
-    mut receiver: Receiver<'static, NoopRawMutex, WifiMessage, 1>,
+    receiver: Receiver<'static, NoopRawMutex, WifiMessage, 1>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+    spawner: Spawner, 
 ) {
     match receiver.receive().await {
         WifiMessage::IpAddressAcquired => {
             // Handle the case where the IP address is acquired
             println!("IP Address acquired.");
 
-            let dns_socket = DnsSocket::new(stack);
-            let hostname = "api.openf1.org"; // Replace with your hostname
-            let session_key = "9149";
-            let driver_numbers = [
-                1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
-            ];
-            let start_time = "2023-08-27T12:58:56.234Z";
-            let end_time = "2023-08-27T13:20:54.214Z";
-
-            let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
-
-            // Set debug level for TLS
-            set_debug(0);
-
-            // Establish TLS session outside the loop
-            let mut socket_rx_buffer = [0; 4096];
-            let mut socket_tx_buffer = [0; 4096];
-            let mut socket = TcpSocket::new(stack, &mut socket_rx_buffer, &mut socket_tx_buffer);
-            socket.set_timeout(Some(Duration::from_secs(10)));
-
-            match dns_socket.query(hostname, DnsQueryType::A).await {
-                Ok(ip_addresses) => {
-                    if let Some(ip_address) = ip_addresses.get(0) {
-                        // Use the first IP address returned
-                        let remote_endpoint = (*ip_address, 443); // Using port 443 for HTTPS
-
-                        // Connect to the resolved IP address
-                        println!("Connecting to {}...", hostname);
-                        match socket.connect(remote_endpoint).await {
-                            Ok(_) => {
-                                println!("Connected to {}..", hostname);
-                                // Establish a TLS session for HTTPS
-                                fetch_data_https(socket, hostname, sender).await;
-                            }
-                            Err(e) => {
-                                println!("Connect error");
-                            }
-                        }
-                    } else {
-                        println!("No IP addresses found for {}", hostname);
-                    }
-                }
-                Err(e) => {
-                    // Handle error case
-                    println!("Failed to query DNS");
-                }
-            }
+            // Spawn the DNS query task
+            spawner.spawn(dns_query_task(stack, sender)).unwrap();
         }
         _ => {
             // Handle all other cases
             println!("Other WiFi message received");
         }
     }
+}
+
+
+#[embassy_executor::task]
+async fn dns_query_task(
+    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+) {
+    let dns_socket = DnsSocket::new(stack);
+    let hostname = "api.openf1.org";
+
+    println!("Querying DNS for {}", hostname);
+    match dns_socket.query(hostname, DnsQueryType::A).await {
+        Ok(ip_addresses) => {
+            if let Some(ip_address) = ip_addresses.get(0) {
+                let IpAddress::Ipv4(ipv4_address) = ip_address;
+                // Use the first IP address returned
+                let remote_endpoint = (*ipv4_address, 443); // Using port 443 for HTTPS
+
+                // Connect to the resolved IP address
+                println!("Connecting to {} at {:?}", hostname, remote_endpoint);
+                
+                match socket_connect(stack, remote_endpoint).await {
+                    Ok(socket) => {
+                        println!("Connected to {} at {:?}", hostname, remote_endpoint);
+                        // Establish a TLS session for HTTPS
+                        fetch_data_https(socket, hostname, sender).await;
+                    }
+                    Err(e) => {
+                        println!("Connect error: {:?}", e);
+                    }
+                }
+            } else {
+                println!("No IP addresses found for {}", hostname);
+            }
+        }
+        Err(e) => {
+            // Handle error case
+            println!("Failed to query DNS: {:?}", e);
+        }
+    }
+}
+
+async fn socket_connect(
+    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    remote_endpoint: (Ipv4Address, u16),
+) -> Result<TcpSocket<'static>, ConnectError> {
+    let socket_rx_buffer = vec![0; 4096].into_boxed_slice();
+    let socket_tx_buffer = vec![0; 4096].into_boxed_slice();
+    let mut socket = TcpSocket::new(stack, Box::leak(socket_rx_buffer), Box::leak(socket_tx_buffer));
+    socket.set_timeout(Some(Duration::from_secs(10)));
+
+    socket.connect(remote_endpoint).await.map(|_| socket)
 }
 
 async fn fetch_data_https<'a>(
@@ -507,7 +518,7 @@ async fn fetch_data_https<'a>(
     // Set debug level for TLS
     set_debug(0);
 
-    // Establish TLS session outside the loop
+    println!("Initializing TLS session");
     let tls: Session<_, 4096> = Session::new(
         &mut socket,
         hostname,
@@ -521,10 +532,16 @@ async fn fetch_data_https<'a>(
     .unwrap();
 
     println!("Start TLS connect");
-
-    let mut tls = tls.connect().await.unwrap();
-
-    println!("TLS connection established");
+    let mut tls = match tls.connect().await {
+        Ok(session) => {
+            println!("TLS connection established");
+            session
+        }
+        Err(e) => {
+            println!("TLS connect error: {:?}", e);
+            return;
+        }
+    };
 
     for &driver_number in &driver_numbers {
         let mut url: Heapless08String<256> = Heapless08String::new();
