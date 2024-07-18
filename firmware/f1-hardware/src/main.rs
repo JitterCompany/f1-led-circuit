@@ -440,7 +440,7 @@ async fn fetch_update_frames(
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     spawner: Spawner,
 ) {
-    /* 
+    /*
     match receiver.receive().await {
         WifiMessage::IpAddressAcquired => {
             // Handle the case where the IP address is acquired
@@ -542,8 +542,8 @@ async fn fetch_data_https<'a>(
     hostname: &str,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
-
     const BUFFER_SIZE: usize = 4096;
+    
     let session_key = "9149";
     let driver_numbers = [
         1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
@@ -554,42 +554,92 @@ async fn fetch_data_https<'a>(
     let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
 
     // Set debug level for TLS
-    set_debug(0);
+    set_debug(3);
 
-    println!("Checking TLS result");
+    println!("Checking TLS chain");
 
+    // Load CA chain
+    let ca_chain_result =
+        X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok();
+    if ca_chain_result.is_none() {
+        println!("Failed to load CA chain");
+        return;
+    } else {
+        println!("CA chain loaded");
+    }
+
+    let ca_chain = ca_chain_result.unwrap();
+
+    println!("Initializing TLS session");
+
+    // Initialize the TLS session
     let tls_result = esp_mbedtls::asynch::Session::<&mut TcpSocket<'a>, BUFFER_SIZE>::new(
         socket,
         hostname,
         Mode::Client,
         TlsVersion::Tls1_2,
         Certificates {
-            ca_chain: X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok(),
+            ca_chain: Some(ca_chain),
             ..Default::default()
         },
     );
 
-    let tls = match tls_result {
+    match tls_result {
         Ok(session) => {
             println!("TLS session initialized successfully");
-            session.connect().await.unwrap()
-        },
+            match session.connect().await {
+                Ok(connected_session) => connected_session,
+                Err(e) => {
+                    println!("Failed to connect TLS session: {:?}", e);
+                    return;
+                }
+            }
+        }
         Err(e) => {
             println!("Failed to initialize TLS session: {:?}", e);
-            return; // or handle the error appropriately
+            return;
         }
     };
+}
+/*
+println!("Checking TLS result");
 
-    // To verify that the certificate was loaded correctly
-    if let Some(ca_chain) = X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok() {
-        println!("CA chain loaded successfully");
-    } else {
-        println!("Failed to load CA chain");
+let tls_result = esp_mbedtls::asynch::Session::<&mut TcpSocket<'a>, BUFFER_SIZE>::new(
+    socket,
+    hostname,
+    Mode::Client,
+    TlsVersion::Tls1_2,
+    Certificates {
+        ca_chain: X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok(),
+        ..Default::default()
+    },
+);
+
+
+let tls = match tls_result {
+    Ok(session) => {
+        println!("TLS session initialized successfully");
+        session.connect().await.unwrap()
+    },
+    Err(e) => {
+        println!("Failed to initialize TLS session: {:?}", e);
+        return; // or handle the error appropriately
     }
+};
 
-    println!("TLS session initialized, proceeding with connection");
+*
 
-    /* 
+// To verify that the certificate was loaded correctly
+if let Some(ca_chain) = X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok() {
+    println!("CA chain loaded successfully");
+} else {
+    println!("Failed to load CA chain");
+}
+
+println!("TLS session initialized, proceeding with connection");
+*/
+
+/*
 
     println!("Initializing TLS session");
     let tls: Session<_, 4096> = Session::new(
@@ -658,8 +708,8 @@ async fn fetch_data_https<'a>(
     }
 
     sender.send(FetchMessage::FetchedData(all_data)).await;
-    */
-}
+
+} */
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();
