@@ -8,6 +8,7 @@ mod hd108;
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
+use core::ptr::addr_of_mut;
 use core::fmt::Write as FmtWrite;
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
@@ -462,20 +463,23 @@ async fn dns_query_task(
         Ok(ip_addresses) => {
             if let Some(ip_address) = ip_addresses.get(0) {
                 let IpAddress::Ipv4(ipv4_address) = ip_address;
-                // Use the first IP address returned
                 let remote_endpoint = (*ipv4_address, 443); // Using port 443 for HTTPS
 
-                // Connect to the resolved IP address
-                println!("Connecting to {} at {:?}", hostname, remote_endpoint);
-                
-                match socket_connect(stack, remote_endpoint).await {
-                    Ok(socket) => {
-                        println!("Connected to {} at {:?}", hostname, remote_endpoint);
-                        // Establish a TLS session for HTTPS
-                        fetch_data_https(socket, hostname, sender).await;
+                // Static mutable socket buffer
+                static mut SOCKET: Option<TcpSocket<'static>> = None;
+                unsafe {
+                    if SOCKET.is_none() {
+                        SOCKET = Some(TcpSocket::new(stack, &mut [0; 4096], &mut [0; 4096]));
                     }
-                    Err(e) => {
-                        println!("Connect error: {:?}", e);
+
+                    if let Some(socket) = SOCKET.as_mut() {
+                        let socket_ptr = addr_of_mut!(*socket);
+                        socket_connect(stack, remote_endpoint, socket_ptr);
+                        // Use the socket for further operations, such as establishing a TLS session
+                        fetch_data_https(socket, hostname, sender).await;
+                    } else {
+                        // Handle the case where the socket is not initialized
+                        println!("Socket not initialized");
                     }
                 }
             } else {
@@ -483,26 +487,40 @@ async fn dns_query_task(
             }
         }
         Err(e) => {
-            // Handle error case
             println!("Failed to query DNS: {:?}", e);
         }
     }
 }
 
+
+#[embassy_executor::task]
 async fn socket_connect(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     remote_endpoint: (Ipv4Address, u16),
-) -> Result<TcpSocket<'static>, ConnectError> {
-    let socket_rx_buffer = vec![0; 4096].into_boxed_slice();
-    let socket_tx_buffer = vec![0; 4096].into_boxed_slice();
-    let mut socket = TcpSocket::new(stack, Box::leak(socket_rx_buffer), Box::leak(socket_tx_buffer));
-    socket.set_timeout(Some(Duration::from_secs(10)));
+    socket_ptr: *mut TcpSocket<'static>,
+) {
+    unsafe {
+        let socket_rx_buffer: &'static mut [u8; 4096] = &mut [0; 4096];
+        let socket_tx_buffer: &'static mut [u8; 4096] = &mut [0; 4096];
+        let socket = &mut *socket_ptr;
+        *socket = TcpSocket::new(stack, socket_rx_buffer, socket_tx_buffer);
+        socket.set_timeout(Some(Duration::from_secs(10)));
 
-    socket.connect(remote_endpoint).await.map(|_| socket)
+        match socket.connect(remote_endpoint).await {
+            Ok(_) => {
+                // Successfully connected
+                println!("Connected to {:?}", remote_endpoint);
+            }
+            Err(e) => {
+                // Handle the connection error
+                println!("Failed to connect: {:?}", e);
+            }
+        }
+    }
 }
 
 async fn fetch_data_https<'a>(
-    mut socket: TcpSocket<'a>,
+    socket: &mut TcpSocket<'a>,
     hostname: &str,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
@@ -520,7 +538,7 @@ async fn fetch_data_https<'a>(
 
     println!("Initializing TLS session");
     let tls: Session<_, 4096> = Session::new(
-        &mut socket,
+        socket,
         hostname,
         Mode::Client,
         TlsVersion::Tls1_2,
@@ -586,6 +604,7 @@ async fn fetch_data_https<'a>(
 
     sender.send(FetchMessage::FetchedData(all_data)).await;
 }
+
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();
