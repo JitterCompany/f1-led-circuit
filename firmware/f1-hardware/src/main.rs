@@ -116,7 +116,7 @@ enum ButtonMessage {
 
 enum WifiMessage {
     WifiInitialized,
-    WifiConnected,
+    //WifiConnected,
     IpAddressAcquired,
     Disconnected,
 }
@@ -125,9 +125,14 @@ enum FetchMessage {
     FetchedData(Heapless08Vec<FetchedData, 64>), // Dynamically sized vector for the fetched data
 }
 
+enum SocketMessage {
+    SocketConnected,
+}
+
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
 static WIFI_CHANNEL: StaticCell<Channel<NoopRawMutex, WifiMessage, 1>> = StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
+static SOCKET_CHANNEL: StaticCell<Channel<NoopRawMutex, SocketMessage, 1>> = StaticCell::new();
 
 static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
@@ -189,6 +194,7 @@ async fn main(spawner: Spawner) {
     let button_channel = BUTTON_CHANNEL.init(Channel::new());
     let wifi_channel = WIFI_CHANNEL.init(Channel::new());
     let fetch_channel = FETCH_CHANNEL.init(Channel::new());
+    let socket_channel = SOCKET_CHANNEL.init(Channel::new());
 
     // Spawn the button task with ownership of the button pin and the sender
     if let Err(e) = spawner.spawn(button_task(button_pin, button_channel.sender())) {
@@ -277,11 +283,12 @@ async fn main(spawner: Spawner) {
                         wifi_channel.receiver(),
                         stack,
                         fetch_channel.sender(),
+                        socket_channel.sender(),
                         spawner,
                     )) {
                         println!("Failed to spawn fetch_update_frames: {:?}", e);
                     } else {
-                        println!("fetch_update_frames spawned...");
+                        println!("Fetch Update Frames Spawned...");
                     }
                 }
                 Err(e) => {
@@ -404,7 +411,7 @@ async fn wifi_connection(
                 match controller.connect().await {
                     Ok(_) => {
                         println!("WiFi connected successfully.");
-                        sender.send(WifiMessage::WifiConnected).await;
+                        //sender.send(WifiMessage::WifiConnected).await;
                         break;
                     }
                     Err(e) => {
@@ -455,19 +462,19 @@ async fn run_network_stack(stack: &'static Stack<WifiDevice<'static, WifiStaDevi
 
 #[embassy_executor::task]
 async fn fetch_update_frames(
-    receiver: Receiver<'static, NoopRawMutex, WifiMessage, 1>,
+    wifi_receiver: Receiver<'static, NoopRawMutex, WifiMessage, 1>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
-    sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+    fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+    socket_sender: Sender<'static, NoopRawMutex, SocketMessage, 1>,
     spawner: Spawner,
 ) {
-    /*
-    match receiver.receive().await {
+    match wifi_receiver.receive().await {
         WifiMessage::IpAddressAcquired => {
             // Handle the case where the IP address is acquired
             println!("IP Address acquired.");
 
             // Spawn the DNS query task
-            if let Err(e) = spawner.spawn(dns_query_task(stack, sender)) {
+            if let Err(e) = spawner.spawn(dns_query_task(stack, fetch_sender, socket_sender, spawner)) {
                 println!("Failed to spawn dns_query_task: {:?}", e);
             }
         }
@@ -476,18 +483,14 @@ async fn fetch_update_frames(
             println!("Other WiFi message received");
         }
     }
-    */
-
-    // Spawn the DNS query task
-    if let Err(e) = spawner.spawn(dns_query_task(stack, sender)) {
-        println!("Failed to spawn dns_query_task: {:?}", e);
-    }
 }
 
 #[embassy_executor::task]
 async fn dns_query_task(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
-    sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+    fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+    socket_sender: Sender<'static, NoopRawMutex, SocketMessage, 1>,
+    spawner: Spawner,
 ) {
     let dns_socket = DnsSocket::new(stack);
     let hostname = "api.openf1.org";
@@ -519,6 +522,7 @@ async fn dns_query_task(
                             match socket_connect(stack, remote_endpoint, socket_ptr).await {
                                 Ok(_) => {
                                     println!("Socket connection established on attempt {}", retries + 1);
+                                    socket_sender.send(SocketMessage::SocketConnected).await;
                                     break;
                                 }
                                 Err(e) => {
@@ -534,7 +538,9 @@ async fn dns_query_task(
                         }
 
                         // Use the socket for further operations, such as establishing a TLS session
-                        fetch_data_https(socket, hostname, sender).await;
+                        if let Err(e) = spawner.spawn(fetch_data_https(socket, hostname, SOCKET_CHANNEL.init(Channel::new()).receiver())) {
+                            println!("Failed to spawn fetch_data_https: {:?}", e);
+                        }
                     } else {
                         // Handle the case where the socket is not initialized
                         println!("Socket not initialized");
@@ -549,6 +555,7 @@ async fn dns_query_task(
         }
     }
 }
+
 
 async fn socket_connect(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
@@ -574,179 +581,71 @@ async fn socket_connect(
     }
 }
 
-async fn fetch_data_https<'a>(
-    socket: &mut TcpSocket<'a>,
-    hostname: &str,
-    sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+#[embassy_executor::task]
+async fn fetch_data_https(
+    socket: &'static mut TcpSocket<'static>,
+    hostname: &'static str,
+    mut socket_receiver: Receiver<'static, NoopRawMutex, SocketMessage, 1>,
 ) {
-    const BUFFER_SIZE: usize = 4096;
+    match socket_receiver.receive().await {
+        SocketMessage::SocketConnected => {
+            const BUFFER_SIZE: usize = 4096;
+            let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
 
-    let session_key = "9149";
-    let driver_numbers = [
-        1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
-    ];
-    let start_time = "2023-08-27T12:58:56.234Z";
-    let end_time = "2023-08-27T13:20:54.214Z";
+            // Set debug level for TLS
+            set_debug(3);
 
-    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
+            println!("Checking TLS chain");
 
-    // Set debug level for TLS
-    set_debug(3);
-
-    println!("Checking TLS chain");
-
-    // Load CA chain
-    let ca_chain_result =
-        X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok();
-    if ca_chain_result.is_none() {
-        println!("Failed to load CA chain");
-        return;
-    } else {
-        println!("CA chain loaded");
-    }
-
-    let ca_chain = ca_chain_result.unwrap();
-
-    println!("Initializing TLS session");
-
-    // Initialize the TLS session
-    let tls_result = esp_mbedtls::asynch::Session::<&mut TcpSocket<'a>, BUFFER_SIZE>::new(
-        socket,
-        hostname,
-        Mode::Client,
-        TlsVersion::Tls1_2,
-        Certificates {
-            ca_chain: Some(ca_chain),
-            ..Default::default()
-        },
-    );
-
-    match tls_result {
-        Ok(session) => {
-            println!("TLS session initialized successfully");
-            match session.connect().await {
-                Ok(connected_session) => connected_session,
-                Err(e) => {
-                    println!("Failed to connect TLS session: {:?}", e);
-                    return;
-                }
+            // Load CA chain
+            let ca_chain_result =
+                X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok();
+            if ca_chain_result.is_none() {
+                println!("Failed to load CA chain");
+                return;
+            } else {
+                println!("CA chain loaded");
             }
-        }
-        Err(e) => {
-            println!("Failed to initialize TLS session: {:?}", e);
-            return;
-        }
-    };
-}
-/*
-println!("Checking TLS result");
 
-let tls_result = esp_mbedtls::asynch::Session::<&mut TcpSocket<'a>, BUFFER_SIZE>::new(
-    socket,
-    hostname,
-    Mode::Client,
-    TlsVersion::Tls1_2,
-    Certificates {
-        ca_chain: X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok(),
-        ..Default::default()
-    },
-);
+            let ca_chain = ca_chain_result.unwrap();
 
+            println!("Initializing TLS session");
 
-let tls = match tls_result {
-    Ok(session) => {
-        println!("TLS session initialized successfully");
-        session.connect().await.unwrap()
-    },
-    Err(e) => {
-        println!("Failed to initialize TLS session: {:?}", e);
-        return; // or handle the error appropriately
-    }
-};
+            // Initialize the TLS session
+            let tls_result = esp_mbedtls::asynch::Session::<&mut TcpSocket<'_>, BUFFER_SIZE>::new(
+                socket,
+                hostname,
+                Mode::Client,
+                TlsVersion::Tls1_2,
+                Certificates {
+                    ca_chain: Some(ca_chain),
+                    ..Default::default()
+                },
+            );
 
-*
-
-// To verify that the certificate was loaded correctly
-if let Some(ca_chain) = X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok() {
-    println!("CA chain loaded successfully");
-} else {
-    println!("Failed to load CA chain");
-}
-
-println!("TLS session initialized, proceeding with connection");
-*/
-
-/*
-
-    println!("Initializing TLS session");
-    let tls: Session<_, 4096> = Session::new(
-        socket,
-        hostname,
-        Mode::Client,
-        TlsVersion::Tls1_2,
-        Certificates {
-            ca_chain: X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok(),
-            ..Default::default()
-        },
-    )
-    .unwrap();
-
-    println!("Start TLS connect");
-    let mut tls = match tls.connect().await {
-        Ok(session) => {
-            println!("TLS connection established");
-            session
-        }
-        Err(e) => {
-            println!("TLS connect error: {:?}", e);
-            return;
-        }
-    };
-
-    for &driver_number in &driver_numbers {
-        let mut url: Heapless08String<256> = Heapless08String::new();
-        write!(
-            url,
-            "GET /v1/location?session_key={}&driver_number={}&date%3E{}&date%3C{} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n",
-            session_key, driver_number, start_time, end_time, hostname
-        )
-        .unwrap();
-
-        println!("Sending request: {}", url);
-        tls.write_all(url.as_bytes()).await.unwrap();
-
-        let mut response = [0u8; 2048];
-        let n = tls.read(&mut response).await.unwrap();
-        println!("Raw response length: {}", n);
-        println!("Raw response: {:?}", &response[..n]);
-
-        if let Some(body_start) = find_http_body(&response[..n]) {
-            let body = &response[body_start..n];
-            println!("Body start index: {}", body_start);
-            println!("Body length: {}", body.len());
-            println!("Body: {:?}", body);
-
-            let data: Result<Heapless08Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
-            match data {
-                Ok(data) => {
-                    println!("Parsed data length: {}", data.len());
-                    println!("Parsed data: {:?}", data);
-                    for item in data {
-                        all_data.push(item).unwrap();
+            match tls_result {
+                Ok(mut session) => {
+                    println!("TLS session initialized successfully");
+                    if let Err(e) = session.connect().await {
+                        println!("Failed to connect TLS session: {:?}", e);
+                        return;
                     }
+
+                    // Continue with your HTTPS requests here using the `session`.
+                    // Example: Perform the HTTPS request and handle the response.
+
                 }
                 Err(e) => {
-                    println!("Failed to parse JSON: {:?}", e);
+                    println!("Failed to initialize TLS session: {:?}", e);
                 }
-            }
-        } else {
-            println!("Failed to find body in HTTP response.");
+            };
+        }
+        _ => {
+            // Handle all other cases
+            println!("Socket Message Error");
         }
     }
-
-    sender.send(FetchMessage::FetchedData(all_data)).await;
-
-} */
+}
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();
