@@ -12,7 +12,9 @@ use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
-use embassy_net::{Config, IpAddress, Ipv4Address, Ipv4Cidr, Stack, StackResources, StaticConfigV4};
+use embassy_net::{
+    Config, IpAddress, Ipv4Address, Ipv4Cidr, Stack, StackResources, StaticConfigV4,
+};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::{Channel, Receiver, Sender};
 use embassy_time::{Duration, Timer};
@@ -33,6 +35,7 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
+use grounded::alloc_single::AllocSingle;
 use hd108::HD108;
 use heapless07::{String as Heapless07String, Vec as Heapless07Vec};
 use heapless08::{String as Heapless08String, Vec as Heapless08Vec};
@@ -41,19 +44,18 @@ use postcard::{from_bytes, to_vec};
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
-use grounded::alloc_single::AllocSingle;
 
 // Importing necessary TLS modules
 use embedded_io_async::Read;
 use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
 
 // Wifi
+use embassy_net::tcp::{ConnectError, TcpSocket};
 use esp_wifi::{
     initialize,
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
-use embassy_net::tcp::{TcpSocket, ConnectError};
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -382,7 +384,7 @@ async fn wifi_connection(
                 match controller.connect().await {
                     Ok(_) => {
                         println!("WiFi connected successfully.");
-                        //sender.send(WifiMessage::WifiConnected).await;
+                        sender.send(WifiMessage::WifiConnected).await;
                         break;
                     }
                     Err(e) => {
@@ -438,18 +440,27 @@ async fn fetch_update_frames(
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     spawner: Spawner,
 ) {
+    /* 
     match receiver.receive().await {
         WifiMessage::IpAddressAcquired => {
             // Handle the case where the IP address is acquired
             println!("IP Address acquired.");
 
             // Spawn the DNS query task
-            spawner.spawn(dns_query_task(stack, sender)).unwrap();
+            if let Err(e) = spawner.spawn(dns_query_task(stack, sender)) {
+                println!("Failed to spawn dns_query_task: {:?}", e);
+            }
         }
         _ => {
             // Handle all other cases
             println!("Other WiFi message received");
         }
+    }
+    */
+
+    // Spawn the DNS query task
+    if let Err(e) = spawner.spawn(dns_query_task(stack, sender)) {
+        println!("Failed to spawn dns_query_task: {:?}", e);
     }
 }
 
@@ -469,9 +480,6 @@ async fn dns_query_task(
                 let remote_endpoint = (*ipv4_address, 443); // Using port 443 for HTTPS
 
                 // Initialize static buffers
-                static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
-                static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
-
                 let rx_buffer = SOCKET_RX_BUFFER.init([0; 4096]);
                 let tx_buffer = SOCKET_TX_BUFFER.init([0; 4096]);
 
@@ -483,7 +491,11 @@ async fn dns_query_task(
 
                     if let Some(socket) = SOCKET.as_mut() {
                         let socket_ptr = addr_of_mut!(*socket);
-                        let _ = socket_connect(stack, remote_endpoint, socket_ptr);
+                        if let Err(e) = socket_connect(stack, remote_endpoint, socket_ptr).await {
+                            println!("Socket connection failed: {:?}", e);
+                            return;
+                        }
+
                         // Use the socket for further operations, such as establishing a TLS session
                         fetch_data_https(socket, hostname, sender).await;
                     } else {
@@ -501,12 +513,11 @@ async fn dns_query_task(
     }
 }
 
-#[embassy_executor::task]
 async fn socket_connect(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     remote_endpoint: (Ipv4Address, u16),
     socket_ptr: *mut TcpSocket<'static>,
-) {
+) -> Result<(), ConnectError> {
     unsafe {
         let socket = &mut *socket_ptr;
         socket.set_timeout(Some(Duration::from_secs(10)));
@@ -515,10 +526,12 @@ async fn socket_connect(
             Ok(_) => {
                 // Successfully connected
                 println!("Connected to {:?}", remote_endpoint);
+                Ok(())
             }
             Err(e) => {
                 // Handle the connection error
                 println!("Failed to connect: {:?}", e);
+                Err(e)
             }
         }
     }
