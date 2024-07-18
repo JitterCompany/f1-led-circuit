@@ -2,6 +2,7 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
+mod config;
 mod data;
 mod driver_info;
 mod hd108;
@@ -56,6 +57,16 @@ use esp_wifi::{
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
+
+// Allocator
+use esp_alloc::EspHeap;
+
+// Declare a static global allocator
+#[global_allocator]
+static HEAP: EspHeap = EspHeap::empty();
+use core::mem::MaybeUninit;
+
+extern crate alloc;
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -122,8 +133,17 @@ static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 
+// Define a static buffer for the heap
+static mut HEAP_MEMORY: MaybeUninit<[u8; config::HEAP_SIZE]> = MaybeUninit::uninit();
+
 #[main]
 async fn main(spawner: Spawner) {
+    // Initialize the heap allocator with the configured heap size
+    let heap_size = config::HEAP_SIZE;
+    unsafe {
+        HEAP.init(HEAP_MEMORY.as_mut_ptr() as *mut u8, heap_size);
+    }
+
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::max(system.clock_control).freeze();
@@ -491,9 +511,26 @@ async fn dns_query_task(
 
                     if let Some(socket) = SOCKET.as_mut() {
                         let socket_ptr = addr_of_mut!(*socket);
-                        if let Err(e) = socket_connect(stack, remote_endpoint, socket_ptr).await {
-                            println!("Socket connection failed: {:?}", e);
-                            return;
+
+                        // Retry mechanism for socket connection
+                        const MAX_RETRIES: u8 = 5;
+                        let mut retries = 0;
+                        loop {
+                            match socket_connect(stack, remote_endpoint, socket_ptr).await {
+                                Ok(_) => {
+                                    println!("Socket connection established on attempt {}", retries + 1);
+                                    break;
+                                }
+                                Err(e) => {
+                                    retries += 1;
+                                    println!("Socket connection failed (attempt {}): {:?}", retries, e);
+                                    if retries >= MAX_RETRIES {
+                                        println!("Max retries reached. Aborting connection attempts.");
+                                        return;
+                                    }
+                                    Timer::after(Duration::from_secs(2)).await; // Delay before retrying
+                                }
+                            }
                         }
 
                         // Use the socket for further operations, such as establishing a TLS session
@@ -543,7 +580,7 @@ async fn fetch_data_https<'a>(
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
     const BUFFER_SIZE: usize = 4096;
-    
+
     let session_key = "9149";
     let driver_numbers = [
         1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
