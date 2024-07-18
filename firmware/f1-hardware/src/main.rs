@@ -8,8 +8,8 @@ mod hd108;
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
-use core::ptr::addr_of_mut;
 use core::fmt::Write as FmtWrite;
+use core::ptr::addr_of_mut;
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
 use embassy_net::{Config, IpAddress, Ipv4Address, Ipv4Cidr, Stack, StackResources, StaticConfigV4};
@@ -41,11 +41,11 @@ use postcard::{from_bytes, to_vec};
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
+use grounded::alloc_single::AllocSingle;
 
 // Importing necessary TLS modules
 use embedded_io_async::Read;
 use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
-
 
 // Wifi
 use esp_wifi::{
@@ -115,6 +115,10 @@ enum FetchMessage {
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
 static WIFI_CHANNEL: StaticCell<Channel<NoopRawMutex, WifiMessage, 1>> = StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
+
+static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
+static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
+static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -432,7 +436,7 @@ async fn fetch_update_frames(
     receiver: Receiver<'static, NoopRawMutex, WifiMessage, 1>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-    spawner: Spawner, 
+    spawner: Spawner,
 ) {
     match receiver.receive().await {
         WifiMessage::IpAddressAcquired => {
@@ -449,7 +453,6 @@ async fn fetch_update_frames(
     }
 }
 
-
 #[embassy_executor::task]
 async fn dns_query_task(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
@@ -465,16 +468,22 @@ async fn dns_query_task(
                 let IpAddress::Ipv4(ipv4_address) = ip_address;
                 let remote_endpoint = (*ipv4_address, 443); // Using port 443 for HTTPS
 
-                // Static mutable socket buffer
+                // Initialize static buffers
+                static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
+                static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
+
+                let rx_buffer = SOCKET_RX_BUFFER.init([0; 4096]);
+                let tx_buffer = SOCKET_TX_BUFFER.init([0; 4096]);
+
                 static mut SOCKET: Option<TcpSocket<'static>> = None;
                 unsafe {
                     if SOCKET.is_none() {
-                        SOCKET = Some(TcpSocket::new(stack, &mut [0; 4096], &mut [0; 4096]));
+                        SOCKET = Some(TcpSocket::new(stack, rx_buffer, tx_buffer));
                     }
 
                     if let Some(socket) = SOCKET.as_mut() {
                         let socket_ptr = addr_of_mut!(*socket);
-                        socket_connect(stack, remote_endpoint, socket_ptr);
+                        let _ = socket_connect(stack, remote_endpoint, socket_ptr);
                         // Use the socket for further operations, such as establishing a TLS session
                         fetch_data_https(socket, hostname, sender).await;
                     } else {
@@ -492,7 +501,6 @@ async fn dns_query_task(
     }
 }
 
-
 #[embassy_executor::task]
 async fn socket_connect(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
@@ -500,10 +508,7 @@ async fn socket_connect(
     socket_ptr: *mut TcpSocket<'static>,
 ) {
     unsafe {
-        let socket_rx_buffer: &'static mut [u8; 4096] = &mut [0; 4096];
-        let socket_tx_buffer: &'static mut [u8; 4096] = &mut [0; 4096];
         let socket = &mut *socket_ptr;
-        *socket = TcpSocket::new(stack, socket_rx_buffer, socket_tx_buffer);
         socket.set_timeout(Some(Duration::from_secs(10)));
 
         match socket.connect(remote_endpoint).await {
@@ -604,7 +609,6 @@ async fn fetch_data_https<'a>(
 
     sender.send(FetchMessage::FetchedData(all_data)).await;
 }
-
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();

@@ -52,6 +52,7 @@ heapless08 = { package = "heapless", version = "0.8.0", features = ["serde"] }
 postcard = "1.0.8"
 serde = { version = "1.0.204", default-features = false }
 serde-json-core = "0.5.1"
+grounded = { version = "0.2.0", features = ["cas"] }
 
 [profile.dev]
 # Rust debug is too slow. 
