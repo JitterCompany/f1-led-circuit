@@ -58,6 +58,7 @@ use esp_wifi::{
     EspWifiInitFor,
 };
 
+/* 
 // Allocator
 use esp_alloc::EspHeap;
 
@@ -67,6 +68,8 @@ static HEAP: EspHeap = EspHeap::empty();
 use core::mem::MaybeUninit;
 
 extern crate alloc;
+
+*/
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -134,16 +137,22 @@ static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 
+/* 
 // Define a static buffer for the heap
 static mut HEAP_MEMORY: MaybeUninit<[u8; config::HEAP_SIZE]> = MaybeUninit::uninit();
 
+*/
+
 #[main]
 async fn main(spawner: Spawner) {
+   /* 
     // Initialize the heap allocator with the configured heap size
     let heap_size = config::HEAP_SIZE;
     unsafe {
         HEAP.init(HEAP_MEMORY.as_mut_ptr() as *mut u8, heap_size);
     }
+
+    */
 
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
