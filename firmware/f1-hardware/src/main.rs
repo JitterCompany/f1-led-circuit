@@ -623,55 +623,93 @@ async fn fetch_data_https(
                 Ok(mut tls_session) => {
                     println!("TLS handshake completed successfully");
 
-                    // Minimal GET request
-                    let mut request = Heapless08String::<256>::new();
-                    write!(
-                        request,
-                        "GET / HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n",
-                        hostname
-                    )
-                    .unwrap();
+                    let session_key = "9149";
+                    let driver_numbers = [
+                        1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
+                    ];
+                    let start_time = "2023-08-27T12:58:56.234";
+                    let end_time = "2023-08-27T12:58:57.154";
 
-                    println!("Sending request: {}", request);
+                    let mut all_data = heapless08::Vec::<FetchedData, 64>::new();
 
-                    // Write the request to the TLS session
-                    let r = tls_session.write_all(request.as_bytes()).await;
-                    if let Err(e) = r {
-                        println!("write error: {:?}", e);
-                        return;
-                    }
+                    for &driver_number in &driver_numbers {
+                        let mut url: Heapless08String<256> = Heapless08String::new();
+                        url.push_str("GET /v1/location?session_key=").unwrap();
+                        url.push_str(session_key).unwrap();
+                        url.push_str("&driver_number=").unwrap();
+                        push_u32(&mut url, driver_number).unwrap();
+                        url.push_str("&date%3E").unwrap(); // Encoding for '>'
+                        url.push_str(start_time).unwrap();
+                        url.push_str("&date%3C").unwrap(); // Encoding for '<'
+                        url.push_str(end_time).unwrap();
+                        url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n").unwrap();
 
-                    println!("Request sent successfully");
+                        println!("Sending request: {}", url);
 
-                    // Read the response from the TLS session
-                    let mut buf = [0u8; BUFFER_SIZE];
-                    loop {
-                        match embassy_time::with_timeout(Duration::from_secs(10), tls_session.read(&mut buf)).await {
-                            Ok(Ok(n)) => {
-                                if n == 0 {
-                                    println!("Connection closed by peer");
+                        let r = tls_session.write_all(url.as_bytes()).await;
+                        if let Err(e) = r {
+                            println!("write error: {:?}", e);
+                            continue;
+                        }
+
+                        println!("Request sent successfully");
+
+                        let mut response = [0u8; BUFFER_SIZE];
+                        let mut total_read = 0;
+
+                        loop {
+                            match embassy_time::with_timeout(Duration::from_secs(10), tls_session.read(&mut response[total_read..])).await {
+                                Ok(Ok(n)) => {
+                                    if n == 0 {
+                                        println!("Connection closed by peer");
+                                        break;
+                                    }
+                                    total_read += n;
+                                }
+                                Ok(Err(esp_mbedtls::TlsError::Eof)) => {
                                     break;
                                 }
-                                println!(
-                                    "Received data: {}",
-                                    core::str::from_utf8(&buf[..n]).unwrap_or("<invalid utf8>")
-                                );
-                            }
-                            Ok(Err(esp_mbedtls::TlsError::Eof)) => {
-                                break;
-                            }
-                            Ok(Err(e)) => {
-                                println!("read error: {:?}", e);
-                                break;
-                            }
-                            Err(_) => {
-                                println!("Read operation timed out");
-                                break;
+                                Ok(Err(e)) => {
+                                    println!("read error: {:?}", e);
+                                    break;
+                                }
+                                Err(_) => {
+                                    println!("Read operation timed out");
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    println!("Done");
+                        println!("Raw response: {:?}", &response[..total_read]);
+
+                        if total_read > 0 {
+                            if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                                if let Some(body_start) = find_http_body(&response[..total_read]) {
+                                    let body = &response[body_start..total_read];
+                                    println!("Body: {:?}", body);
+
+                                    let data: Result<heapless08::Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+                                    match data {
+                                        Ok(data) => {
+                                            println!("Parsed data: {:?}", data);
+                                            for item in data {
+                                                all_data.push(item).unwrap();
+                                            }
+                                        }
+                                        Err(e) => {
+                                            println!("Failed to parse JSON: {:?}", e);
+                                        }
+                                    }
+                                } else {
+                                    println!("Failed to find body in HTTP response.");
+                                }
+                            } else {
+                                println!("Non-200 HTTP response received");
+                            }
+                        } else {
+                            println!("Empty response received.");
+                        }
+                    }
                 }
                 Err(e) => {
                     // Detailed error handling for TLS connection failure
