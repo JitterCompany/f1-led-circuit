@@ -580,7 +580,7 @@ async fn fetch_data_https(
     hostname: &'static str,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
-    const BUFFER_SIZE: usize = 4096;
+    const BUFFER_SIZE: usize = 2048;
 
     // Set debug level for TLS
     set_debug(3);
@@ -622,15 +622,15 @@ async fn fetch_data_https(
             match session.connect().await {
                 Ok(mut tls_session) => {
                     println!("TLS handshake completed successfully");
-                    
-                    /* 
+
                     // Minimal GET request
                     let mut request = Heapless08String::<256>::new();
                     write!(
                         request,
-                        "GET / HTTP/1.1\r\nHost: {}\r\n\r\n",
+                        "GET / HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n",
                         hostname
-                    ).unwrap();
+                    )
+                    .unwrap();
 
                     println!("Sending request: {}", request);
 
@@ -644,29 +644,34 @@ async fn fetch_data_https(
                     println!("Request sent successfully");
 
                     // Read the response from the TLS session
-                    let mut buf = [0u8; 2048];
+                    let mut buf = [0u8; BUFFER_SIZE];
                     loop {
-                        let n = match tls_session.read(&mut buf).await {
-                            Ok(n) => n,
-                            Err(esp_mbedtls::TlsError::Eof) => {
+                        match embassy_time::with_timeout(Duration::from_secs(10), tls_session.read(&mut buf)).await {
+                            Ok(Ok(n)) => {
+                                if n == 0 {
+                                    println!("Connection closed by peer");
+                                    break;
+                                }
+                                println!(
+                                    "Received data: {}",
+                                    core::str::from_utf8(&buf[..n]).unwrap_or("<invalid utf8>")
+                                );
+                            }
+                            Ok(Err(esp_mbedtls::TlsError::Eof)) => {
                                 break;
                             }
-                            Err(e) => {
+                            Ok(Err(e)) => {
                                 println!("read error: {:?}", e);
                                 break;
                             }
-                        };
-
-                        if n == 0 {
-                            println!("Connection closed by peer");
-                            break;
+                            Err(_) => {
+                                println!("Read operation timed out");
+                                break;
+                            }
                         }
-
-                        println!("{}", core::str::from_utf8(&buf[..n]).unwrap_or("<invalid utf8>"));
                     }
 
                     println!("Done");
-                    */
                 }
                 Err(e) => {
                     // Detailed error handling for TLS connection failure
