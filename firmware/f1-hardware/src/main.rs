@@ -581,10 +581,9 @@ async fn fetch_data_https(
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
     const BUFFER_SIZE: usize = 4096;
-    let mut _all_data = Heapless08Vec::<FetchedData, 64>::new();
 
     // Set debug level for TLS
-    set_debug(4);
+    set_debug(3);
 
     println!("Checking TLS chain");
 
@@ -613,16 +612,101 @@ async fn fetch_data_https(
             ..Default::default()
         },
     );
+    
 
     match tls_result {
         Ok(session) => {
             println!("TLS session initialized successfully");
 
+            println!("Starting TLS handshake");
             match session.connect().await {
-                Ok(_) => {
-                    println!("TLS session connected successfully");
-                    // Continue with your HTTPS requests here using the `session`.
-                    // Example: Perform the HTTPS request and handle the response.
+                Ok(mut tls_session) => {
+                    println!("TLS handshake completed successfully");
+
+                    /* 
+                    let session_key = "9149";
+                    let driver_numbers = [
+                        1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
+                    ];
+                    let start_time = "2023-08-27T12:58:56.234Z";
+                    let end_time = "2023-08-27T13:20:54.214Z";
+                
+                    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
+                    
+                    for &driver_number in &driver_numbers {
+                        let mut url: Heapless08String<256> = Heapless08String::new();
+                        write!(
+                            url,
+                            "GET /v1/location?session_key={}&driver_number={}&date%3E{}&date%3C{} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n",
+                            session_key, driver_number, start_time, end_time, hostname
+                        )
+                        .unwrap();
+                    
+                        println!("Sending request for driver number {}: {}", driver_number, url);
+
+                        let mut bytes_written = 0;
+                        while bytes_written < url.len() {
+                            match tls_session.write(&url.as_bytes()[bytes_written..]).await {
+                                Ok(n) => {
+                                    bytes_written += n;
+                                    println!("Written {} bytes to TLS session", n);
+                                }
+                                Err(e) => {
+                                    println!("Failed to write to TLS session: {:?}", e);
+                                    return;
+                                }
+                            }
+                        }
+                    
+                        let mut response = [0u8; 2048];
+                        let mut response_len = 0;
+                        loop {
+                            match tls_session.read(&mut response[response_len..]).await {
+                                Ok(n) => {
+                                    if n == 0 {
+                                        println!("Connection closed by peer");
+                                        break; // Connection closed
+                                    }
+                                    response_len += n;
+                                    println!("Read {} bytes from TLS session", n);
+                                }
+                                Err(e) => {
+                                    println!("Failed to read from TLS session: {:?}", e);
+                                    return;
+                                }
+                            }
+                        }
+                    
+                        println!("Raw response length: {}", response_len);
+                        println!("Raw response: {:?}", &response[..response_len]);
+                    
+                        if let Some(body_start) = find_http_body(&response[..response_len]) {
+                            let body = &response[body_start..response_len];
+                            println!("Body start index: {}", body_start);
+                            println!("Body length: {}", body.len());
+                            println!("Body: {:?}", body);
+                    
+                            let data: Result<Heapless08Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+                            match data {
+                                Ok(data) => {
+                                    println!("Parsed data length: {}", data.len());
+                                    println!("Parsed data: {:?}", data);
+                                    for item in data {
+                                        all_data.push(item).unwrap();
+                                    }
+                                }
+                                Err(e) => {
+                                    println!("Failed to parse JSON: {:?}", e);
+                                }
+                            }
+                        } else {
+                            println!("Failed to find body in HTTP response.");
+                        }
+                    }
+                    */
+                    
+                    // sender.send(FetchMessage::FetchedData(all_data)).await;
+
                 }
                 Err(e) => {
                     // Detailed error handling for TLS connection failure
