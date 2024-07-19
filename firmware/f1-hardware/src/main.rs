@@ -622,91 +622,51 @@ async fn fetch_data_https(
             match session.connect().await {
                 Ok(mut tls_session) => {
                     println!("TLS handshake completed successfully");
-
+                    
                     /* 
-                    let session_key = "9149";
-                    let driver_numbers = [
-                        1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
-                    ];
-                    let start_time = "2023-08-27T12:58:56.234Z";
-                    let end_time = "2023-08-27T13:20:54.214Z";
-                
-                    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
-                    
-                    for &driver_number in &driver_numbers {
-                        let mut url: Heapless08String<256> = Heapless08String::new();
-                        write!(
-                            url,
-                            "GET /v1/location?session_key={}&driver_number={}&date%3E{}&date%3C{} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n",
-                            session_key, driver_number, start_time, end_time, hostname
-                        )
-                        .unwrap();
-                    
-                        println!("Sending request for driver number {}: {}", driver_number, url);
+                    // Minimal GET request
+                    let mut request = Heapless08String::<256>::new();
+                    write!(
+                        request,
+                        "GET / HTTP/1.1\r\nHost: {}\r\n\r\n",
+                        hostname
+                    ).unwrap();
 
-                        let mut bytes_written = 0;
-                        while bytes_written < url.len() {
-                            match tls_session.write(&url.as_bytes()[bytes_written..]).await {
-                                Ok(n) => {
-                                    bytes_written += n;
-                                    println!("Written {} bytes to TLS session", n);
-                                }
-                                Err(e) => {
-                                    println!("Failed to write to TLS session: {:?}", e);
-                                    return;
-                                }
-                            }
-                        }
-                    
-                        let mut response = [0u8; 2048];
-                        let mut response_len = 0;
-                        loop {
-                            match tls_session.read(&mut response[response_len..]).await {
-                                Ok(n) => {
-                                    if n == 0 {
-                                        println!("Connection closed by peer");
-                                        break; // Connection closed
-                                    }
-                                    response_len += n;
-                                    println!("Read {} bytes from TLS session", n);
-                                }
-                                Err(e) => {
-                                    println!("Failed to read from TLS session: {:?}", e);
-                                    return;
-                                }
-                            }
-                        }
-                    
-                        println!("Raw response length: {}", response_len);
-                        println!("Raw response: {:?}", &response[..response_len]);
-                    
-                        if let Some(body_start) = find_http_body(&response[..response_len]) {
-                            let body = &response[body_start..response_len];
-                            println!("Body start index: {}", body_start);
-                            println!("Body length: {}", body.len());
-                            println!("Body: {:?}", body);
-                    
-                            let data: Result<Heapless08Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
-                            match data {
-                                Ok(data) => {
-                                    println!("Parsed data length: {}", data.len());
-                                    println!("Parsed data: {:?}", data);
-                                    for item in data {
-                                        all_data.push(item).unwrap();
-                                    }
-                                }
-                                Err(e) => {
-                                    println!("Failed to parse JSON: {:?}", e);
-                                }
-                            }
-                        } else {
-                            println!("Failed to find body in HTTP response.");
-                        }
+                    println!("Sending request: {}", request);
+
+                    // Write the request to the TLS session
+                    let r = tls_session.write_all(request.as_bytes()).await;
+                    if let Err(e) = r {
+                        println!("write error: {:?}", e);
+                        return;
                     }
-                    */
-                    
-                    // sender.send(FetchMessage::FetchedData(all_data)).await;
 
+                    println!("Request sent successfully");
+
+                    // Read the response from the TLS session
+                    let mut buf = [0u8; 2048];
+                    loop {
+                        let n = match tls_session.read(&mut buf).await {
+                            Ok(n) => n,
+                            Err(esp_mbedtls::TlsError::Eof) => {
+                                break;
+                            }
+                            Err(e) => {
+                                println!("read error: {:?}", e);
+                                break;
+                            }
+                        };
+
+                        if n == 0 {
+                            println!("Connection closed by peer");
+                            break;
+                        }
+
+                        println!("{}", core::str::from_utf8(&buf[..n]).unwrap_or("<invalid utf8>"));
+                    }
+
+                    println!("Done");
+                    */
                 }
                 Err(e) => {
                     // Detailed error handling for TLS connection failure
@@ -751,6 +711,7 @@ async fn fetch_data_https(
                 }
             }
         }
+        
         Err(e) => {
             println!("Failed to initialize TLS session: {:?}", e);
         }
