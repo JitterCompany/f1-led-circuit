@@ -2,7 +2,6 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
-mod config;
 mod data;
 mod driver_info;
 mod hd108;
@@ -20,7 +19,6 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::{Channel, Receiver, Sender};
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
-use embedded_io_async::Write;
 use esp_backtrace as _;
 use esp_hal::dma::DmaDescriptor;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
@@ -36,7 +34,6 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
-use grounded::alloc_single::AllocSingle;
 use hd108::HD108;
 use heapless07::{String as Heapless07String, Vec as Heapless07Vec};
 use heapless08::{String as Heapless08String, Vec as Heapless08Vec};
@@ -47,8 +44,9 @@ use serde_json_core::from_slice;
 use static_cell::StaticCell;
 
 // Importing necessary TLS modules
-use embedded_io_async::Read;
+use embedded_io_async::{ Read, Write };
 use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
+use esp_mbedtls::TlsError::MbedTlsError;
 
 // Wifi
 use embassy_net::tcp::{ConnectError, TcpSocket};
@@ -58,18 +56,6 @@ use esp_wifi::{
     EspWifiInitFor,
 };
 
-/* 
-// Allocator
-use esp_alloc::EspHeap;
-
-// Declare a static global allocator
-#[global_allocator]
-static HEAP: EspHeap = EspHeap::empty();
-use core::mem::MaybeUninit;
-
-extern crate alloc;
-
-*/
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -137,22 +123,10 @@ static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 
-/* 
-// Define a static buffer for the heap
-static mut HEAP_MEMORY: MaybeUninit<[u8; config::HEAP_SIZE]> = MaybeUninit::uninit();
-
-*/
 
 #[main]
 async fn main(spawner: Spawner) {
-   /* 
-    // Initialize the heap allocator with the configured heap size
-    let heap_size = config::HEAP_SIZE;
-    unsafe {
-        HEAP.init(HEAP_MEMORY.as_mut_ptr() as *mut u8, heap_size);
-    }
-
-    */
+   
 
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
@@ -402,10 +376,7 @@ async fn wifi_connection(
                 }))
                 .unwrap();
 
-            println!("Starting wifi");
             controller.start().await.unwrap();
-
-            println!("Before WiFi connect...");
 
             let mut retries = 0;
             const MAX_RETRIES: u32 = 5;
@@ -613,13 +584,13 @@ async fn fetch_data_https(
     let mut _all_data = Heapless08Vec::<FetchedData, 64>::new();
 
     // Set debug level for TLS
-    set_debug(3);
+    set_debug(4);
 
     println!("Checking TLS chain");
 
     // Load CA chain
     let ca_chain_result =
-        X509::pem(concat!(include_str!("api.openf1.org.pem"), "\0").as_bytes()).ok();
+        X509::pem(concat!(include_str!("root_cert.pem"), "\0").as_bytes()).ok();
     if ca_chain_result.is_none() {
         println!("Failed to load CA chain");
         return;
@@ -644,15 +615,57 @@ async fn fetch_data_https(
     );
 
     match tls_result {
-        Ok(mut session) => {
+        Ok(session) => {
             println!("TLS session initialized successfully");
-            if let Err(e) = session.connect().await {
-                println!("Failed to connect TLS session: {:?}", e);
-                return;
-            }
 
-            // Continue with your HTTPS requests here using the `session`.
-            // Example: Perform the HTTPS request and handle the response.
+            match session.connect().await {
+                Ok(_) => {
+                    println!("TLS session connected successfully");
+                    // Continue with your HTTPS requests here using the `session`.
+                    // Example: Perform the HTTPS request and handle the response.
+                }
+                Err(e) => {
+                    // Detailed error handling for TLS connection failure
+                    match e {
+                        esp_mbedtls::TlsError::Unknown => {
+                            println!("TLS session connection failed: Unknown error");
+                        }
+                        esp_mbedtls::TlsError::OutOfMemory => {
+                            println!("TLS session connection failed: Out of memory");
+                        }
+                        esp_mbedtls::TlsError::MbedTlsError(code) => {
+                            println!("TLS session connection failed: MbedTlsError({})", code);
+                            // Optionally, match specific codes if you need more detailed handling
+                            match code {
+                                -9984 => {
+                                    println!("Error detail: CERTIFICATE_VERIFY_FAILED (-9984)");
+                                }
+                                -0x2700 => {
+                                    println!("Error detail: SSL_HANDSHAKE_FAILURE (-0x2700)");
+                                }
+                                -0x2800 => {
+                                    println!("Error detail: SSL_FATAL_ALERT_MESSAGE (-0x2800)");
+                                }
+                                -0x4200 => {
+                                    println!("Error detail: SSL_INTERNAL_ERROR (-0x4200)");
+                                }
+                                _ => {
+                                    println!("Error detail: Unrecognized MbedTlsError code");
+                                }
+                            }
+                        }
+                        esp_mbedtls::TlsError::Eof => {
+                            println!("TLS session connection failed: EOF encountered");
+                        }
+                        esp_mbedtls::TlsError::X509MissingNullTerminator => {
+                            println!("TLS session connection failed: X509 missing null terminator");
+                        }
+                        esp_mbedtls::TlsError::NoClientCertificate => {
+                            println!("TLS session connection failed: No client certificate provided");
+                        }
+                    }
+                }
+            }
         }
         Err(e) => {
             println!("Failed to initialize TLS session: {:?}", e);
