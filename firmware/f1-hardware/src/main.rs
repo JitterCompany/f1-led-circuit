@@ -44,9 +44,9 @@ use serde_json_core::from_slice;
 use static_cell::StaticCell;
 
 // Importing necessary TLS modules
-use embedded_io_async::{ Read, Write };
-use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
+use embedded_io_async::{Read, Write};
 use esp_mbedtls::TlsError::MbedTlsError;
+use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
 
 // Wifi
 use embassy_net::tcp::{ConnectError, TcpSocket};
@@ -55,7 +55,6 @@ use esp_wifi::{
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
-
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -123,11 +122,8 @@ static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 
-
 #[main]
 async fn main(spawner: Spawner) {
-   
-
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::max(system.clock_control).freeze();
@@ -588,8 +584,7 @@ async fn fetch_data_https(
     println!("Checking TLS chain");
 
     // Load CA chain
-    let ca_chain_result =
-        X509::pem(concat!(include_str!("root_cert.pem"), "\0").as_bytes()).ok();
+    let ca_chain_result = X509::pem(concat!(include_str!("root_cert.pem"), "\0").as_bytes()).ok();
     if ca_chain_result.is_none() {
         println!("Failed to load CA chain");
         return;
@@ -612,7 +607,6 @@ async fn fetch_data_https(
             ..Default::default()
         },
     );
-    
 
     match tls_result {
         Ok(session) => {
@@ -642,7 +636,10 @@ async fn fetch_data_https(
                         url.push_str(start_time).unwrap();
                         url.push_str("&date%3C").unwrap(); // Encoding for '<'
                         url.push_str(end_time).unwrap();
-                        url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n").unwrap();
+                        url.push_str(
+                            " HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n",
+                        )
+                        .unwrap();
 
                         println!("Sending request: {}", url);
 
@@ -658,7 +655,12 @@ async fn fetch_data_https(
                         let mut total_read = 0;
 
                         loop {
-                            match embassy_time::with_timeout(Duration::from_secs(10), tls_session.read(&mut response[total_read..])).await {
+                            match embassy_time::with_timeout(
+                                Duration::from_secs(10),
+                                tls_session.read(&mut response[total_read..]),
+                            )
+                            .await
+                            {
                                 Ok(Ok(n)) => {
                                     if n == 0 {
                                         println!("Connection closed by peer");
@@ -683,12 +685,15 @@ async fn fetch_data_https(
                         println!("Raw response: {:?}", &response[..total_read]);
 
                         if total_read > 0 {
-                            if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                            if response.starts_with(b"HTTP/1.1 200 OK")
+                                || response.starts_with(b"HTTP/1.0 200 OK")
+                            {
                                 if let Some(body_start) = find_http_body(&response[..total_read]) {
                                     let body = &response[body_start..total_read];
                                     println!("Body: {:?}", body);
 
-                                    let data: Result<heapless08::Vec<FetchedData, 32>, _> = from_slice(body).map(|(d, _)| d);
+                                    let data: Result<heapless08::Vec<FetchedData, 32>, _> =
+                                        from_slice(body).map(|(d, _)| d);
                                     match data {
                                         Ok(data) => {
                                             println!("Parsed data: {:?}", data);
@@ -748,13 +753,15 @@ async fn fetch_data_https(
                             println!("TLS session connection failed: X509 missing null terminator");
                         }
                         esp_mbedtls::TlsError::NoClientCertificate => {
-                            println!("TLS session connection failed: No client certificate provided");
+                            println!(
+                                "TLS session connection failed: No client certificate provided"
+                            );
                         }
                     }
                 }
             }
         }
-        
+
         Err(e) => {
             println!("Failed to initialize TLS session: {:?}", e);
         }
