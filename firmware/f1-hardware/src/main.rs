@@ -71,6 +71,8 @@ macro_rules! mk_static {
     }};
 }
 
+//CONFIG
+
 const SSID: &str = env!("SSID");
 const PASSWORD: &str = env!("PASSWORD");
 
@@ -79,11 +81,14 @@ const SUBNET_MASK: &str = "255.255.255.0";
 const GATEWAY: &str = "192.168.1.1";
 const DNS_SERVER: &str = "8.8.8.8";
 
-// Size of DEC
-const DEC_SIZE: usize = 3263938;
+// Size of DEC in bytes
+const DEC_SIZE: usize = 3382548;
 
-// Total MCU flash size
+// Total MCU flash size in bytes
 const MCU_FLASH_SIZE: usize = 4194304;
+
+// Flag for dynamic time updates
+static DYNAMIC_TIME_UPDATES: bool = true;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
@@ -130,9 +135,6 @@ static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init();
 static FETCHED_DATA_SIZE: GroundedCell<usize> = GroundedCell::uninit();
 static MEMORY_FULL: AtomicBool = AtomicBool::new(false);
-
-// Flag for dynamic time updates
-static DYNAMIC_TIME_UPDATES: bool = true;
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -479,7 +481,7 @@ async fn wifi_connection(
             const MAX_RETRIES: u32 = 5;
 
             while retries < MAX_RETRIES {
-                println!("Retriest count: {}", retries);
+                println!("Retries count: {}", retries);
                 match controller.connect().await {
                     Ok(_) => {
                         println!("WiFi connected successfully.");
@@ -724,9 +726,12 @@ async fn fetch_data_https(
                     println!("TLS handshake completed successfully");
 
                     let session_key = "9149";
-                    let driver_numbers = [
-                        1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
-                    ];
+
+                    // Extract driver numbers from the DRIVERS array
+                    let driver_numbers: Heapless08Vec<u32, 20> = driver_info::DRIVERS
+                        .iter()
+                        .map(|driver| driver.number)
+                        .collect();
 
                     let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
                     let mut api_call_count = 0;
@@ -833,7 +838,7 @@ async fn fetch_data_https(
                             if DYNAMIC_TIME_UPDATES {
                                 // Adjust start_time and end_time for the next iteration
                                 *start_time = add_milliseconds_to_naive_datetime(*end_time, 1);
-                                *end_time = add_milliseconds_to_naive_datetime(*end_time, 751);
+                                *end_time = add_milliseconds_to_naive_datetime(*end_time, 251);
 
                                 println!(
                                     "Updated times for next iteration: start_time={}, end_time={}",
