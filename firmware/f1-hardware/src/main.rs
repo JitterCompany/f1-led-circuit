@@ -77,6 +77,13 @@ const SUBNET_MASK: &str = "255.255.255.0";
 const GATEWAY: &str = "192.168.1.1";
 const DNS_SERVER: &str = "8.8.8.8";
 
+// Size of dec
+const DEC_SIZE: usize = 3263938;
+
+
+// Total MCU flash size
+const MCU_FLASH_SIZE: usize = 4194304;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
     date: Heapless08String<32>,
@@ -144,14 +151,17 @@ fn get_free_memory() -> usize {
 }
 
 fn monitor_memory_task() -> usize {
-    let free_memory = get_free_memory();
+    let total_flashed_memory = DEC_SIZE;
     let fetched_data_size = unsafe { *FETCHED_DATA_SIZE.get() };
-    let total_used_memory = 4096 - free_memory + fetched_data_size;
-    println!("Free memory remaining: {} bytes", 4096 - total_used_memory);
+    let remaining_memory = MCU_FLASH_SIZE - total_flashed_memory - fetched_data_size;
+    
+    println!("Total MCU memory: {} bytes", MCU_FLASH_SIZE);
+    println!("Total binary size: {} bytes", total_flashed_memory);
     println!("Fetched data memory used: {} bytes", fetched_data_size);
-    4096 - total_used_memory
+    println!("Remaining memory: {} bytes", remaining_memory);
+    
+    remaining_memory
 }
-
 
 
 #[main]
@@ -827,9 +837,8 @@ async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) 
                 println!("Received data: {:?}", data);
 
                 // Check remaining memory after storing data
-                let free_memory = monitor_memory_task();
-                println!("Remaining memory: {} bytes", free_memory);
-
+                monitor_memory_task();
+            
                 // Perform any additional processing if necessary
             }
         }
