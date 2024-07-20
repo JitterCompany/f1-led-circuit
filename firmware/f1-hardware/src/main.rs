@@ -10,6 +10,7 @@ use driver_info::DRIVERS;
 
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
+use core::sync::atomic::{ AtomicBool, Ordering };
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
 use embassy_net::{
@@ -134,6 +135,7 @@ static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 // Define a static memory pool using GroundedArrayCell
 static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init();
 static FETCHED_DATA_SIZE: GroundedCell<usize> = GroundedCell::uninit();
+static MEMORY_FULL: AtomicBool = AtomicBool::new(false);
 
 fn get_free_memory() -> usize {
     let (ptr, len) = MEMORY_POOL.get_ptr_len();
@@ -159,6 +161,12 @@ fn monitor_memory_task() -> usize {
     println!("Total binary size: {} bytes", total_flashed_memory);
     println!("Fetched data memory used: {} bytes", fetched_data_size);
     println!("Remaining memory: {} bytes", remaining_memory);
+
+    if remaining_memory <= 0 {
+        MEMORY_FULL.store(true, Ordering::SeqCst);
+    } else {
+        MEMORY_FULL.store(false, Ordering::SeqCst);
+    }
     
     remaining_memory
 }
@@ -755,6 +763,15 @@ async fn fetch_data_https(
                                 println!("Read operation timed out");
                                 break;
                             }
+                        }
+
+                        // Check if memory is full and pause if necessary
+                        if MEMORY_FULL.load(Ordering::SeqCst) {
+                            println!("Memory is full, pausing fetch...");
+                            while MEMORY_FULL.load(Ordering::SeqCst) {
+                                Timer::after(Duration::from_secs(1)).await;
+                            }
+                            println!("Resuming fetch...");
                         }
                     }
 
