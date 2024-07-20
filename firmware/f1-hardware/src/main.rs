@@ -130,6 +130,9 @@ static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init(
 static FETCHED_DATA_SIZE: GroundedCell<usize> = GroundedCell::uninit();
 static MEMORY_FULL: AtomicBool = AtomicBool::new(false);
 
+// Flag for dynamic time updates
+static DYNAMIC_TIME_UPDATES: bool = false;
+
 #[main]
 async fn main(spawner: Spawner) {
     let peripherals = Peripherals::take();
@@ -673,6 +676,10 @@ async fn fetch_data_https(
 ) -> Result<(), esp_mbedtls::TlsError> {
     const BUFFER_SIZE: usize = 2048;
 
+    // static time strings
+    let start_time_str = "2023-08-27T12:58:56.234";
+    let end_time_str = "2023-08-27T12:58:57.154";
+
     // Set debug level for TLS
     set_debug(3);
 
@@ -727,9 +734,17 @@ async fn fetch_data_https(
                         url.push_str("&driver_number=").unwrap();
                         push_u32(&mut url, driver_number).unwrap();
                         url.push_str("&date%3E").unwrap(); // Encoding for '>'
-                        url.push_str(&naive_datetime_to_iso8601(*start_time)).unwrap();
+                        if DYNAMIC_TIME_UPDATES {
+                            url.push_str(&naive_datetime_to_iso8601(*start_time)).unwrap();
+                        } else {
+                            url.push_str(start_time_str).unwrap();
+                        }
                         url.push_str("&date%3C").unwrap(); // Encoding for '<'
-                        url.push_str(&naive_datetime_to_iso8601(*end_time)).unwrap();
+                        if DYNAMIC_TIME_UPDATES {
+                            url.push_str(&naive_datetime_to_iso8601(*end_time)).unwrap();
+                        } else {
+                            url.push_str(end_time_str).unwrap();
+                        }
                         url.push_str(
                             " HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n",
                         )
@@ -825,13 +840,15 @@ async fn fetch_data_https(
                     // Send all fetched data to the store_data task
                     fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
 
-                    // Update start_time and end_time for the next iteration
-                    *start_time = add_milliseconds_to_naive_datetime(*start_time, 1);
-                    *end_time = add_milliseconds_to_naive_datetime(*end_time, 250);
+                    // Update start_time and end_time for the next iteration if dynamic updates are enabled
+                    if DYNAMIC_TIME_UPDATES {
+                        *start_time = add_milliseconds_to_naive_datetime(*start_time, 1);
+                        *end_time = add_milliseconds_to_naive_datetime(*end_time, 250);
 
-                    println!("Updated times: start_time={}, end_time={}", 
-                             naive_datetime_to_iso8601(*start_time), 
-                             naive_datetime_to_iso8601(*end_time));
+                        println!("Updated times: start_time={}, end_time={}", 
+                                naive_datetime_to_iso8601(*start_time), 
+                                naive_datetime_to_iso8601(*end_time));
+                    }
 
                     Ok(())
                 }
