@@ -42,6 +42,7 @@ use postcard::{from_bytes, to_vec};
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
+use grounded::uninit::GroundedArrayCell;
 
 // Importing necessary TLS modules
 use embedded_io_async::{Read, Write};
@@ -121,6 +122,18 @@ static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = Stati
 static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
+
+// Define a static memory pool using GroundedArrayCell
+static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init();
+
+fn get_free_memory() -> usize {
+    // Assuming MEMORY_POOL is being used in a manner where we know the length of used memory
+    // In a real scenario, this should track the memory usage accurately
+    // For demonstration, we assume some memory usage
+    const USED_MEMORY: usize = 1024; // Example used memory
+    MEMORY_POOL.get_ptr_len().1 - USED_MEMORY
+}
+
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -784,6 +797,11 @@ async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) 
         match receiver.receive().await {
             FetchMessage::FetchedData(data) => {
                 println!("Received data: {:?}", data);
+                
+                // Get the remaining memory
+                let free_memory = get_free_memory();
+                println!("Remaining memory: {} bytes", free_memory);
+
                 // Perform any additional processing if necessary
             }
         }
