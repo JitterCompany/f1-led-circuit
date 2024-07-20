@@ -8,7 +8,7 @@ mod hd108;
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
-use chrono::{NaiveTime, NaiveDateTime, Datelike, Timelike, Duration as ChronoDuration};
+use chrono::{Datelike, Duration as ChronoDuration, NaiveDateTime, NaiveTime, Timelike};
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
 use core::sync::atomic::{AtomicBool, Ordering};
@@ -36,6 +36,8 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
+use grounded::uninit::GroundedArrayCell;
+use grounded::uninit::GroundedCell;
 use hd108::HD108;
 use heapless07::{String as Heapless07String, Vec as Heapless07Vec};
 use heapless08::{String as Heapless08String, Vec as Heapless08Vec};
@@ -44,8 +46,6 @@ use postcard::{from_bytes, to_vec};
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
-use grounded::uninit::GroundedArrayCell;
-use grounded::uninit::GroundedCell;
 
 // Importing necessary TLS modules
 use embedded_io_async::{Read, Write};
@@ -118,7 +118,8 @@ enum FetchMessage {
 }
 
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
-static CONNECTION_CHANNEL: StaticCell<Channel<NoopRawMutex, ConnectionMessage, 1>> = StaticCell::new();
+static CONNECTION_CHANNEL: StaticCell<Channel<NoopRawMutex, ConnectionMessage, 1>> =
+    StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
 
 static SOCKET_RX_BUFFER: StaticCell<[u8; 8192]> = StaticCell::new();
@@ -131,7 +132,7 @@ static FETCHED_DATA_SIZE: GroundedCell<usize> = GroundedCell::uninit();
 static MEMORY_FULL: AtomicBool = AtomicBool::new(false);
 
 // Flag for dynamic time updates
-static DYNAMIC_TIME_UPDATES: bool = false;
+static DYNAMIC_TIME_UPDATES: bool = true;
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -182,7 +183,9 @@ async fn main(spawner: Spawner) {
     let fetch_channel = FETCH_CHANNEL.init(Channel::new());
 
     // Initialize FETCHED_DATA_SIZE
-    unsafe { *FETCHED_DATA_SIZE.get() = 0; }
+    unsafe {
+        *FETCHED_DATA_SIZE.get() = 0;
+    }
 
     // Spawn the button task with ownership of the button pin and the sender
     if let Err(e) = spawner.spawn(button_task(button_pin, button_channel.sender())) {
@@ -300,7 +303,7 @@ fn parse_iso8601_timestamp(timestamp: &str) -> Result<NaiveDateTime, chrono::Par
 
     // Parse the timestamp
     let naive_datetime = NaiveDateTime::parse_from_str(cleaned_timestamp, "%Y-%m-%dT%H:%M:%S%.f")?;
-    
+
     Ok(naive_datetime)
 }
 
@@ -355,12 +358,11 @@ fn naive_datetime_to_iso8601(datetime: NaiveDateTime) -> Heapless08String<32> {
     iso8601
 }
 
-
 fn monitor_memory_task() -> usize {
     let total_flashed_memory = DEC_SIZE;
     let fetched_data_size = unsafe { *FETCHED_DATA_SIZE.get() };
     let remaining_memory = MCU_FLASH_SIZE - total_flashed_memory - fetched_data_size;
-    
+
     println!("Total MCU memory: {} bytes", MCU_FLASH_SIZE);
     println!("Total binary size: {} bytes", total_flashed_memory);
     println!("Fetched data memory used: {} bytes", fetched_data_size);
@@ -371,7 +373,7 @@ fn monitor_memory_task() -> usize {
     } else {
         MEMORY_FULL.store(false, Ordering::SeqCst);
     }
-    
+
     remaining_memory
 }
 
@@ -633,7 +635,9 @@ async fn fetch_data_loop(
         }
 
         // Reinitialize TLS session and fetch data
-        if let Err(e) = fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await {
+        if let Err(e) =
+            fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await
+        {
             println!("Failed to fetch data: {:?}", e);
             Timer::after(Duration::from_secs(5)).await; // Retry delay
             continue;
@@ -735,7 +739,8 @@ async fn fetch_data_https(
                         push_u32(&mut url, driver_number).unwrap();
                         url.push_str("&date%3E").unwrap(); // Encoding for '>'
                         if DYNAMIC_TIME_UPDATES {
-                            url.push_str(&naive_datetime_to_iso8601(*start_time)).unwrap();
+                            url.push_str(&naive_datetime_to_iso8601(*start_time))
+                                .unwrap();
                         } else {
                             url.push_str(start_time_str).unwrap();
                         }
@@ -823,8 +828,19 @@ async fn fetch_data_https(
                         }
 
                         api_call_count += 1;
-                        if api_call_count % 3 == 0 {
+                        if api_call_count % 20 == 0 {
                             Timer::after(Duration::from_millis(1150)).await;
+                            if DYNAMIC_TIME_UPDATES {
+                                // Adjust start_time and end_time for the next iteration
+                                *start_time = add_milliseconds_to_naive_datetime(*end_time, 1);
+                                *end_time = add_milliseconds_to_naive_datetime(*end_time, 751);
+
+                                println!(
+                                    "Updated times for next iteration: start_time={}, end_time={}",
+                                    naive_datetime_to_iso8601(*start_time),
+                                    naive_datetime_to_iso8601(*end_time)
+                                );
+                            }
                         }
 
                         // Check if memory is full and pause if necessary
@@ -839,16 +855,6 @@ async fn fetch_data_https(
 
                     // Send all fetched data to the store_data task
                     fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
-
-                    // Update start_time and end_time for the next iteration if dynamic updates are enabled
-                    if DYNAMIC_TIME_UPDATES {
-                        *start_time = add_milliseconds_to_naive_datetime(*start_time, 1);
-                        *end_time = add_milliseconds_to_naive_datetime(*end_time, 250);
-
-                        println!("Updated times: start_time={}, end_time={}", 
-                                naive_datetime_to_iso8601(*start_time), 
-                                naive_datetime_to_iso8601(*end_time));
-                    }
 
                     Ok(())
                 }
@@ -905,7 +911,6 @@ async fn fetch_data_https(
         }
     }
 }
-
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();
