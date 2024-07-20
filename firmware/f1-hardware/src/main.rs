@@ -624,7 +624,7 @@ async fn fetch_data_https(
                     let start_time = "2023-08-27T12:58:56.234";
                     let end_time = "2023-08-27T12:58:57.154";
 
-                    let mut all_data = heapless08::Vec::<FetchedData, 64>::new();
+                    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
 
                     for &driver_number in &driver_numbers {
                         let mut url: Heapless08String<256> = Heapless08String::new();
@@ -674,7 +674,7 @@ async fn fetch_data_https(
                                         let body = &response[body_start..n];
                                         println!("Response body: {:?}", body);
 
-                                        let data: Result<heapless08::Vec<FetchedData, 32>, _> =
+                                        let data: Result<Heapless08Vec<FetchedData, 32>, _> =
                                             from_slice(body).map(|(d, _)| d);
                                         match data {
                                             Ok(data) => {
@@ -708,10 +708,25 @@ async fn fetch_data_https(
                         }
                     }
 
-                    // Print all fetched data to the terminal
-                    println!("All fetched data:");
-                    for data in all_data.iter() {
-                        println!("{:?}", data);
+                    // Print all fetched data to the terminal as JSON in chunks
+                    println!("All fetched data in JSON format:");
+                    let mut json_data: Heapless08String<512> = Heapless08String::new();
+                    for (i, data) in all_data.iter().enumerate() {
+                        if json_data.len() + 100 > json_data.capacity() {
+                            println!("{}", json_data);
+                            json_data.clear();
+                        }
+                        if i > 0 && !json_data.is_empty() {
+                            json_data.push_str(", ").unwrap();
+                        }
+                        write!(
+                            json_data,
+                            "{{\"date\": \"{}\", \"driver_number\": {}, \"meeting_key\": {}, \"session_key\": {}, \"x\": {}, \"y\": {}, \"z\": {}}}",
+                            data.date, data.driver_number, data.meeting_key, data.session_key, data.x, data.y, data.z
+                        ).unwrap();
+                    }
+                    if !json_data.is_empty() {
+                        println!("{}", json_data);
                     }
                 }
                 Err(e) => {
