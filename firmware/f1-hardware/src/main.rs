@@ -672,13 +672,13 @@ async fn fetch_data_https(
 
                                     if let Some(body_start) = find_http_body(&response[..n]) {
                                         let body = &response[body_start..n];
-                                        println!("Response body: {:?}", body);
+                                        //println!("Response body: {:?}", body);
 
                                         let data: Result<Heapless08Vec<FetchedData, 32>, _> =
                                             from_slice(body).map(|(d, _)| d);
                                         match data {
                                             Ok(data) => {
-                                                println!("Parsed data: {:?}", data);
+                                                //println!("Parsed data: {:?}", data);
                                                 for item in data {
                                                     all_data.push(item).unwrap();
                                                 }
@@ -708,26 +708,8 @@ async fn fetch_data_https(
                         }
                     }
 
-                    // Print all fetched data to the terminal as JSON in chunks
-                    println!("All fetched data in JSON format:");
-                    let mut json_data: Heapless08String<512> = Heapless08String::new();
-                    for (i, data) in all_data.iter().enumerate() {
-                        if json_data.len() + 100 > json_data.capacity() {
-                            println!("{}", json_data);
-                            json_data.clear();
-                        }
-                        if i > 0 && !json_data.is_empty() {
-                            json_data.push_str(", ").unwrap();
-                        }
-                        write!(
-                            json_data,
-                            "{{\"date\": \"{}\", \"driver_number\": {}, \"meeting_key\": {}, \"session_key\": {}, \"x\": {}, \"y\": {}, \"z\": {}}}",
-                            data.date, data.driver_number, data.meeting_key, data.session_key, data.x, data.y, data.z
-                        ).unwrap();
-                    }
-                    if !json_data.is_empty() {
-                        println!("{}", json_data);
-                    }
+                    // Send all fetched data to the store_data task
+                    fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
                 }
                 Err(e) => {
                     // Detailed error handling for TLS connection failure
@@ -798,16 +780,12 @@ fn find_http_body(response: &[u8]) -> Option<usize> {
 
 #[embassy_executor::task]
 async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) {
-    let mut data_to_be_visualized: Option<Heapless08Vec<FetchedData, 64>> = None;
-
     loop {
         match receiver.receive().await {
             FetchMessage::FetchedData(data) => {
                 println!("Received data: {:?}", data);
-                data_to_be_visualized = Some(data);
                 // Perform any additional processing if necessary
             }
-            _ => {}
         }
     }
 }
