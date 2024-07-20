@@ -637,7 +637,7 @@ async fn fetch_data_loop(
         }
 
         // Small delay before the next iteration
-        Timer::after(Duration::from_secs(1)).await;
+        Timer::after(Duration::from_millis(1150)).await;
     }
 }
 
@@ -718,6 +718,7 @@ async fn fetch_data_https(
                     ];
 
                     let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
+                    let mut api_call_count = 0;
 
                     for &driver_number in &driver_numbers {
                         let mut url: Heapless08String<256> = Heapless08String::new();
@@ -765,13 +766,13 @@ async fn fetch_data_https(
 
                                     if let Some(body_start) = find_http_body(&response[..n]) {
                                         let body = &response[body_start..n];
-                                        //println!("Response body: {:?}", body);
+                                        println!("Response body: {:?}", body);
 
                                         let data: Result<Heapless08Vec<FetchedData, 32>, _> =
                                             from_slice(body).map(|(d, _)| d);
                                         match data {
                                             Ok(data) => {
-                                                //println!("Parsed data: {:?}", data);
+                                                println!("Parsed data: {:?}", data);
                                                 let data_size = core::mem::size_of_val(&data);
                                                 unsafe {
                                                     let fetched_data_size = FETCHED_DATA_SIZE.get();
@@ -790,6 +791,7 @@ async fn fetch_data_https(
                                     }
                                 } else {
                                     println!("Non-200 HTTP response received");
+                                    println!("Response: {:?}", &response[..n]);
                                 }
                             }
                             Ok(Err(esp_mbedtls::TlsError::Eof)) => {
@@ -803,6 +805,11 @@ async fn fetch_data_https(
                                 println!("Read operation timed out");
                                 break;
                             }
+                        }
+
+                        api_call_count += 1;
+                        if api_call_count % 3 == 0 {
+                            Timer::after(Duration::from_millis(1150)).await;
                         }
 
                         // Check if memory is full and pause if necessary
@@ -820,7 +827,11 @@ async fn fetch_data_https(
 
                     // Update start_time and end_time for the next iteration
                     *start_time = add_milliseconds_to_naive_datetime(*start_time, 1);
-                    *end_time = add_milliseconds_to_naive_datetime(*end_time, 251);
+                    *end_time = add_milliseconds_to_naive_datetime(*end_time, 250);
+
+                    println!("Updated times: start_time={}, end_time={}", 
+                             naive_datetime_to_iso8601(*start_time), 
+                             naive_datetime_to_iso8601(*end_time));
 
                     Ok(())
                 }
@@ -877,6 +888,7 @@ async fn fetch_data_https(
         }
     }
 }
+
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();
