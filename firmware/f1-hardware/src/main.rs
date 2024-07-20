@@ -637,7 +637,7 @@ async fn fetch_data_https(
                         url.push_str("&date%3C").unwrap(); // Encoding for '<'
                         url.push_str(end_time).unwrap();
                         url.push_str(
-                            " HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n",
+                            " HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n",
                         )
                         .unwrap();
 
@@ -652,67 +652,59 @@ async fn fetch_data_https(
                         println!("Request sent successfully");
 
                         let mut response = [0u8; BUFFER_SIZE];
-                        let mut total_read = 0;
 
-                        loop {
-                            match embassy_time::with_timeout(
-                                Duration::from_secs(10),
-                                tls_session.read(&mut response[total_read..]),
-                            )
-                            .await
-                            {
-                                Ok(Ok(n)) => {
-                                    if n == 0 {
-                                        println!("Connection closed by peer");
-                                        break;
-                                    }
-                                    total_read += n;
-                                }
-                                Ok(Err(esp_mbedtls::TlsError::Eof)) => {
+                        match embassy_time::with_timeout(
+                            Duration::from_secs(10),
+                            tls_session.read(&mut response),
+                        )
+                        .await
+                        {
+                            Ok(Ok(n)) => {
+                                if n == 0 {
+                                    println!("Connection closed by peer");
                                     break;
                                 }
-                                Ok(Err(e)) => {
-                                    println!("read error: {:?}", e);
-                                    break;
-                                }
-                                Err(_) => {
-                                    println!("Read operation timed out");
-                                    break;
-                                }
-                            }
-                        }
 
-                        println!("Raw response: {:?}", &response[..total_read]);
+                                if response.starts_with(b"HTTP/1.1 200 OK")
+                                    || response.starts_with(b"HTTP/1.0 200 OK")
+                                {
+                                    println!("Received OK response");
 
-                        if total_read > 0 {
-                            if response.starts_with(b"HTTP/1.1 200 OK")
-                                || response.starts_with(b"HTTP/1.0 200 OK")
-                            {
-                                if let Some(body_start) = find_http_body(&response[..total_read]) {
-                                    let body = &response[body_start..total_read];
-                                    println!("Body: {:?}", body);
+                                    if let Some(body_start) = find_http_body(&response[..n]) {
+                                        let body = &response[body_start..n];
+                                        println!("Response body: {:?}", body);
 
-                                    let data: Result<heapless08::Vec<FetchedData, 32>, _> =
-                                        from_slice(body).map(|(d, _)| d);
-                                    match data {
-                                        Ok(data) => {
-                                            println!("Parsed data: {:?}", data);
-                                            for item in data {
-                                                all_data.push(item).unwrap();
+                                        let data: Result<heapless08::Vec<FetchedData, 32>, _> =
+                                            from_slice(body).map(|(d, _)| d);
+                                        match data {
+                                            Ok(data) => {
+                                                println!("Parsed data: {:?}", data);
+                                                for item in data {
+                                                    all_data.push(item).unwrap();
+                                                }
+                                            }
+                                            Err(e) => {
+                                                println!("Failed to parse JSON: {:?}", e);
                                             }
                                         }
-                                        Err(e) => {
-                                            println!("Failed to parse JSON: {:?}", e);
-                                        }
+                                    } else {
+                                        println!("Failed to find body in HTTP response.");
                                     }
                                 } else {
-                                    println!("Failed to find body in HTTP response.");
+                                    println!("Non-200 HTTP response received");
                                 }
-                            } else {
-                                println!("Non-200 HTTP response received");
                             }
-                        } else {
-                            println!("Empty response received.");
+                            Ok(Err(esp_mbedtls::TlsError::Eof)) => {
+                                break;
+                            }
+                            Ok(Err(e)) => {
+                                println!("read error: {:?}", e);
+                                break;
+                            }
+                            Err(_) => {
+                                println!("Read operation timed out");
+                                break;
+                            }
                         }
                     }
                 }
@@ -765,7 +757,7 @@ async fn fetch_data_https(
         Err(e) => {
             println!("Failed to initialize TLS session: {:?}", e);
         }
-    };
+    }
 }
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
