@@ -8,7 +8,7 @@ mod hd108;
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
-use chrono::{NaiveTime, NaiveDateTime, Duration as ChronoDuration};
+use chrono::{NaiveTime, NaiveDateTime, Datelike, Timelike, Duration as ChronoDuration};
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
 use core::sync::atomic::{AtomicBool, Ordering};
@@ -287,7 +287,7 @@ async fn main(spawner: Spawner) {
     }
 }
 
-pub fn parse_iso8601_timestamp(timestamp: &str) -> Result<NaiveDateTime, chrono::ParseError> {
+fn parse_iso8601_timestamp(timestamp: &str) -> Result<NaiveDateTime, chrono::ParseError> {
     // Remove the trailing 'Z' if present
     let cleaned_timestamp = if timestamp.ends_with('Z') {
         &timestamp[..timestamp.len() - 1]
@@ -301,12 +301,57 @@ pub fn parse_iso8601_timestamp(timestamp: &str) -> Result<NaiveDateTime, chrono:
     Ok(naive_datetime)
 }
 
-pub fn add_milliseconds_to_naive_datetime(datetime: NaiveDateTime, milliseconds: i64) -> NaiveDateTime {
+fn add_milliseconds_to_naive_datetime(datetime: NaiveDateTime, milliseconds: i64) -> NaiveDateTime {
     // Create a Duration from the milliseconds
     let duration = ChronoDuration::milliseconds(milliseconds);
     // Add the duration to the NaiveDateTime
     datetime + duration
 }
+
+fn naive_datetime_to_iso8601(datetime: NaiveDateTime) -> Heapless08String<32> {
+    let year = datetime.year();
+    let month = datetime.month();
+    let day = datetime.day();
+    let hour = datetime.hour();
+    let minute = datetime.minute();
+    let second = datetime.second();
+    let millisecond = datetime.timestamp_subsec_millis();
+
+    // Create a new heapless string with a capacity of 32 bytes
+    let mut iso8601 = Heapless08String::<32>::new();
+
+    // Manually construct the ISO 8601 string
+    // Write year
+    let _ = write!(&mut iso8601, "{:04}", year);
+    iso8601.push('-').unwrap();
+
+    // Write month
+    let _ = write!(&mut iso8601, "{:02}", month);
+    iso8601.push('-').unwrap();
+
+    // Write day
+    let _ = write!(&mut iso8601, "{:02}", day);
+    iso8601.push('T').unwrap();
+
+    // Write hour
+    let _ = write!(&mut iso8601, "{:02}", hour);
+    iso8601.push(':').unwrap();
+
+    // Write minute
+    let _ = write!(&mut iso8601, "{:02}", minute);
+    iso8601.push(':').unwrap();
+
+    // Write second
+    let _ = write!(&mut iso8601, "{:02}", second);
+    iso8601.push('.').unwrap();
+
+    // Write millisecond
+    let _ = write!(&mut iso8601, "{:03}", millisecond);
+    iso8601.push('Z').unwrap();
+
+    iso8601
+}
+
 
 fn monitor_memory_task() -> usize {
     let total_flashed_memory = DEC_SIZE;
@@ -571,6 +616,11 @@ async fn fetch_data_loop(
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
+    let start_time_str = "2023-08-27T12:58:56.234";
+    let end_time_str = "2023-08-27T12:58:57.154";
+    let mut start_time = parse_iso8601_timestamp(start_time_str).unwrap();
+    let mut end_time = parse_iso8601_timestamp(end_time_str).unwrap();
+
     loop {
         // Reset the socket connection
         if let Err(e) = socket_reset(stack, remote_endpoint, socket_ptr).await {
@@ -580,7 +630,7 @@ async fn fetch_data_loop(
         }
 
         // Reinitialize TLS session and fetch data
-        if let Err(e) = fetch_data_https(socket_ptr, fetch_sender).await {
+        if let Err(e) = fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await {
             println!("Failed to fetch data: {:?}", e);
             Timer::after(Duration::from_secs(5)).await; // Retry delay
             continue;
@@ -618,6 +668,8 @@ async fn socket_reset(
 async fn fetch_data_https(
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+    start_time: &mut NaiveDateTime,
+    end_time: &mut NaiveDateTime,
 ) -> Result<(), esp_mbedtls::TlsError> {
     const BUFFER_SIZE: usize = 2048;
 
@@ -664,8 +716,6 @@ async fn fetch_data_https(
                     let driver_numbers = [
                         1, 2, 4, 10, 11, 14, 16, 18, 20, 22, 23, 24, 27, 31, 40, 44, 55, 63, 77, 81,
                     ];
-                    let start_time = "2023-08-27T12:58:56.234";
-                    let end_time = "2023-08-27T12:58:57.154";
 
                     let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
 
@@ -676,9 +726,9 @@ async fn fetch_data_https(
                         url.push_str("&driver_number=").unwrap();
                         push_u32(&mut url, driver_number).unwrap();
                         url.push_str("&date%3E").unwrap(); // Encoding for '>'
-                        url.push_str(start_time).unwrap();
+                        url.push_str(&naive_datetime_to_iso8601(*start_time)).unwrap();
                         url.push_str("&date%3C").unwrap(); // Encoding for '<'
-                        url.push_str(end_time).unwrap();
+                        url.push_str(&naive_datetime_to_iso8601(*end_time)).unwrap();
                         url.push_str(
                             " HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n",
                         )
@@ -767,6 +817,11 @@ async fn fetch_data_https(
 
                     // Send all fetched data to the store_data task
                     fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
+
+                    // Update start_time and end_time for the next iteration
+                    *start_time = add_milliseconds_to_naive_datetime(*start_time, 1);
+                    *end_time = add_milliseconds_to_naive_datetime(*end_time, 251);
+
                     Ok(())
                 }
                 Err(e) => {
