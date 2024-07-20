@@ -8,10 +8,10 @@ mod hd108;
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
-use chrono:: { NaiveTime, NaiveDateTime, Duration as ChronoDuration };
+use chrono::{NaiveTime, NaiveDateTime, Duration as ChronoDuration};
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
-use core::sync::atomic::{ AtomicBool, Ordering };
+use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
 use embassy_net::{
@@ -47,7 +47,6 @@ use static_cell::StaticCell;
 use grounded::uninit::GroundedArrayCell;
 use grounded::uninit::GroundedCell;
 
-
 // Importing necessary TLS modules
 use embedded_io_async::{Read, Write};
 use esp_mbedtls::TlsError::MbedTlsError;
@@ -64,7 +63,7 @@ use esp_wifi::{
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
 macro_rules! mk_static {
-    ($t:path,$val:expr) => {{
+    ($t:path, $val:expr) => {{
         static STATIC_CELL: static_cell::StaticCell<$t> = static_cell::StaticCell::new();
         #[deny(unused_attributes)]
         let x = STATIC_CELL.uninit().write(($val));
@@ -328,7 +327,6 @@ fn monitor_memory_task() -> usize {
     remaining_memory
 }
 
-
 #[embassy_executor::task]
 async fn run_race_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
@@ -435,7 +433,6 @@ async fn wifi_connection(
                 match controller.connect().await {
                     Ok(_) => {
                         println!("WiFi connected successfully.");
-                        //sender.send(ConnectionMessage::WifiConnected).await;
                         break;
                     }
                     Err(e) => {
@@ -544,45 +541,13 @@ async fn dns_query_task(
                     if let Some(socket) = SOCKET.as_mut() {
                         let socket_ptr = addr_of_mut!(*socket);
 
-                        // Retry mechanism for socket connection
-                        const MAX_RETRIES: u8 = 5;
-                        let mut retries = 0;
-                        loop {
-                            match socket_connect(stack, remote_endpoint, socket_ptr).await {
-                                Ok(_) => {
-                                    println!(
-                                        "Socket connection established on attempt {}",
-                                        retries + 1
-                                    );
-                                    connection_sender
-                                        .send(ConnectionMessage::SocketConnected)
-                                        .await;
-
-                                    // Use the socket for further operations, such as establishing a TLS session
-                                    if let Err(e) = spawner.spawn(fetch_data_https(
-                                        socket,
-                                        hostname,
-                                        fetch_sender,
-                                    )) {
-                                        println!("Failed to spawn fetch_data_https: {:?}", e);
-                                    }
-                                    break;
-                                }
-                                Err(e) => {
-                                    retries += 1;
-                                    println!(
-                                        "Socket connection failed (attempt {}): {:?}",
-                                        retries, e
-                                    );
-                                    if retries >= MAX_RETRIES {
-                                        println!(
-                                            "Max retries reached. Aborting connection attempts."
-                                        );
-                                        return;
-                                    }
-                                    Timer::after(Duration::from_secs(2)).await; // Delay before retrying
-                                }
-                            }
+                        if let Err(e) = spawner.spawn(fetch_data_loop(
+                            stack,
+                            remote_endpoint,
+                            socket_ptr,
+                            fetch_sender,
+                        )) {
+                            println!("Failed to spawn fetch_data_loop: {:?}", e);
                         }
                     } else {
                         // Handle the case where the socket is not initialized
@@ -599,7 +564,34 @@ async fn dns_query_task(
     }
 }
 
-async fn socket_connect(
+#[embassy_executor::task]
+async fn fetch_data_loop(
+    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    remote_endpoint: (Ipv4Address, u16),
+    socket_ptr: *mut TcpSocket<'static>,
+    fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+) {
+    loop {
+        // Reset the socket connection
+        if let Err(e) = socket_reset(stack, remote_endpoint, socket_ptr).await {
+            println!("Failed to reset socket: {:?}", e);
+            Timer::after(Duration::from_secs(5)).await; // Retry delay
+            continue;
+        }
+
+        // Reinitialize TLS session and fetch data
+        if let Err(e) = fetch_data_https(socket_ptr, fetch_sender).await {
+            println!("Failed to fetch data: {:?}", e);
+            Timer::after(Duration::from_secs(5)).await; // Retry delay
+            continue;
+        }
+
+        // Small delay before the next iteration
+        Timer::after(Duration::from_secs(1)).await;
+    }
+}
+
+async fn socket_reset(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     remote_endpoint: (Ipv4Address, u16),
     socket_ptr: *mut TcpSocket<'static>,
@@ -623,12 +615,10 @@ async fn socket_connect(
     }
 }
 
-#[embassy_executor::task]
 async fn fetch_data_https(
-    socket: &'static mut TcpSocket<'static>,
-    hostname: &'static str,
+    socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-) {
+) -> Result<(), esp_mbedtls::TlsError> {
     const BUFFER_SIZE: usize = 2048;
 
     // Set debug level for TLS
@@ -640,7 +630,7 @@ async fn fetch_data_https(
     let ca_chain_result = X509::pem(concat!(include_str!("root_cert.pem"), "\0").as_bytes()).ok();
     if ca_chain_result.is_none() {
         println!("Failed to load CA chain");
-        return;
+        return Err(esp_mbedtls::TlsError::Unknown);
     } else {
         println!("CA chain loaded");
     }
@@ -651,8 +641,8 @@ async fn fetch_data_https(
 
     // Initialize the TLS session
     let tls_result = esp_mbedtls::asynch::Session::<&mut TcpSocket<'_>, BUFFER_SIZE>::new(
-        socket,
-        hostname,
+        unsafe { &mut *socket_ptr },
+        "api.openf1.org",
         Mode::Client,
         TlsVersion::Tls1_2,
         Certificates {
@@ -777,6 +767,7 @@ async fn fetch_data_https(
 
                     // Send all fetched data to the store_data task
                     fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
+                    Ok(())
                 }
                 Err(e) => {
                     // Detailed error handling for TLS connection failure
@@ -820,12 +811,14 @@ async fn fetch_data_https(
                             );
                         }
                     }
+                    Err(e)
                 }
             }
         }
 
         Err(e) => {
             println!("Failed to initialize TLS session: {:?}", e);
+            Err(e)
         }
     }
 }
@@ -845,7 +838,6 @@ fn find_http_body(response: &[u8]) -> Option<usize> {
         .map(|pos| pos + header_end.len())
 }
 
-
 #[embassy_executor::task]
 async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) {
     loop {
@@ -855,7 +847,7 @@ async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) 
 
                 // Check remaining memory after storing data
                 monitor_memory_task();
-            
+
                 // Perform any additional processing if necessary
             }
         }
