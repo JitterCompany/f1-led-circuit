@@ -43,6 +43,7 @@ use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
 use grounded::uninit::GroundedArrayCell;
+use grounded::uninit::GroundedCell;
 
 // Importing necessary TLS modules
 use embedded_io_async::{Read, Write};
@@ -125,14 +126,32 @@ static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 
 // Define a static memory pool using GroundedArrayCell
 static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init();
+static FETCHED_DATA_SIZE: GroundedCell<usize> = GroundedCell::uninit();
 
 fn get_free_memory() -> usize {
-    // Assuming MEMORY_POOL is being used in a manner where we know the length of used memory
-    // In a real scenario, this should track the memory usage accurately
-    // For demonstration, we assume some memory usage
-    const USED_MEMORY: usize = 1024; // Example used memory
-    MEMORY_POOL.get_ptr_len().1 - USED_MEMORY
+    let (ptr, len) = MEMORY_POOL.get_ptr_len();
+    let used_memory = unsafe {
+        // Calculate used memory by counting non-zero bytes
+        let mut used = 0;
+        for i in 0..len {
+            if *ptr.add(i) != 0 {
+                used += 1;
+            }
+        }
+        used
+    };
+    len - used_memory
 }
+
+fn monitor_memory_task() -> usize {
+    let free_memory = get_free_memory();
+    let fetched_data_size = unsafe { *FETCHED_DATA_SIZE.get() };
+    let total_used_memory = 4096 - free_memory + fetched_data_size;
+    println!("Free memory remaining: {} bytes", 4096 - total_used_memory);
+    println!("Fetched data memory used: {} bytes", fetched_data_size);
+    4096 - total_used_memory
+}
+
 
 
 #[main]
@@ -182,6 +201,9 @@ async fn main(spawner: Spawner) {
     let button_channel = BUTTON_CHANNEL.init(Channel::new());
     let connection_channel = CONNECTION_CHANNEL.init(Channel::new());
     let fetch_channel = FETCH_CHANNEL.init(Channel::new());
+
+    // Initialize FETCHED_DATA_SIZE
+    unsafe { *FETCHED_DATA_SIZE.get() = 0; }
 
     // Spawn the button task with ownership of the button pin and the sender
     if let Err(e) = spawner.spawn(button_task(button_pin, button_channel.sender())) {
@@ -692,6 +714,11 @@ async fn fetch_data_https(
                                         match data {
                                             Ok(data) => {
                                                 //println!("Parsed data: {:?}", data);
+                                                let data_size = core::mem::size_of_val(&data);
+                                                unsafe {
+                                                    let fetched_data_size = FETCHED_DATA_SIZE.get();
+                                                    *fetched_data_size += data_size;
+                                                }
                                                 for item in data {
                                                     all_data.push(item).unwrap();
                                                 }
@@ -791,15 +818,16 @@ fn find_http_body(response: &[u8]) -> Option<usize> {
         .map(|pos| pos + header_end.len())
 }
 
+
 #[embassy_executor::task]
 async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) {
     loop {
         match receiver.receive().await {
             FetchMessage::FetchedData(data) => {
                 println!("Received data: {:?}", data);
-                
-                // Get the remaining memory
-                let free_memory = get_free_memory();
+
+                // Check remaining memory after storing data
+                let free_memory = monitor_memory_task();
                 println!("Remaining memory: {} bytes", free_memory);
 
                 // Perform any additional processing if necessary
