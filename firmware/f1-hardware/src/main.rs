@@ -707,6 +707,12 @@ async fn fetch_data_https(
                             }
                         }
                     }
+
+                    // Print all fetched data to the terminal
+                    println!("All fetched data:");
+                    for data in all_data.iter() {
+                        println!("{:?}", data);
+                    }
                 }
                 Err(e) => {
                     // Detailed error handling for TLS connection failure
