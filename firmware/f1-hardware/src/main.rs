@@ -8,6 +8,7 @@ mod hd108;
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
+use chrono:: { NaiveTime, NaiveDateTime, Duration as ChronoDuration };
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
 use core::sync::atomic::{ AtomicBool, Ordering };
@@ -46,6 +47,7 @@ use static_cell::StaticCell;
 use grounded::uninit::GroundedArrayCell;
 use grounded::uninit::GroundedCell;
 
+
 // Importing necessary TLS modules
 use embedded_io_async::{Read, Write};
 use esp_mbedtls::TlsError::MbedTlsError;
@@ -78,9 +80,8 @@ const SUBNET_MASK: &str = "255.255.255.0";
 const GATEWAY: &str = "192.168.1.1";
 const DNS_SERVER: &str = "8.8.8.8";
 
-// Size of dec
+// Size of DEC
 const DEC_SIZE: usize = 3263938;
-
 
 // Total MCU flash size
 const MCU_FLASH_SIZE: usize = 4194304;
@@ -96,16 +97,10 @@ struct FetchedData {
     z: i32,
 }
 
-impl FetchedData {
-    #[allow(dead_code)]
-    fn from_postcard(bytes: &[u8]) -> Result<Self, &'static str> {
-        from_bytes(bytes).map_err(|_| "Failed to deserialize")
-    }
-
-    #[allow(dead_code)]
-    fn to_postcard(&self) -> Result<Heapless07Vec<u8, 128>, &'static str> {
-        to_vec(self).map_err(|_| "Failed to serialize")
-    }
+#[derive(Debug, Clone, PartialEq)]
+struct RaceTimes {
+    pub start_time: chrono::NaiveTime,
+    pub end_time: chrono::NaiveTime,
 }
 
 enum ButtonMessage {
@@ -115,8 +110,8 @@ enum ButtonMessage {
 enum ConnectionMessage {
     WifiInitialized,
     IpAddressAcquired,
-    Disconnected,
     SocketConnected,
+    Disconnected,
 }
 
 enum FetchMessage {
@@ -124,53 +119,17 @@ enum FetchMessage {
 }
 
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
-static CONNECTION_CHANNEL: StaticCell<Channel<NoopRawMutex, ConnectionMessage, 1>> =
-    StaticCell::new();
+static CONNECTION_CHANNEL: StaticCell<Channel<NoopRawMutex, ConnectionMessage, 1>> = StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
 
-static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
-static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
+static SOCKET_RX_BUFFER: StaticCell<[u8; 8192]> = StaticCell::new();
+static SOCKET_TX_BUFFER: StaticCell<[u8; 8192]> = StaticCell::new();
 static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 
 // Define a static memory pool using GroundedArrayCell
 static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init();
 static FETCHED_DATA_SIZE: GroundedCell<usize> = GroundedCell::uninit();
 static MEMORY_FULL: AtomicBool = AtomicBool::new(false);
-
-fn get_free_memory() -> usize {
-    let (ptr, len) = MEMORY_POOL.get_ptr_len();
-    let used_memory = unsafe {
-        // Calculate used memory by counting non-zero bytes
-        let mut used = 0;
-        for i in 0..len {
-            if *ptr.add(i) != 0 {
-                used += 1;
-            }
-        }
-        used
-    };
-    len - used_memory
-}
-
-fn monitor_memory_task() -> usize {
-    let total_flashed_memory = DEC_SIZE;
-    let fetched_data_size = unsafe { *FETCHED_DATA_SIZE.get() };
-    let remaining_memory = MCU_FLASH_SIZE - total_flashed_memory - fetched_data_size;
-    
-    println!("Total MCU memory: {} bytes", MCU_FLASH_SIZE);
-    println!("Total binary size: {} bytes", total_flashed_memory);
-    println!("Fetched data memory used: {} bytes", fetched_data_size);
-    println!("Remaining memory: {} bytes", remaining_memory);
-
-    if remaining_memory <= 0 {
-        MEMORY_FULL.store(true, Ordering::SeqCst);
-    } else {
-        MEMORY_FULL.store(false, Ordering::SeqCst);
-    }
-    
-    remaining_memory
-}
-
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -328,6 +287,47 @@ async fn main(spawner: Spawner) {
         }
     }
 }
+
+pub fn parse_iso8601_timestamp(timestamp: &str) -> Result<NaiveDateTime, chrono::ParseError> {
+    // Remove the trailing 'Z' if present
+    let cleaned_timestamp = if timestamp.ends_with('Z') {
+        &timestamp[..timestamp.len() - 1]
+    } else {
+        timestamp
+    };
+
+    // Parse the timestamp
+    let naive_datetime = NaiveDateTime::parse_from_str(cleaned_timestamp, "%Y-%m-%dT%H:%M:%S%.f")?;
+    
+    Ok(naive_datetime)
+}
+
+pub fn add_milliseconds_to_naive_datetime(datetime: NaiveDateTime, milliseconds: i64) -> NaiveDateTime {
+    // Create a Duration from the milliseconds
+    let duration = ChronoDuration::milliseconds(milliseconds);
+    // Add the duration to the NaiveDateTime
+    datetime + duration
+}
+
+fn monitor_memory_task() -> usize {
+    let total_flashed_memory = DEC_SIZE;
+    let fetched_data_size = unsafe { *FETCHED_DATA_SIZE.get() };
+    let remaining_memory = MCU_FLASH_SIZE - total_flashed_memory - fetched_data_size;
+    
+    println!("Total MCU memory: {} bytes", MCU_FLASH_SIZE);
+    println!("Total binary size: {} bytes", total_flashed_memory);
+    println!("Fetched data memory used: {} bytes", fetched_data_size);
+    println!("Remaining memory: {} bytes", remaining_memory);
+
+    if remaining_memory <= 0 {
+        MEMORY_FULL.store(true, Ordering::SeqCst);
+    } else {
+        MEMORY_FULL.store(false, Ordering::SeqCst);
+    }
+    
+    remaining_memory
+}
+
 
 #[embassy_executor::task]
 async fn run_race_task(
@@ -532,8 +532,8 @@ async fn dns_query_task(
                 let remote_endpoint = (*ipv4_address, 443); // Using port 443 for HTTPS
 
                 // Initialize static buffers
-                let rx_buffer = SOCKET_RX_BUFFER.init([0; 4096]);
-                let tx_buffer = SOCKET_TX_BUFFER.init([0; 4096]);
+                let rx_buffer = SOCKET_RX_BUFFER.init([0; 8192]);
+                let tx_buffer = SOCKET_TX_BUFFER.init([0; 8192]);
 
                 static mut SOCKET: Option<TcpSocket<'static>> = None;
                 unsafe {
