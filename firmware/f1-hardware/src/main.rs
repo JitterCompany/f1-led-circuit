@@ -8,7 +8,7 @@ mod hd108;
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
-use chrono::{Datelike, Duration as ChronoDuration, NaiveDateTime, NaiveTime, Timelike};
+use chrono::{Datelike, Duration as ChronoDuration, NaiveDateTime, Timelike};
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
 use core::sync::atomic::{AtomicBool, Ordering};
@@ -39,26 +39,25 @@ use esp_println::println;
 use grounded::uninit::GroundedArrayCell;
 use grounded::uninit::GroundedCell;
 use hd108::HD108;
-use heapless07::{String as Heapless07String, Vec as Heapless07Vec};
 use heapless08::{String as Heapless08String, Vec as Heapless08Vec};
 use panic_halt as _;
-use postcard::{from_bytes, to_vec};
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
 
 // Importing necessary TLS modules
 use embedded_io_async::{Read, Write};
-use esp_mbedtls::TlsError::MbedTlsError;
-use esp_mbedtls::{asynch::Session, set_debug, Certificates, Mode, TlsVersion, X509};
-
-// Wifi
+use embedded_tls::{Aes128GcmSha256, Certificate, TlsConfig, TlsConnection, TlsContext};
 use embassy_net::tcp::{ConnectError, TcpSocket};
 use esp_wifi::{
     initialize,
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
+use rand_chacha::ChaCha8Rng;
+use rand_core::{SeedableRng, RngCore, CryptoRng};
+use esp_hal::rng::Rng as EspRng;
+use esp_hal::peripherals::RNG;
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -323,7 +322,7 @@ fn naive_datetime_to_iso8601(datetime: NaiveDateTime) -> Heapless08String<32> {
     let hour = datetime.hour();
     let minute = datetime.minute();
     let second = datetime.second();
-    let millisecond = datetime.timestamp_subsec_millis();
+    let millisecond = datetime.and_utc().timestamp_subsec_millis();
 
     // Create a new heapless string with a capacity of 32 bytes
     let mut iso8601 = Heapless08String::<32>::new();
@@ -679,239 +678,182 @@ async fn fetch_data_https(
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     start_time: &mut NaiveDateTime,
     end_time: &mut NaiveDateTime,
-) -> Result<(), esp_mbedtls::TlsError> {
+) -> Result<(), embedded_tls::TlsError> {
     const BUFFER_SIZE: usize = 2048;
 
     // static time strings
     let start_time_str = "2023-08-27T12:58:56.234";
     let end_time_str = "2023-08-27T12:58:57.154";
 
-    // Set debug level for TLS
-    set_debug(3);
-
-    println!("Checking TLS chain");
-
-    // Load CA chain
-    let ca_chain_result = X509::pem(concat!(include_str!("root_cert.pem"), "\0").as_bytes()).ok();
-    if ca_chain_result.is_none() {
-        println!("Failed to load CA chain");
-        return Err(esp_mbedtls::TlsError::Unknown);
-    } else {
-        println!("CA chain loaded");
-    }
-
-    let ca_chain = ca_chain_result.unwrap();
-
     println!("Initializing TLS session");
 
-    // Initialize the TLS session
-    let tls_result = esp_mbedtls::asynch::Session::<&mut TcpSocket<'_>, BUFFER_SIZE>::new(
-        unsafe { &mut *socket_ptr },
-        "api.openf1.org",
-        Mode::Client,
-        TlsVersion::Tls1_2,
-        Certificates {
-            ca_chain: Some(ca_chain),
-            ..Default::default()
-        },
-    );
+    // Load CA chain from root_cert.pem
+    let ca_chain = include_bytes!("root_cert.pem");
 
-    match tls_result {
-        Ok(session) => {
+    let config = TlsConfig::new()
+        .with_server_name("api.openf1.org")
+        .with_ca(Certificate::X509(ca_chain));
+
+    let mut rx_buffer = [0u8; BUFFER_SIZE];
+    let mut tx_buffer = [0u8; BUFFER_SIZE];
+
+    let mut socket = unsafe { &mut *socket_ptr };
+    let mut tls: TlsConnection<_, Aes128GcmSha256> = 
+        TlsConnection::new(&mut socket, &mut rx_buffer, &mut tx_buffer);
+
+    // Use ESP32 hardware RNG to seed ChaCha8Rng
+    let mut esp_rng = EspRng::new();
+    let mut seed = [0u8; 32];
+    esp_rng.read(&mut seed).unwrap();
+    let mut rng = ChaCha8Rng::from_seed(seed);
+
+    let context = TlsContext::new(&config, &mut rng);
+
+    match tls.open(context).await {
+        Ok(_) => {
             println!("TLS session initialized successfully");
 
-            println!("Starting TLS handshake");
-            match session.connect().await {
-                Ok(mut tls_session) => {
-                    println!("TLS handshake completed successfully");
+            let session_key = "9149";
 
-                    let session_key = "9149";
+            // Extract driver numbers from the DRIVERS array
+            let driver_numbers: Heapless08Vec<u32, 20> = driver_info::DRIVERS
+                .iter()
+                .map(|driver| driver.number)
+                .collect();
 
-                    // Extract driver numbers from the DRIVERS array
-                    let driver_numbers: Heapless08Vec<u32, 20> = driver_info::DRIVERS
-                        .iter()
-                        .map(|driver| driver.number)
-                        .collect();
+            let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
+            let mut api_call_count = 0;
 
-                    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
-                    let mut api_call_count = 0;
-
-                    for &driver_number in &driver_numbers {
-                        let mut url: Heapless08String<256> = Heapless08String::new();
-                        url.push_str("GET /v1/location?session_key=").unwrap();
-                        url.push_str(session_key).unwrap();
-                        url.push_str("&driver_number=").unwrap();
-                        push_u32(&mut url, driver_number).unwrap();
-                        url.push_str("&date%3E").unwrap(); // Encoding for '>'
-                        if DYNAMIC_TIME_UPDATES {
-                            url.push_str(&naive_datetime_to_iso8601(*start_time))
-                                .unwrap();
-                        } else {
-                            url.push_str(start_time_str).unwrap();
-                        }
-                        url.push_str("&date%3C").unwrap(); // Encoding for '<'
-                        if DYNAMIC_TIME_UPDATES {
-                            url.push_str(&naive_datetime_to_iso8601(*end_time)).unwrap();
-                        } else {
-                            url.push_str(end_time_str).unwrap();
-                        }
-                        url.push_str(
-                            " HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n",
-                        )
+            for &driver_number in &driver_numbers {
+                let mut url: Heapless08String<256> = Heapless08String::new();
+                url.push_str("GET /v1/location?session_key=").unwrap();
+                url.push_str(session_key).unwrap();
+                url.push_str("&driver_number=").unwrap();
+                push_u32(&mut url, driver_number).unwrap();
+                url.push_str("&date%3E").unwrap(); // Encoding for '>'
+                if DYNAMIC_TIME_UPDATES {
+                    url.push_str(&naive_datetime_to_iso8601(*start_time))
                         .unwrap();
-
-                        println!("Sending request: {}", url);
-
-                        let r = tls_session.write_all(url.as_bytes()).await;
-                        if let Err(e) = r {
-                            println!("write error: {:?}", e);
-                            continue;
-                        }
-
-                        println!("Request sent successfully");
-
-                        let mut response = [0u8; BUFFER_SIZE];
-
-                        match embassy_time::with_timeout(
-                            Duration::from_secs(10),
-                            tls_session.read(&mut response),
-                        )
-                        .await
-                        {
-                            Ok(Ok(n)) => {
-                                if n == 0 {
-                                    println!("Connection closed by peer");
-                                    break;
-                                }
-
-                                if response.starts_with(b"HTTP/1.1 200 OK")
-                                    || response.starts_with(b"HTTP/1.0 200 OK")
-                                {
-                                    println!("Received OK response");
-
-                                    if let Some(body_start) = find_http_body(&response[..n]) {
-                                        let body = &response[body_start..n];
-                                        println!("Response body: {:?}", body);
-
-                                        let data: Result<Heapless08Vec<FetchedData, 32>, _> =
-                                            from_slice(body).map(|(d, _)| d);
-                                        match data {
-                                            Ok(data) => {
-                                                println!("Parsed data: {:?}", data);
-                                                let data_size = core::mem::size_of_val(&data);
-                                                unsafe {
-                                                    let fetched_data_size = FETCHED_DATA_SIZE.get();
-                                                    *fetched_data_size += data_size;
-                                                }
-                                                for item in data {
-                                                    all_data.push(item).unwrap();
-                                                }
-                                            }
-                                            Err(e) => {
-                                                println!("Failed to parse JSON: {:?}", e);
-                                            }
-                                        }
-                                    } else {
-                                        println!("Failed to find body in HTTP response.");
-                                    }
-                                } else {
-                                    println!("Non-200 HTTP response received");
-                                    println!("Response: {:?}", &response[..n]);
-                                }
-                            }
-                            Ok(Err(esp_mbedtls::TlsError::Eof)) => {
-                                break;
-                            }
-                            Ok(Err(e)) => {
-                                println!("read error: {:?}", e);
-                                break;
-                            }
-                            Err(_) => {
-                                println!("Read operation timed out");
-                                break;
-                            }
-                        }
-
-                        api_call_count += 1;
-                        if api_call_count % 20 == 0 {
-                            Timer::after(Duration::from_millis(1150)).await;
-                            if DYNAMIC_TIME_UPDATES {
-                                // Adjust start_time and end_time for the next iteration
-                                *start_time = add_milliseconds_to_naive_datetime(*end_time, 1);
-                                *end_time = add_milliseconds_to_naive_datetime(*end_time, 251);
-
-                                println!(
-                                    "Updated times for next iteration: start_time={}, end_time={}",
-                                    naive_datetime_to_iso8601(*start_time),
-                                    naive_datetime_to_iso8601(*end_time)
-                                );
-                            }
-                        }
-
-                        // Check if memory is full and pause if necessary
-                        if MEMORY_FULL.load(Ordering::SeqCst) {
-                            println!("Memory is full, pausing fetch...");
-                            while MEMORY_FULL.load(Ordering::SeqCst) {
-                                Timer::after(Duration::from_secs(1)).await;
-                            }
-                            println!("Resuming fetch...");
-                        }
-                    }
-
-                    // Send all fetched data to the store_data task
-                    fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
-
-                    Ok(())
+                } else {
+                    url.push_str(start_time_str).unwrap();
                 }
-                Err(e) => {
-                    // Detailed error handling for TLS connection failure
-                    match e {
-                        esp_mbedtls::TlsError::Unknown => {
-                            println!("TLS session connection failed: Unknown error");
+                url.push_str("&date%3C").unwrap(); // Encoding for '<'
+                if DYNAMIC_TIME_UPDATES {
+                    url.push_str(&naive_datetime_to_iso8601(*end_time)).unwrap();
+                } else {
+                    url.push_str(end_time_str).unwrap();
+                }
+                url.push_str(
+                    " HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n",
+                )
+                .unwrap();
+
+                println!("Sending request: {}", url);
+
+                let r = tls.write_all(url.as_bytes()).await;
+                if let Err(e) = r {
+                    println!("write error: {:?}", e);
+                    continue;
+                }
+
+                println!("Request sent successfully");
+
+                let mut response = [0u8; BUFFER_SIZE];
+
+                match embassy_time::with_timeout(
+                    Duration::from_secs(10),
+                    tls.read(&mut response),
+                )
+                .await
+                {
+                    Ok(Ok(n)) => {
+                        if n == 0 {
+                            println!("Connection closed by peer");
+                            break;
                         }
-                        esp_mbedtls::TlsError::OutOfMemory => {
-                            println!("TLS session connection failed: Out of memory");
-                        }
-                        esp_mbedtls::TlsError::MbedTlsError(code) => {
-                            println!("TLS session connection failed: MbedTlsError({})", code);
-                            // Optionally, match specific codes if you need more detailed handling
-                            match code {
-                                -9984 => {
-                                    println!("Error detail: CERTIFICATE_VERIFY_FAILED (-9984)");
+
+                        if response.starts_with(b"HTTP/1.1 200 OK")
+                            || response.starts_with(b"HTTP/1.0 200 OK")
+                        {
+                            println!("Received OK response");
+
+                            if let Some(body_start) = find_http_body(&response[..n]) {
+                                let body = &response[body_start..n];
+                                println!("Response body: {:?}", body);
+
+                                let data: Result<Heapless08Vec<FetchedData, 32>, _> =
+                                    from_slice(body).map(|(d, _)| d);
+                                match data {
+                                    Ok(data) => {
+                                        println!("Parsed data: {:?}", data);
+                                        let data_size = core::mem::size_of_val(&data);
+                                        unsafe {
+                                            let fetched_data_size = FETCHED_DATA_SIZE.get();
+                                            *fetched_data_size += data_size;
+                                        }
+                                        for item in data {
+                                            all_data.push(item).unwrap();
+                                        }
+                                    }
+                                    Err(e) => {
+                                        println!("Failed to parse JSON: {:?}", e);
+                                    }
                                 }
-                                -0x2700 => {
-                                    println!("Error detail: SSL_HANDSHAKE_FAILURE (-0x2700)");
-                                }
-                                -0x2800 => {
-                                    println!("Error detail: SSL_FATAL_ALERT_MESSAGE (-0x2800)");
-                                }
-                                -0x4200 => {
-                                    println!("Error detail: SSL_INTERNAL_ERROR (-0x4200)");
-                                }
-                                _ => {
-                                    println!("Error detail: Unrecognized MbedTlsError code");
-                                }
+                            } else {
+                                println!("Failed to find body in HTTP response.");
                             }
-                        }
-                        esp_mbedtls::TlsError::Eof => {
-                            println!("TLS session connection failed: EOF encountered");
-                        }
-                        esp_mbedtls::TlsError::X509MissingNullTerminator => {
-                            println!("TLS session connection failed: X509 missing null terminator");
-                        }
-                        esp_mbedtls::TlsError::NoClientCertificate => {
-                            println!(
-                                "TLS session connection failed: No client certificate provided"
-                            );
+                        } else {
+                            println!("Non-200 HTTP response received");
+                            println!("Response: {:?}", &response[..n]);
                         }
                     }
-                    Err(e)
+                    Ok(Err(embedded_tls::TlsError::ConnectionClosed)) => {
+                        break;
+                    }
+                    Ok(Err(e)) => {
+                        println!("read error: {:?}", e);
+                        break;
+                    }
+                    Err(_) => {
+                        println!("Read operation timed out");
+                        break;
+                    }
+                }
+
+                api_call_count += 1;
+                if api_call_count % 20 == 0 {
+                    Timer::after(Duration::from_millis(1150)).await;
+                    if DYNAMIC_TIME_UPDATES {
+                        // Adjust start_time and end_time for the next iteration
+                        *start_time = add_milliseconds_to_naive_datetime(*end_time, 1);
+                        *end_time = add_milliseconds_to_naive_datetime(*end_time, 251);
+
+                        println!(
+                            "Updated times for next iteration: start_time={}, end_time={}",
+                            naive_datetime_to_iso8601(*start_time),
+                            naive_datetime_to_iso8601(*end_time)
+                        );
+                    }
+                }
+
+                // Check if memory is full and pause if necessary
+                if MEMORY_FULL.load(Ordering::SeqCst) {
+                    println!("Memory is full, pausing fetch...");
+                    while MEMORY_FULL.load(Ordering::SeqCst) {
+                        Timer::after(Duration::from_secs(1)).await;
+                    }
+                    println!("Resuming fetch...");
                 }
             }
-        }
 
+            // Send all fetched data to the store_data task
+            fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
+
+            Ok(())
+        }
         Err(e) => {
-            println!("Failed to initialize TLS session: {:?}", e);
+            // Detailed error handling for TLS connection failure
+            println!("TLS session connection failed: {:?}", e);
             Err(e)
         }
     }
