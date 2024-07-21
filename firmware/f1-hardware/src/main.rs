@@ -47,7 +47,7 @@ use static_cell::StaticCell;
 
 // Importing necessary TLS modules
 use embedded_io_async::{Read, Write};
-use embedded_tls::{Aes128GcmSha256, Certificate, TlsConfig, TlsConnection, TlsContext};
+use embedded_tls::{Aes128GcmSha256, Certificate, TlsConfig, TlsConnection, TlsContext, NoVerify};
 use embassy_net::tcp::{ConnectError, TcpSocket};
 use esp_wifi::{
     initialize,
@@ -277,6 +277,7 @@ async fn main(spawner: Spawner) {
                         fetch_channel.sender(),
                         connection_channel.sender(),
                         spawner,
+                        peripherals,  // Pass peripherals here
                     )) {
                         println!("Failed to spawn fetch_update_frames: {:?}", e);
                     } else {
@@ -539,6 +540,7 @@ async fn fetch_update_frames(
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
     spawner: Spawner,
+    peripherals: Peripherals,  // Add peripherals as a parameter
 ) {
     match connection_receiver.receive().await {
         ConnectionMessage::IpAddressAcquired => {
@@ -551,6 +553,7 @@ async fn fetch_update_frames(
                 fetch_sender,
                 connection_sender,
                 spawner,
+                peripherals,  // Pass peripherals here
             )) {
                 println!("Failed to spawn dns_query_task: {:?}", e);
             }
@@ -568,6 +571,7 @@ async fn dns_query_task(
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
     spawner: Spawner,
+    peripherals: Peripherals,  // Add peripherals as a parameter
 ) {
     let dns_socket = DnsSocket::new(stack);
     let hostname = "api.openf1.org";
@@ -597,6 +601,7 @@ async fn dns_query_task(
                             remote_endpoint,
                             socket_ptr,
                             fetch_sender,
+                            peripherals,  // Pass peripherals here
                         )) {
                             println!("Failed to spawn fetch_data_loop: {:?}", e);
                         }
@@ -621,6 +626,7 @@ async fn fetch_data_loop(
     remote_endpoint: (Ipv4Address, u16),
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
+    peripherals: Peripherals,  // Add peripherals as a parameter
 ) {
     let start_time_str = "2023-08-27T12:58:56.234";
     let end_time_str = "2023-08-27T12:58:57.154";
@@ -637,7 +643,7 @@ async fn fetch_data_loop(
 
         // Reinitialize TLS session and fetch data
         if let Err(e) =
-            fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await
+            fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time, &peripherals).await
         {
             println!("Failed to fetch data: {:?}", e);
             Timer::after(Duration::from_secs(5)).await; // Retry delay
@@ -678,6 +684,7 @@ async fn fetch_data_https(
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     start_time: &mut NaiveDateTime,
     end_time: &mut NaiveDateTime,
+    peripherals: &Peripherals,  // Pass peripherals as a reference
 ) -> Result<(), embedded_tls::TlsError> {
     const BUFFER_SIZE: usize = 2048;
 
@@ -702,14 +709,15 @@ async fn fetch_data_https(
         TlsConnection::new(&mut socket, &mut rx_buffer, &mut tx_buffer);
 
     // Use ESP32 hardware RNG to seed ChaCha8Rng
-    let mut esp_rng = EspRng::new();
+    let mut esp_rng = EspRng::new(peripherals.RNG); // Pass the RNG peripheral
     let mut seed = [0u8; 32];
-    esp_rng.read(&mut seed).unwrap();
+    esp_rng.read(&mut seed);
+
     let mut rng = ChaCha8Rng::from_seed(seed);
 
     let context = TlsContext::new(&config, &mut rng);
 
-    match tls.open(context).await {
+    match tls.open::<_, NoVerify>(context).await {  // Specify NoVerify for the Verifier
         Ok(_) => {
             println!("TLS session initialized successfully");
 
