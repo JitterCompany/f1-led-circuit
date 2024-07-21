@@ -10,6 +10,7 @@ use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
 use chrono::{Datelike, Duration as ChronoDuration, NaiveDateTime, Timelike};
+use core::str;
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
 use core::sync::atomic::{AtomicBool, Ordering};
@@ -679,7 +680,7 @@ async fn fetch_data_https(
     start_time: &mut NaiveDateTime,
     end_time: &mut NaiveDateTime,
 ) -> Result<(), embedded_tls::TlsError> {
-    const BUFFER_SIZE: usize = 2048;
+    const BUFFER_SIZE: usize = 8192;
 
     // static time strings
     let start_time_str = "2023-08-27T12:58:56.234";
@@ -687,12 +688,16 @@ async fn fetch_data_https(
 
     println!("Initializing TLS session");
 
-    // Load CA chain from root_cert.pem
+    // Load the CA chain from root_cert.pem
     let ca_chain = include_bytes!("root_cert.pem");
 
     let config = TlsConfig::new()
         .with_server_name("api.openf1.org")
-        .with_ca(Certificate::X509(ca_chain));
+        .with_ca(Certificate::X509(ca_chain))
+        .enable_rsa_signatures();
+
+    // Verify if the CA chain is correctly loaded
+    println!("Loaded CA chain: {:?}", core::str::from_utf8(ca_chain));
 
     let mut rx_buffer = [0u8; BUFFER_SIZE];
     let mut tx_buffer = [0u8; BUFFER_SIZE];
