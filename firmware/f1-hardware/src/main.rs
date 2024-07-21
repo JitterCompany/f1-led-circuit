@@ -54,7 +54,7 @@ use esp_wifi::{
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
-use rand_core::SeedableRng;
+use esp_hal::rng::Rng;
 
 use simple_rng::SimpleRng; // Import your custom RNG
 
@@ -205,10 +205,12 @@ async fn main(spawner: Spawner) {
 
     println!("Initializing WiFi...");
 
+    let rng = Rng::new(peripherals.RNG); // Correct instantiation of Rng
+
     match initialize(
         EspWifiInitFor::Wifi,
         timer,
-        peripherals.RNG, // Pass peripherals RNG here
+        rng,
         peripherals.RADIO_CLK,
         &clocks,
     ) {
@@ -275,7 +277,6 @@ async fn main(spawner: Spawner) {
                         fetch_channel.sender(),
                         connection_channel.sender(),
                         spawner,
-                        peripherals,  // Pass peripherals here
                     )) {
                         println!("Failed to spawn fetch_update_frames: {:?}", e);
                     } else {
@@ -292,7 +293,6 @@ async fn main(spawner: Spawner) {
         }
     }
 }
-
 
 fn parse_iso8601_timestamp(timestamp: &str) -> Result<NaiveDateTime, chrono::ParseError> {
     // Remove the trailing 'Z' if present
@@ -539,7 +539,6 @@ async fn fetch_update_frames(
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
     spawner: Spawner,
-    peripherals: Peripherals,  // Add peripherals as a parameter
 ) {
     match connection_receiver.receive().await {
         ConnectionMessage::IpAddressAcquired => {
@@ -552,7 +551,6 @@ async fn fetch_update_frames(
                 fetch_sender,
                 connection_sender,
                 spawner,
-                peripherals,  // Pass peripherals here
             )) {
                 println!("Failed to spawn dns_query_task: {:?}", e);
             }
@@ -570,7 +568,6 @@ async fn dns_query_task(
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
     spawner: Spawner,
-    peripherals: Peripherals,  // Add peripherals as a parameter
 ) {
     let dns_socket = DnsSocket::new(stack);
     let hostname = "api.openf1.org";
@@ -600,7 +597,6 @@ async fn dns_query_task(
                             remote_endpoint,
                             socket_ptr,
                             fetch_sender,
-                            peripherals,  // Pass peripherals here
                         )) {
                             println!("Failed to spawn fetch_data_loop: {:?}", e);
                         }
@@ -625,7 +621,6 @@ async fn fetch_data_loop(
     remote_endpoint: (Ipv4Address, u16),
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-    peripherals: Peripherals,  // Add peripherals as a parameter
 ) {
     let start_time_str = "2023-08-27T12:58:56.234";
     let end_time_str = "2023-08-27T12:58:57.154";
