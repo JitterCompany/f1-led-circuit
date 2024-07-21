@@ -635,24 +635,51 @@ async fn fetch_data_loop(
     let mut end_time = parse_iso8601_timestamp(end_time_str).unwrap();
 
     loop {
-        // Reset the socket connection
-        if let Err(e) = socket_reset(stack, remote_endpoint, socket_ptr).await {
-            println!("Failed to reset socket: {:?}", e);
-            Timer::after(Duration::from_secs(5)).await; // Retry delay
-            continue;
+        let mut attempt = 0;
+        const MAX_ATTEMPTS: usize = 5;
+
+        loop {
+            // Reset the socket connection
+            if let Err(e) = socket_reset(stack, remote_endpoint, socket_ptr).await {
+                println!("Failed to reset socket: {:?}", e);
+                attempt += 1;
+                if attempt >= MAX_ATTEMPTS {
+                    println!("Exceeded maximum retry attempts. Giving up.");
+                    break;
+                }
+                let backoff = 2u64.pow(attempt as u32);
+                println!("Retrying in {} seconds...", backoff);
+                Timer::after(Duration::from_secs(backoff)).await;
+                continue;
+            }
+
+            // Reinitialize TLS session and fetch data
+            if let Err(e) =
+                fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await
+            {
+                println!("Failed to fetch data: {:?}", e);
+                attempt += 1;
+                if attempt >= MAX_ATTEMPTS {
+                    println!("Exceeded maximum retry attempts. Giving up.");
+                    break;
+                }
+                let backoff = 2u64.pow(attempt as u32);
+                println!("Retrying in {} seconds...", backoff);
+                Timer::after(Duration::from_secs(backoff)).await;
+                continue;
+            }
+
+            // Reset the attempt counter after a successful fetch
+            attempt = 0;
+
+            // Small delay before the next iteration
+            Timer::after(Duration::from_millis(1150)).await;
         }
 
-        // Reinitialize TLS session and fetch data
-        if let Err(e) =
-            fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await
-        {
-            println!("Failed to fetch data: {:?}", e);
-            Timer::after(Duration::from_secs(5)).await; // Retry delay
-            continue;
-        }
-
-        // Small delay before the next iteration
-        Timer::after(Duration::from_millis(1150)).await;
+        // Exponential backoff in case of continuous failures
+        let backoff = 2u64.pow(MAX_ATTEMPTS as u32);
+        println!("Continuous failures. Waiting for {} seconds before retrying...", backoff);
+        Timer::after(Duration::from_secs(backoff)).await;
     }
 }
 
@@ -679,6 +706,7 @@ async fn socket_reset(
         }
     }
 }
+
 
 async fn fetch_data_https(
     socket_ptr: *mut TcpSocket<'static>,
