@@ -5,20 +5,22 @@
 mod data;
 mod driver_info;
 mod hd108;
-mod simple_rng; // Assuming your custom RNG implementation is in this module
+mod simple_rng;
+
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
+use portable_atomic::{AtomicBool, Ordering};
+
 use chrono::{Datelike, Duration as ChronoDuration, NaiveDateTime, Timelike};
-use core::str;
 use core::fmt::Write as FmtWrite;
-use core::ptr::addr_of_mut;
-use core::sync::atomic::{AtomicBool, Ordering};
+use core::str;
 use embassy_executor::Spawner;
-use embassy_net::dns::{DnsQueryType, DnsSocket};
 use embassy_net::{
     Config, IpAddress, Ipv4Address, Ipv4Cidr, Stack, StackResources, StaticConfigV4,
 };
+use embassy_net::tcp::TcpSocket;
+use embassy_net::dns::{DnsSocket, DnsQueryType};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::{Channel, Receiver, Sender};
 use embassy_time::{Duration, Timer};
@@ -38,35 +40,22 @@ use esp_hal::{
 };
 use esp_println::println;
 use grounded::uninit::GroundedArrayCell;
-use grounded::uninit::GroundedCell;
 use hd108::HD108;
-use heapless08::{String as Heapless08String, Vec as Heapless08Vec};
+use heapless::String as HeaplessString;
+use heapless::Vec as HeaplessVec;
 use panic_halt as _;
+use rustls::{ClientConfig, ClientConnection, Stream};
 use serde::{Deserialize, Serialize};
-use serde_json_core::from_slice;
 use static_cell::StaticCell;
-use postcard;
+use core::convert::TryInto;
 
-// Importing necessary TLS modules
-use embedded_io_async::{Read, Write};
-use embedded_tls::{Aes128GcmSha256, Certificate, TlsConfig, TlsConnection, TlsContext, NoVerify};
-use embassy_net::tcp::{ConnectError, TcpSocket};
-use esp_wifi::{
-    initialize,
-    wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
-    EspWifiInitFor,
-};
-use esp_hal::rng::Rng;
-
-use simple_rng::SimpleRng; // Import your custom RNG
-
-type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
+type HeaplessVec08<T, const N: usize> = HeaplessVec<T, N>;
 
 macro_rules! mk_static {
     ($t:path, $val:expr) => {{
-        static STATIC_CELL: static_cell::StaticCell<$t> = static_cell::StaticCell::new();
+        static STATIC_CELL: StaticCell<$t> = StaticCell::new();
         #[deny(unused_attributes)]
-        let x = STATIC_CELL.uninit().write(($val));
+        let x = STATIC_CELL.init($val);
         x
     }};
 }
@@ -92,7 +81,7 @@ static DYNAMIC_TIME_UPDATES: bool = true;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct FetchedData {
-    date: Heapless08String<32>,
+    date: HeaplessString<32>,
     driver_number: u32,
     meeting_key: u32,
     session_key: u32,
@@ -124,12 +113,11 @@ enum ConnectionMessage {
 }
 
 enum FetchMessage {
-    FetchedData(Heapless08Vec<FetchedData, 64>), // Dynamically sized vector for the fetched data
+    FetchedData(HeaplessVec08<FetchedData, 64>), // Dynamically sized vector for the fetched data
 }
 
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
-static CONNECTION_CHANNEL: StaticCell<Channel<NoopRawMutex, ConnectionMessage, 1>> =
-    StaticCell::new();
+static CONNECTION_CHANNEL: StaticCell<Channel<NoopRawMutex, ConnectionMessage, 1>> = StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
 
 static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
@@ -137,10 +125,10 @@ static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 
 // Define a static memory pool using GroundedArrayCell
 static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init();
-static FETCHED_DATA_SIZE: GroundedCell<usize> = GroundedCell::uninit();
+static FETCHED_DATA_SIZE: StaticCell<usize> = StaticCell::new();
 static MEMORY_FULL: AtomicBool = AtomicBool::new(false);
 
-#[main]
+#[embassy_executor::main]
 async fn main(spawner: Spawner) {
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
@@ -189,9 +177,7 @@ async fn main(spawner: Spawner) {
     let fetch_channel = FETCH_CHANNEL.init(Channel::new());
 
     // Initialize FETCHED_DATA_SIZE
-    unsafe {
-        *FETCHED_DATA_SIZE.get() = 0;
-    }
+    FETCHED_DATA_SIZE.init(0);
 
     // Spawn the button task with ownership of the button pin and the sender
     if let Err(e) = spawner.spawn(button_task(button_pin, button_channel.sender())) {
@@ -212,10 +198,10 @@ async fn main(spawner: Spawner) {
 
     println!("Initializing WiFi...");
 
-    let rng = Rng::new(peripherals.RNG); // Correct instantiation of Rng
+    let rng = esp_hal::rng::Rng::new(peripherals.RNG);
 
-    match initialize(
-        EspWifiInitFor::Wifi,
+    match esp_wifi::initialize(
+        esp_wifi::EspWifiInitFor::Wifi,
         timer,
         rng,
         peripherals.RADIO_CLK,
@@ -224,7 +210,7 @@ async fn main(spawner: Spawner) {
         Ok(init_wifi) => {
             println!("WiFi initialized...");
             let wifi = peripherals.WIFI;
-            match esp_wifi::wifi::new_with_mode(&init_wifi, wifi, WifiStaDevice) {
+            match esp_wifi::wifi::new_with_mode(&init_wifi, wifi, esp_wifi::wifi::WifiStaDevice) {
                 Ok((wifi_interface, controller)) => {
                     println!("WiFi controller and interface created...");
 
@@ -238,11 +224,11 @@ async fn main(spawner: Spawner) {
                         gateway: Some(gateway),
                         dns_servers: HeaplessVec08::from_slice(&[dns_server]).unwrap(),
                     });
-                    let seed = 1234; // very random, very secure seed
+                    let seed = 1234;
 
                     // Init network stack
                     let stack = &*mk_static!(
-                        Stack<WifiDevice<'_, WifiStaDevice>>,
+                        Stack<esp_wifi::wifi::WifiDevice<'_, esp_wifi::wifi::WifiStaDevice>>,
                         Stack::new(
                             wifi_interface,
                             config,
@@ -260,7 +246,6 @@ async fn main(spawner: Spawner) {
                         println!("Failed to spawn wifi_connection: {:?}", e);
                     } else {
                         println!("WiFi Connection spawned...");
-                        // Send WifiInitialized message after tasks are spawned
                         connection_channel
                             .sender()
                             .send(ConnectionMessage::WifiInitialized)
@@ -302,27 +287,23 @@ async fn main(spawner: Spawner) {
 }
 
 fn parse_iso8601_timestamp(timestamp: &str) -> Result<NaiveDateTime, chrono::ParseError> {
-    // Remove the trailing 'Z' if present
     let cleaned_timestamp = if timestamp.ends_with('Z') {
         &timestamp[..timestamp.len() - 1]
     } else {
         timestamp
     };
 
-    // Parse the timestamp
     let naive_datetime = NaiveDateTime::parse_from_str(cleaned_timestamp, "%Y-%m-%dT%H:%M:%S%.f")?;
 
     Ok(naive_datetime)
 }
 
 fn add_milliseconds_to_naive_datetime(datetime: NaiveDateTime, milliseconds: i64) -> NaiveDateTime {
-    // Create a Duration from the milliseconds
     let duration = ChronoDuration::milliseconds(milliseconds);
-    // Add the duration to the NaiveDateTime
     datetime + duration
 }
 
-fn naive_datetime_to_iso8601(datetime: NaiveDateTime) -> Heapless08String<32> {
+fn naive_datetime_to_iso8601(datetime: NaiveDateTime) -> HeaplessString<32> {
     let year = datetime.year();
     let month = datetime.month();
     let day = datetime.day();
@@ -331,35 +312,26 @@ fn naive_datetime_to_iso8601(datetime: NaiveDateTime) -> Heapless08String<32> {
     let second = datetime.second();
     let millisecond = datetime.and_utc().timestamp_subsec_millis();
 
-    // Create a new heapless string with a capacity of 32 bytes
-    let mut iso8601 = Heapless08String::<32>::new();
+    let mut iso8601 = HeaplessString::<32>::new();
 
-    // Manually construct the ISO 8601 string
-    // Write year
     let _ = write!(&mut iso8601, "{:04}", year);
     iso8601.push('-').unwrap();
 
-    // Write month
     let _ = write!(&mut iso8601, "{:02}", month);
     iso8601.push('-').unwrap();
 
-    // Write day
     let _ = write!(&mut iso8601, "{:02}", day);
     iso8601.push('T').unwrap();
 
-    // Write hour
     let _ = write!(&mut iso8601, "{:02}", hour);
     iso8601.push(':').unwrap();
 
-    // Write minute
     let _ = write!(&mut iso8601, "{:02}", minute);
     iso8601.push(':').unwrap();
 
-    // Write second
     let _ = write!(&mut iso8601, "{:02}", second);
     iso8601.push('.').unwrap();
 
-    // Write millisecond
     let _ = write!(&mut iso8601, "{:03}", millisecond);
     iso8601.push('Z').unwrap();
 
@@ -368,7 +340,7 @@ fn naive_datetime_to_iso8601(datetime: NaiveDateTime) -> Heapless08String<32> {
 
 fn monitor_memory_task() -> usize {
     let total_flashed_memory = DEC_SIZE;
-    let fetched_data_size = unsafe { *FETCHED_DATA_SIZE.get() };
+    let fetched_data_size = *FETCHED_DATA_SIZE.get().unwrap();
     let remaining_memory = MCU_FLASH_SIZE - total_flashed_memory - fetched_data_size;
 
     println!("Total MCU memory: {} bytes", MCU_FLASH_SIZE);
@@ -394,14 +366,10 @@ async fn run_race_task(
         match receiver.receive().await {
             ButtonMessage::ButtonPressed => {
                 println!("Button pressed, starting race...");
-                // Iterate through each frame in the visualization data
                 for frame in &data::VISUALIZATION_DATA.frames {
-                    // Collect the LED updates for the current frame
-                    let mut led_updates: Heapless08Vec<(usize, u8, u8, u8), 20> =
-                        Heapless08Vec::new();
+                    let mut led_updates: HeaplessVec08<(usize, u8, u8, u8), 20> = HeaplessVec::new();
 
                     for driver_data in frame.drivers.iter().flatten() {
-                        // Find the corresponding driver info
                         if let Some(driver) = DRIVERS
                             .iter()
                             .find(|d| d.number == driver_data.driver_number)
@@ -417,23 +385,19 @@ async fn run_race_task(
                         }
                     }
 
-                    // Set the LEDs for the current frame
                     hd108.set_leds(&led_updates).await.unwrap();
 
-                    // Wait for the update rate duration
                     Timer::after(Duration::from_millis(
                         data::VISUALIZATION_DATA.update_rate_ms as u64,
                     ))
                     .await;
 
-                    // Check for a stop message to turn off the LEDs
                     if receiver.try_receive().is_ok() {
                         hd108.set_off().await.unwrap();
                         break;
                     }
                 }
 
-                // Turn off LEDs after finishing the frames
                 hd108.set_off().await.unwrap();
             }
         }
@@ -446,18 +410,17 @@ async fn button_task(
     sender: Sender<'static, NoopRawMutex, ButtonMessage, 1>,
 ) {
     loop {
-        // Wait for a button press
         button_pin.wait_for_falling_edge().await;
         sender.send(ButtonMessage::ButtonPressed).await;
         println!("Button pressed, message sent.");
-        Timer::after(Duration::from_millis(400)).await; // Debounce delay
+        Timer::after(Duration::from_millis(400)).await;
     }
 }
 
 #[embassy_executor::task]
 async fn wifi_connection(
-    mut controller: WifiController<'static>,
-    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    mut controller: esp_wifi::wifi::WifiController<'static>,
+    stack: &'static Stack<esp_wifi::wifi::WifiDevice<'static, esp_wifi::wifi::WifiStaDevice>>,
     receiver: Receiver<'static, NoopRawMutex, ConnectionMessage, 1>,
     sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
 ) {
@@ -466,15 +429,15 @@ async fn wifi_connection(
         ConnectionMessage::WifiInitialized => {
             println!("Wifi initialized message received, proceeding...");
 
-            let mut ssid: Heapless08String<32> = Heapless08String::new();
+            let mut ssid: HeaplessString<32> = HeaplessString::new();
             ssid.push_str(SSID).unwrap();
 
-            let mut password: Heapless08String<64> = Heapless08String::new();
+            let mut password: HeaplessString<64> = HeaplessString::new();
             password.push_str(PASSWORD).unwrap();
 
             println!("Setting controller configuration...");
             controller
-                .set_configuration(&Configuration::Client(ClientConfiguration {
+                .set_configuration(&esp_wifi::wifi::Configuration::Client(esp_wifi::wifi::ClientConfiguration {
                     ssid,
                     password,
                     ..Default::default()
@@ -509,7 +472,6 @@ async fn wifi_connection(
                 sender.send(ConnectionMessage::Disconnected).await;
             }
 
-            // Wait for IP address assignment
             let mut retries = 0;
             while retries < 20 {
                 if stack.is_link_up() {
@@ -533,7 +495,7 @@ async fn wifi_connection(
 }
 
 #[embassy_executor::task]
-async fn run_network_stack(stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>) {
+async fn run_network_stack(stack: &'static Stack<esp_wifi::wifi::WifiDevice<'static, esp_wifi::wifi::WifiStaDevice>>) {
     println!("Running network stack...");
     stack.run().await;
     println!("Network stack exited...");
@@ -542,17 +504,15 @@ async fn run_network_stack(stack: &'static Stack<WifiDevice<'static, WifiStaDevi
 #[embassy_executor::task]
 async fn fetch_update_frames(
     connection_receiver: Receiver<'static, NoopRawMutex, ConnectionMessage, 1>,
-    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    stack: &'static Stack<esp_wifi::wifi::WifiDevice<'static, esp_wifi::wifi::WifiStaDevice>>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
     spawner: Spawner,
 ) {
     match connection_receiver.receive().await {
         ConnectionMessage::IpAddressAcquired => {
-            // Handle the case where the IP address is acquired
             println!("IP Address acquired.");
 
-            // Spawn the DNS query task
             if let Err(e) = spawner.spawn(dns_query_task(
                 stack,
                 fetch_sender,
@@ -563,7 +523,6 @@ async fn fetch_update_frames(
             }
         }
         _ => {
-            // Handle all other cases
             println!("Other connection message received");
         }
     }
@@ -571,7 +530,7 @@ async fn fetch_update_frames(
 
 #[embassy_executor::task]
 async fn dns_query_task(
-    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    stack: &'static Stack<esp_wifi::wifi::WifiDevice<'static, esp_wifi::wifi::WifiStaDevice>>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
     spawner: Spawner,
@@ -584,33 +543,14 @@ async fn dns_query_task(
         Ok(ip_addresses) => {
             if let Some(ip_address) = ip_addresses.get(0) {
                 let IpAddress::Ipv4(ipv4_address) = ip_address;
-                let remote_endpoint = (*ipv4_address, 443); // Using port 443 for HTTPS
+                let remote_endpoint = (*ipv4_address, 443);
 
-                // Initialize static buffers
-                let rx_buffer = SOCKET_RX_BUFFER.init([0; 4096]);
-                let tx_buffer = SOCKET_TX_BUFFER.init([0; 4096]);
-
-                static mut SOCKET: Option<TcpSocket<'static>> = None;
-                unsafe {
-                    if SOCKET.is_none() {
-                        SOCKET = Some(TcpSocket::new(stack, rx_buffer, tx_buffer));
-                    }
-
-                    if let Some(socket) = SOCKET.as_mut() {
-                        let socket_ptr = addr_of_mut!(*socket);
-
-                        if let Err(e) = spawner.spawn(fetch_data_loop(
-                            stack,
-                            remote_endpoint,
-                            socket_ptr,
-                            fetch_sender,
-                        )) {
-                            println!("Failed to spawn fetch_data_loop: {:?}", e);
-                        }
-                    } else {
-                        // Handle the case where the socket is not initialized
-                        println!("Socket not initialized");
-                    }
+                if let Err(e) = spawner.spawn(fetch_data_loop(
+                    stack,
+                    remote_endpoint,
+                    fetch_sender,
+                )) {
+                    println!("Failed to spawn fetch_data_loop: {:?}", e);
                 }
             } else {
                 println!("No IP addresses found for {}", hostname);
@@ -624,9 +564,8 @@ async fn dns_query_task(
 
 #[embassy_executor::task]
 async fn fetch_data_loop(
-    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    stack: &'static Stack<esp_wifi::wifi::WifiDevice<'static, esp_wifi::wifi::WifiStaDevice>>,
     remote_endpoint: (Ipv4Address, u16),
-    socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
     let start_time_str = "2023-08-27T12:58:56.234";
@@ -634,288 +573,73 @@ async fn fetch_data_loop(
     let mut start_time = parse_iso8601_timestamp(start_time_str).unwrap();
     let mut end_time = parse_iso8601_timestamp(end_time_str).unwrap();
 
+    let mut config = ClientConfig::new();
+    config.root_store = rustls::RootCertStore::empty(); // Ensure the root certificate store is set properly
+    let client = ClientConnection::new(Arc::new(config), "api.openf1.org".try_into().unwrap()).unwrap();
+
     loop {
-        // Reset the socket connection
-        if let Err(e) = socket_reset(stack, remote_endpoint, socket_ptr).await {
-            println!("Failed to reset socket: {:?}", e);
-            Timer::after(Duration::from_secs(5)).await; // Retry delay
-            continue;
+        match fetch_data_https(stack, client.clone(), start_time, end_time).await {
+            Ok(data) => {
+                fetch_sender.send(FetchMessage::FetchedData(data)).await;
+            }
+            Err(e) => {
+                println!("Failed to fetch data: {:?}", e);
+                Timer::after(Duration::from_secs(5)).await;
+            }
         }
 
-        // Reinitialize TLS session and fetch data
-        if let Err(e) =
-            fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await
-        {
-            println!("Failed to fetch data: {:?}", e);
-            Timer::after(Duration::from_secs(5)).await; // Retry delay
-            continue;
-        }
-
-        // Small delay before the next iteration
         Timer::after(Duration::from_millis(1150)).await;
     }
 }
 
-async fn socket_reset(
-    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
-    remote_endpoint: (Ipv4Address, u16),
-    socket_ptr: *mut TcpSocket<'static>,
-) -> Result<(), ConnectError> {
-    unsafe {
-        let socket = &mut *socket_ptr;
-        socket.set_timeout(Some(Duration::from_secs(10)));
-
-        match socket.connect(remote_endpoint).await {
-            Ok(_) => {
-                // Successfully connected
-                println!("Connected to {:?}", remote_endpoint);
-                Ok(())
-            }
-            Err(e) => {
-                // Handle the connection error
-                println!("Failed to connect: {:?}", e);
-                Err(e)
-            }
-        }
-    }
-}
-
 async fn fetch_data_https(
-    socket_ptr: *mut TcpSocket<'static>,
-    fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-    start_time: &mut NaiveDateTime,
-    end_time: &mut NaiveDateTime,
-) -> Result<(), embedded_tls::TlsError> {
-    const BUFFER_SIZE: usize = 8192; // Increased buffer size
+    stack: &Stack<esp_wifi::wifi::WifiDevice<'_, esp_wifi::wifi::WifiStaDevice>>,
+    mut client: ClientConnection,
+    start_time: NaiveDateTime,
+    end_time: NaiveDateTime,
+) -> Result<HeaplessVec08<FetchedData, 64>, ()> {
+    let session_key = "9149";
+    let driver_number = 1;
 
-    let start_time_str = "2023-08-27T12:58:56.234";
-    let end_time_str = "2023-08-27T12:58:57.154";
+    let url = core::format!(
+        "https://api.openf1.org/v1/location?session_key={}&driver_number={}&date>{}&date<{}",
+        session_key,
+        driver_number,
+        naive_datetime_to_iso8601(start_time),
+        naive_datetime_to_iso8601(end_time)
+    );
 
-    println!("Initializing TLS session");
+    println!("Sending request to: {}", url);
 
-    let ca_chain = include_bytes!("root_cert.pem");
-    let config = TlsConfig::new()
-        .with_server_name("api.openf1.org")
-        .with_ca(Certificate::X509(ca_chain))
-        .enable_rsa_signatures();
+    let mut socket = TcpSocket::new(stack, SOCKET_RX_BUFFER.get().unwrap(), SOCKET_TX_BUFFER.get().unwrap());
+    socket.set_timeout(Some(Duration::from_secs(10)));
+    socket.connect((stack, remote_endpoint)).await.unwrap();
+    let mut stream = Stream::new(&mut client, &mut socket);
 
-    let mut rx_buffer = [0u8; BUFFER_SIZE];
-    let mut tx_buffer = [0u8; BUFFER_SIZE];
+    let request = core::format!(
+        "GET /v1/location?session_key={}&driver_number={}&date>{}&date<{} HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: close\r\n\r\n",
+        session_key,
+        driver_number,
+        naive_datetime_to_iso8601(start_time),
+        naive_datetime_to_iso8601(end_time)
+    );
 
-    let mut socket = unsafe { &mut *socket_ptr };
-    let mut tls: TlsConnection<_, Aes128GcmSha256> =
-        TlsConnection::new(&mut socket, &mut rx_buffer, &mut tx_buffer);
+    stream.write_all(request.as_bytes()).await.unwrap();
 
-    let mut rng = SimpleRng::new(1234);
-    let context = TlsContext::new(&config, &mut rng);
+    let mut response = [0u8; 4096];
+    let n = stream.read(&mut response).await.unwrap();
+    let response_str = str::from_utf8(&response[..n]).unwrap();
 
-    match tls.open::<_, NoVerify>(context).await {
-        Ok(_) => {
-            println!("TLS session initialized successfully");
+    println!("Received response: {}", response_str);
 
-            let session_key = "9149";
-            let driver_number = 1;
+    let wrapper: FetchedDataWrapper = serde_json::from_str(response_str).unwrap();
 
-            let mut url: Heapless08String<256> = Heapless08String::new();
-            url.push_str("GET /v1/location?session_key=").unwrap();
-            url.push_str(session_key).unwrap();
-            url.push_str("&driver_number=").unwrap();
-            push_u32(&mut url, driver_number).unwrap();
-            url.push_str("&date%3E").unwrap();
-            url.push_str(start_time_str).unwrap();
-            url.push_str("&date%3C").unwrap();
-            url.push_str(end_time_str).unwrap();
-            url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n").unwrap();
-
-            println!("Sending request: {}", url);
-
-            // Write the HTTP GET request to the TLS stream
-            match tls.write_all(url.as_bytes()).await {
-                Ok(_) => {
-                    println!("Request sent successfully");
-
-                    let mut response = [0u8; BUFFER_SIZE];
-                    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
-
-                    // Read the response from the server
-                    match tls.read(&mut response).await {
-                        Ok(n) => {
-                            if n == 0 {
-                                println!("Connection closed by peer");
-                                return Err(embedded_tls::TlsError::ConnectionClosed);
-                            }
-
-                            // n represents the number of bytes read
-                            println!("Received response ({} bytes): {:?}", n, &response[..n]);
-                            if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
-                                println!("Received OK response");
-
-                                // Additional debug info for response content
-                                if let Some(body_start) = find_http_body(&response[..n]) {
-                                    let body = &response[body_start..n];
-                                    println!("Response body: {:?}", body);
-
-                                    match postcard::from_bytes::<FetchedDataWrapper>(body) {
-                                        Ok(wrapper) => {
-                                            println!("Parsed data: {:?}", wrapper);
-                                            let data_size = core::mem::size_of_val(&wrapper);
-                                            unsafe {
-                                                let fetched_data_size = FETCHED_DATA_SIZE.get();
-                                                *fetched_data_size += data_size;
-                                            }
-                                            for item in &wrapper.data {
-                                                all_data.push(item.clone()).unwrap();
-                                            }
-                                        }
-                                        Err(e) => {
-                                            println!("Failed to parse JSON: {:?}", e);
-                                        }
-                                    }
-                                } else {
-                                    println!("Failed to find body in HTTP response.");
-                                }
-
-                                fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
-                                return Ok(());
-                            } else {
-                                println!("Non-200 HTTP response received");
-                                println!("Response: {:?}", &response[..n]);
-                                return Err(embedded_tls::TlsError::InternalError);
-                            }
-                        }
-                        Err(e) => {
-                            println!("Read error: {:?}", e);
-                            return Err(e);
-                        }
-                    }
-                }
-                Err(e) => {
-                    println!("Write error: {:?}", e);
-                    return Err(e);
-                }
-            }
-        }
-        Err(e) => {
-            println!("TLS session initialization failed: {:?}", e);
-            return Err(e);
-        }
+    let mut all_data = HeaplessVec::<FetchedData, 64>::new();
+    for item in &wrapper.data {
+        all_data.push(item.clone()).unwrap();
     }
-}
-             /* 
-                        match embassy_time::with_timeout(
-                            Duration::from_secs(10),
-                            tls.read(&mut response),
-                        )
-                        .await
-                        {
-                            Ok(Ok(n)) => {
-                                if n == 0 {
-                                    println!("Connection closed by peer");
-                                    break;
-                                }
 
-                                if response.starts_with(b"HTTP/1.1 200 OK")
-                                    || response.starts_with(b"HTTP/1.0 200 OK")
-                                {
-                                    println!("Received OK response");
-
-                                    if let Some(body_start) = find_http_body(&response[..n]) {
-                                        let body = &response[body_start..n];
-                                        println!("Response body: {:?}", body);
-
-                                        match postcard::from_bytes::<FetchedDataWrapper>(body) {
-                                            Ok(wrapper) => {
-                                                println!("Parsed data: {:?}", wrapper);
-                                                let data_size = core::mem::size_of_val(&wrapper);
-                                                unsafe {
-                                                    let fetched_data_size = FETCHED_DATA_SIZE.get();
-                                                    *fetched_data_size += data_size;
-                                                }
-                                                for item in &wrapper.data {
-                                                    all_data.push(item.clone()).unwrap();
-                                                }
-                                            }
-                                            Err(e) => {
-                                                println!("Failed to parse JSON: {:?}", e);
-                                            }
-                                        }
-                                    } else {
-                                        println!("Failed to find body in HTTP response.");
-                                    }
-                                } else {
-                                    println!("Non-200 HTTP response received");
-                                    println!("Response: {:?}", &response[..n]);
-                                }
-                            }
-                            Ok(Err(embedded_tls::TlsError::ConnectionClosed)) => {
-                                println!("TLS connection closed by peer");
-                                break;
-                            }
-                            Ok(Err(e)) => {
-                                println!("Read error: {:?}", e);
-                                break;
-                            }
-                            Err(_) => {
-                                println!("Read operation timed out");
-                                break;
-                            }
-                        }
-                    }
-                    Err(e) => {
-                        println!("Write error: {:?}", e);
-                        continue;
-                    }
-                }
-
-                api_call_count += 1;
-                if api_call_count % 20 == 0 {
-                    Timer::after(Duration::from_millis(1150)).await;
-                    if DYNAMIC_TIME_UPDATES {
-                        *start_time = add_milliseconds_to_naive_datetime(*end_time, 1);
-                        *end_time = add_milliseconds_to_naive_datetime(*end_time, 251);
-
-                        println!(
-                            "Updated times for next iteration: start_time={}, end_time={}",
-                            naive_datetime_to_iso8601(*start_time),
-                            naive_datetime_to_iso8601(*end_time)
-                        );
-                    }
-                }
-
-                if MEMORY_FULL.load(Ordering::SeqCst) {
-                    println!("Memory is full, pausing fetch...");
-                    while MEMORY_FULL.load(Ordering::SeqCst) {
-                        Timer::after(Duration::from_secs(1)).await;
-                    }
-                    println!("Resuming fetch...");
-                }
-            }
-
-            fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
-
-            Ok(())
-        }
-        Err(e) => {
-            println!("TLS session connection failed: {:?}", e);
-            Err(e)
-        }
-    }
-    
-}
-*/
-fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
-    let mut temp: Heapless08String<10> = Heapless08String::new();
-    write!(temp, "{}", num).unwrap();
-    buf.push_str(&temp).unwrap();
-    Ok(())
-}
-
-fn find_http_body(response: &[u8]) -> Option<usize> {
-    let header_end = b"\r\n\r\n";
-    response
-        .windows(header_end.len())
-        .position(|window| window == header_end)
-        .map(|pos| pos + header_end.len())
+    Ok(all_data)
 }
 
 #[embassy_executor::task]
@@ -925,10 +649,7 @@ async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) 
             FetchMessage::FetchedData(data) => {
                 println!("Received data: {:?}", data);
 
-                // Check remaining memory after storing data
                 monitor_memory_task();
-
-                // Perform any additional processing if necessary
             }
         }
     }

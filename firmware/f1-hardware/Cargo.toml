@@ -43,7 +43,6 @@ smoltcp = { version = "0.11.0", default-features = false, features = [
     "socket-tcp",
     "socket-udp",
 ] }
-#esp-mbedtls = { git = "https://github.com/esp-rs/esp-mbedtls", features = ["esp32c3", "async"]}
 panic-halt = "0.2.0"
 riscv-rt = "0.12.2"
 riscv = "0.11.1"
@@ -54,10 +53,11 @@ serde = { version = "1.0.204", default-features = false }
 serde-json-core = "0.5.1"
 grounded = { version = "0.2.0", features = ["cas"] }
 chrono = { version = "0.4.38", default-features = false }
-embedded-tls = { version = "0.17.0", default-features = false }
 rand_pcg = { version = "0.3.1", default-features = false }
 rand_core = "0.6.4"
-#esp-alloc = "0.4.0"
+portable-atomic = { version = "1.7.0", default-features = false, features = ["require-cas"] }
+once_cell = { git = "https://github.com/CodingInGreen/once_cell.git", branch = "master" }
+rustls = { version = "0.23.11", default-features = false }
 
 [profile.dev]
 # Rust debug is too slow. 
