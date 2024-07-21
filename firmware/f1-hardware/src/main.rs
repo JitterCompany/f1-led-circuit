@@ -132,8 +132,8 @@ static CONNECTION_CHANNEL: StaticCell<Channel<NoopRawMutex, ConnectionMessage, 1
     StaticCell::new();
 static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = StaticCell::new();
 
-static SOCKET_RX_BUFFER: StaticCell<[u8; 8192]> = StaticCell::new();
-static SOCKET_TX_BUFFER: StaticCell<[u8; 8192]> = StaticCell::new();
+static SOCKET_RX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
+static SOCKET_TX_BUFFER: StaticCell<[u8; 4096]> = StaticCell::new();
 
 // Define a static memory pool using GroundedArrayCell
 static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init();
@@ -587,8 +587,8 @@ async fn dns_query_task(
                 let remote_endpoint = (*ipv4_address, 443); // Using port 443 for HTTPS
 
                 // Initialize static buffers
-                let rx_buffer = SOCKET_RX_BUFFER.init([0; 8192]);
-                let tx_buffer = SOCKET_TX_BUFFER.init([0; 8192]);
+                let rx_buffer = SOCKET_RX_BUFFER.init([0; 4096]);
+                let tx_buffer = SOCKET_TX_BUFFER.init([0; 4096]);
 
                 static mut SOCKET: Option<TcpSocket<'static>> = None;
                 unsafe {
@@ -686,7 +686,7 @@ async fn fetch_data_https(
     start_time: &mut NaiveDateTime,
     end_time: &mut NaiveDateTime,
 ) -> Result<(), embedded_tls::TlsError> {
-    const BUFFER_SIZE: usize = 8192;
+    const BUFFER_SIZE: usize = 8192; // Increased buffer size
 
     let start_time_str = "2023-08-27T12:58:56.234";
     let end_time_str = "2023-08-27T12:58:57.154";
@@ -714,46 +714,94 @@ async fn fetch_data_https(
             println!("TLS session initialized successfully");
 
             let session_key = "9149";
-            let driver_numbers: Heapless08Vec<u32, 20> = driver_info::DRIVERS
-                .iter()
-                .map(|driver| driver.number)
-                .collect();
+            let driver_number = 1;
 
-            let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
-            let mut api_call_count = 0;
+            let mut url: Heapless08String<256> = Heapless08String::new();
+            url.push_str("GET /v1/location?session_key=").unwrap();
+            url.push_str(session_key).unwrap();
+            url.push_str("&driver_number=").unwrap();
+            push_u32(&mut url, driver_number).unwrap();
+            url.push_str("&date%3E").unwrap();
+            url.push_str(start_time_str).unwrap();
+            url.push_str("&date%3C").unwrap();
+            url.push_str(end_time_str).unwrap();
+            url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n").unwrap();
 
-            for &driver_number in &driver_numbers {
-                let mut url: Heapless08String<256> = Heapless08String::new();
-                url.push_str("GET /v1/location?session_key=").unwrap();
-                url.push_str(session_key).unwrap();
-                url.push_str("&driver_number=").unwrap();
-                push_u32(&mut url, driver_number).unwrap();
-                url.push_str("&date%3E").unwrap();
-                if DYNAMIC_TIME_UPDATES {
-                    url.push_str(&naive_datetime_to_iso8601(*start_time))
-                        .unwrap();
-                } else {
-                    url.push_str(start_time_str).unwrap();
+            println!("Sending request: {}", url);
+
+            // Write the HTTP GET request to the TLS stream
+            match tls.write_all(url.as_bytes()).await {
+                Ok(_) => {
+                    println!("Request sent successfully");
+
+                    let mut response = [0u8; BUFFER_SIZE];
+                    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
+
+                    // Read the response from the server
+                    match tls.read(&mut response).await {
+                        Ok(n) => {
+                            if n == 0 {
+                                println!("Connection closed by peer");
+                                return Err(embedded_tls::TlsError::ConnectionClosed);
+                            }
+
+                            // n represents the number of bytes read
+                            println!("Received response ({} bytes): {:?}", n, &response[..n]);
+                            if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                                println!("Received OK response");
+
+                                // Additional debug info for response content
+                                if let Some(body_start) = find_http_body(&response[..n]) {
+                                    let body = &response[body_start..n];
+                                    println!("Response body: {:?}", body);
+
+                                    match postcard::from_bytes::<FetchedDataWrapper>(body) {
+                                        Ok(wrapper) => {
+                                            println!("Parsed data: {:?}", wrapper);
+                                            let data_size = core::mem::size_of_val(&wrapper);
+                                            unsafe {
+                                                let fetched_data_size = FETCHED_DATA_SIZE.get();
+                                                *fetched_data_size += data_size;
+                                            }
+                                            for item in &wrapper.data {
+                                                all_data.push(item.clone()).unwrap();
+                                            }
+                                        }
+                                        Err(e) => {
+                                            println!("Failed to parse JSON: {:?}", e);
+                                        }
+                                    }
+                                } else {
+                                    println!("Failed to find body in HTTP response.");
+                                }
+
+                                fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
+                                return Ok(());
+                            } else {
+                                println!("Non-200 HTTP response received");
+                                println!("Response: {:?}", &response[..n]);
+                                return Err(embedded_tls::TlsError::InternalError);
+                            }
+                        }
+                        Err(e) => {
+                            println!("Read error: {:?}", e);
+                            return Err(e);
+                        }
+                    }
                 }
-                url.push_str("&date%3C").unwrap();
-                if DYNAMIC_TIME_UPDATES {
-                    url.push_str(&naive_datetime_to_iso8601(*end_time)).unwrap();
-                } else {
-                    url.push_str(end_time_str).unwrap();
+                Err(e) => {
+                    println!("Write error: {:?}", e);
+                    return Err(e);
                 }
-                url.push_str(
-                    " HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n",
-                )
-                .unwrap();
-
-                println!("Sending request: {}", url);
-
-                match tls.write_all(url.as_bytes()).await {
-                    Ok(_) => {
-                        println!("Request sent successfully");
-
-                        let mut response = [0u8; BUFFER_SIZE];
-
+            }
+        }
+        Err(e) => {
+            println!("TLS session initialization failed: {:?}", e);
+            return Err(e);
+        }
+    }
+}
+             /* 
                         match embassy_time::with_timeout(
                             Duration::from_secs(10),
                             tls.read(&mut response),
@@ -852,8 +900,9 @@ async fn fetch_data_https(
             Err(e)
         }
     }
+    
 }
-
+*/
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();
     write!(temp, "{}", num).unwrap();
