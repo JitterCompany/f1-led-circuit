@@ -5,6 +5,7 @@
 mod data;
 mod driver_info;
 mod hd108;
+mod simple_rng; // Assuming your custom RNG implementation is in this module
 use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
@@ -30,7 +31,6 @@ use esp_hal::{
     gpio::{Event, GpioPin, Input, Io, Pull},
     peripherals::Peripherals,
     prelude::*,
-    rng::Rng,
     spi::{master::Spi, SpiMode},
     system::SystemControl,
     timer::timg::TimerGroup,
@@ -54,10 +54,9 @@ use esp_wifi::{
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
-use rand_chacha::ChaCha8Rng;
-use rand_core::{SeedableRng, RngCore, CryptoRng};
-use esp_hal::rng::Rng as EspRng;
-use esp_hal::peripherals::RNG;
+use rand_core::SeedableRng;
+
+use simple_rng::SimpleRng; // Import your custom RNG
 
 type HeaplessVec08<T, const N: usize> = Heapless08Vec<T, N>;
 
@@ -70,7 +69,7 @@ macro_rules! mk_static {
     }};
 }
 
-//CONFIG
+// CONFIG
 
 const SSID: &str = env!("SSID");
 const PASSWORD: &str = env!("PASSWORD");
@@ -128,7 +127,6 @@ static FETCH_CHANNEL: StaticCell<Channel<NoopRawMutex, FetchMessage, 1>> = Stati
 
 static SOCKET_RX_BUFFER: StaticCell<[u8; 8192]> = StaticCell::new();
 static SOCKET_TX_BUFFER: StaticCell<[u8; 8192]> = StaticCell::new();
-static SOCKET: StaticCell<TcpSocket<'static>> = StaticCell::new();
 
 // Define a static memory pool using GroundedArrayCell
 static MEMORY_POOL: GroundedArrayCell<u8, 4096> = GroundedArrayCell::const_init();
@@ -210,7 +208,7 @@ async fn main(spawner: Spawner) {
     match initialize(
         EspWifiInitFor::Wifi,
         timer,
-        Rng::new(peripherals.RNG),
+        peripherals.RNG, // Pass peripherals RNG here
         peripherals.RADIO_CLK,
         &clocks,
     ) {
@@ -294,6 +292,7 @@ async fn main(spawner: Spawner) {
         }
     }
 }
+
 
 fn parse_iso8601_timestamp(timestamp: &str) -> Result<NaiveDateTime, chrono::ParseError> {
     // Remove the trailing 'Z' if present
@@ -643,7 +642,7 @@ async fn fetch_data_loop(
 
         // Reinitialize TLS session and fetch data
         if let Err(e) =
-            fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time, &peripherals).await
+            fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await
         {
             println!("Failed to fetch data: {:?}", e);
             Timer::after(Duration::from_secs(5)).await; // Retry delay
@@ -684,7 +683,6 @@ async fn fetch_data_https(
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     start_time: &mut NaiveDateTime,
     end_time: &mut NaiveDateTime,
-    peripherals: &Peripherals,  // Pass peripherals as a reference
 ) -> Result<(), embedded_tls::TlsError> {
     const BUFFER_SIZE: usize = 2048;
 
@@ -708,12 +706,7 @@ async fn fetch_data_https(
     let mut tls: TlsConnection<_, Aes128GcmSha256> = 
         TlsConnection::new(&mut socket, &mut rx_buffer, &mut tx_buffer);
 
-    // Use ESP32 hardware RNG to seed ChaCha8Rng
-    let mut esp_rng = EspRng::new(peripherals.RNG); // Pass the RNG peripheral
-    let mut seed = [0u8; 32];
-    esp_rng.read(&mut seed);
-
-    let mut rng = ChaCha8Rng::from_seed(seed);
+    let mut rng = SimpleRng::new(1234); // Use a fixed seed or a custom seed if needed
 
     let context = TlsContext::new(&config, &mut rng);
 

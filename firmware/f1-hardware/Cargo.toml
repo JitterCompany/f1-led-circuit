@@ -55,8 +55,8 @@ serde-json-core = "0.5.1"
 grounded = { version = "0.2.0", features = ["cas"] }
 chrono = { version = "0.4.38", default-features = false }
 embedded-tls = { version = "0.17.0", default-features = false }
-rand_chacha = { version = "0.3.1", default-features = false }
-rand_core = { version = "0.6.3", default-features = false }
+rand_pcg = { version = "0.3.1", default-features = false }
+rand_core = "0.6.4"
 #esp-alloc = "0.4.0"
 
 [profile.dev]
