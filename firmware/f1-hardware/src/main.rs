@@ -45,6 +45,7 @@ use panic_halt as _;
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
+use postcard;
 
 // Importing necessary TLS modules
 use embedded_io_async::{Read, Write};
@@ -98,6 +99,11 @@ struct FetchedData {
     x: i32,
     y: i32,
     z: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct FetchedDataWrapper {
+    data: HeaplessVec08<FetchedData, 100>, // Use HeaplessVec08 for handling dynamic size within fixed limit
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -682,41 +688,32 @@ async fn fetch_data_https(
 ) -> Result<(), embedded_tls::TlsError> {
     const BUFFER_SIZE: usize = 8192;
 
-    // static time strings
     let start_time_str = "2023-08-27T12:58:56.234";
     let end_time_str = "2023-08-27T12:58:57.154";
 
     println!("Initializing TLS session");
 
-    // Load the CA chain from root_cert.pem
     let ca_chain = include_bytes!("root_cert.pem");
-
     let config = TlsConfig::new()
         .with_server_name("api.openf1.org")
         .with_ca(Certificate::X509(ca_chain))
         .enable_rsa_signatures();
 
-    // Verify if the CA chain is correctly loaded
-    println!("Loaded CA chain: {:?}", core::str::from_utf8(ca_chain));
-
     let mut rx_buffer = [0u8; BUFFER_SIZE];
     let mut tx_buffer = [0u8; BUFFER_SIZE];
 
     let mut socket = unsafe { &mut *socket_ptr };
-    let mut tls: TlsConnection<_, Aes128GcmSha256> = 
+    let mut tls: TlsConnection<_, Aes128GcmSha256> =
         TlsConnection::new(&mut socket, &mut rx_buffer, &mut tx_buffer);
 
-    let mut rng = SimpleRng::new(1234); // Use a fixed seed or a custom seed if needed
-
+    let mut rng = SimpleRng::new(1234);
     let context = TlsContext::new(&config, &mut rng);
 
-    match tls.open::<_, NoVerify>(context).await {  // Specify NoVerify for the Verifier
+    match tls.open::<_, NoVerify>(context).await {
         Ok(_) => {
             println!("TLS session initialized successfully");
 
             let session_key = "9149";
-
-            // Extract driver numbers from the DRIVERS array
             let driver_numbers: Heapless08Vec<u32, 20> = driver_info::DRIVERS
                 .iter()
                 .map(|driver| driver.number)
@@ -731,14 +728,14 @@ async fn fetch_data_https(
                 url.push_str(session_key).unwrap();
                 url.push_str("&driver_number=").unwrap();
                 push_u32(&mut url, driver_number).unwrap();
-                url.push_str("&date%3E").unwrap(); // Encoding for '>'
+                url.push_str("&date%3E").unwrap();
                 if DYNAMIC_TIME_UPDATES {
                     url.push_str(&naive_datetime_to_iso8601(*start_time))
                         .unwrap();
                 } else {
                     url.push_str(start_time_str).unwrap();
                 }
-                url.push_str("&date%3C").unwrap(); // Encoding for '<'
+                url.push_str("&date%3C").unwrap();
                 if DYNAMIC_TIME_UPDATES {
                     url.push_str(&naive_datetime_to_iso8601(*end_time)).unwrap();
                 } else {
@@ -751,73 +748,74 @@ async fn fetch_data_https(
 
                 println!("Sending request: {}", url);
 
-                let r = tls.write_all(url.as_bytes()).await;
-                if let Err(e) = r {
-                    println!("write error: {:?}", e);
-                    continue;
-                }
+                match tls.write_all(url.as_bytes()).await {
+                    Ok(_) => {
+                        println!("Request sent successfully");
 
-                println!("Request sent successfully");
+                        let mut response = [0u8; BUFFER_SIZE];
 
-                let mut response = [0u8; BUFFER_SIZE];
-
-                match embassy_time::with_timeout(
-                    Duration::from_secs(10),
-                    tls.read(&mut response),
-                )
-                .await
-                {
-                    Ok(Ok(n)) => {
-                        if n == 0 {
-                            println!("Connection closed by peer");
-                            break;
-                        }
-
-                        if response.starts_with(b"HTTP/1.1 200 OK")
-                            || response.starts_with(b"HTTP/1.0 200 OK")
+                        match embassy_time::with_timeout(
+                            Duration::from_secs(10),
+                            tls.read(&mut response),
+                        )
+                        .await
                         {
-                            println!("Received OK response");
-
-                            if let Some(body_start) = find_http_body(&response[..n]) {
-                                let body = &response[body_start..n];
-                                println!("Response body: {:?}", body);
-
-                                let data: Result<Heapless08Vec<FetchedData, 32>, _> =
-                                    from_slice(body).map(|(d, _)| d);
-                                match data {
-                                    Ok(data) => {
-                                        println!("Parsed data: {:?}", data);
-                                        let data_size = core::mem::size_of_val(&data);
-                                        unsafe {
-                                            let fetched_data_size = FETCHED_DATA_SIZE.get();
-                                            *fetched_data_size += data_size;
-                                        }
-                                        for item in data {
-                                            all_data.push(item).unwrap();
-                                        }
-                                    }
-                                    Err(e) => {
-                                        println!("Failed to parse JSON: {:?}", e);
-                                    }
+                            Ok(Ok(n)) => {
+                                if n == 0 {
+                                    println!("Connection closed by peer");
+                                    break;
                                 }
-                            } else {
-                                println!("Failed to find body in HTTP response.");
+
+                                if response.starts_with(b"HTTP/1.1 200 OK")
+                                    || response.starts_with(b"HTTP/1.0 200 OK")
+                                {
+                                    println!("Received OK response");
+
+                                    if let Some(body_start) = find_http_body(&response[..n]) {
+                                        let body = &response[body_start..n];
+                                        println!("Response body: {:?}", body);
+
+                                        match postcard::from_bytes::<FetchedDataWrapper>(body) {
+                                            Ok(wrapper) => {
+                                                println!("Parsed data: {:?}", wrapper);
+                                                let data_size = core::mem::size_of_val(&wrapper);
+                                                unsafe {
+                                                    let fetched_data_size = FETCHED_DATA_SIZE.get();
+                                                    *fetched_data_size += data_size;
+                                                }
+                                                for item in &wrapper.data {
+                                                    all_data.push(item.clone()).unwrap();
+                                                }
+                                            }
+                                            Err(e) => {
+                                                println!("Failed to parse JSON: {:?}", e);
+                                            }
+                                        }
+                                    } else {
+                                        println!("Failed to find body in HTTP response.");
+                                    }
+                                } else {
+                                    println!("Non-200 HTTP response received");
+                                    println!("Response: {:?}", &response[..n]);
+                                }
                             }
-                        } else {
-                            println!("Non-200 HTTP response received");
-                            println!("Response: {:?}", &response[..n]);
+                            Ok(Err(embedded_tls::TlsError::ConnectionClosed)) => {
+                                println!("TLS connection closed by peer");
+                                break;
+                            }
+                            Ok(Err(e)) => {
+                                println!("Read error: {:?}", e);
+                                break;
+                            }
+                            Err(_) => {
+                                println!("Read operation timed out");
+                                break;
+                            }
                         }
                     }
-                    Ok(Err(embedded_tls::TlsError::ConnectionClosed)) => {
-                        break;
-                    }
-                    Ok(Err(e)) => {
-                        println!("read error: {:?}", e);
-                        break;
-                    }
-                    Err(_) => {
-                        println!("Read operation timed out");
-                        break;
+                    Err(e) => {
+                        println!("Write error: {:?}", e);
+                        continue;
                     }
                 }
 
@@ -825,7 +823,6 @@ async fn fetch_data_https(
                 if api_call_count % 20 == 0 {
                     Timer::after(Duration::from_millis(1150)).await;
                     if DYNAMIC_TIME_UPDATES {
-                        // Adjust start_time and end_time for the next iteration
                         *start_time = add_milliseconds_to_naive_datetime(*end_time, 1);
                         *end_time = add_milliseconds_to_naive_datetime(*end_time, 251);
 
@@ -837,7 +834,6 @@ async fn fetch_data_https(
                     }
                 }
 
-                // Check if memory is full and pause if necessary
                 if MEMORY_FULL.load(Ordering::SeqCst) {
                     println!("Memory is full, pausing fetch...");
                     while MEMORY_FULL.load(Ordering::SeqCst) {
@@ -847,13 +843,11 @@ async fn fetch_data_https(
                 }
             }
 
-            // Send all fetched data to the store_data task
             fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
 
             Ok(())
         }
         Err(e) => {
-            // Detailed error handling for TLS connection failure
             println!("TLS session connection failed: {:?}", e);
             Err(e)
         }
