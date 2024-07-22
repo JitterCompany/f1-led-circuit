@@ -779,7 +779,10 @@ vepuoxtGzi4CZ68zJpiq1UvSqTbFJjtbD4seiMHl
     }
 
     let mut url: Heapless08String<256> = Heapless08String::new();
-    url.push_str("GET /todos/1 HTTP/1.1\r\nHost: jsonplaceholder.typicode.com\r\nConnection: keep-alive\r\n\r\n").unwrap();
+    if url.push_str("GET /todos/1 HTTP/1.1\r\nHost: jsonplaceholder.typicode.com\r\nConnection: keep-alive\r\n\r\n").is_err() {
+        println!("Failed to construct URL");
+        return Err(embedded_tls::TlsError::InternalError);
+    }
 
     println!("Sending request: {}", url);
 
