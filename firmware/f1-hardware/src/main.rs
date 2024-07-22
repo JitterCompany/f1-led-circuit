@@ -638,25 +638,16 @@ async fn fetch_data_loop(
         let mut attempt = 0;
         const MAX_ATTEMPTS: usize = 5;
 
-        loop {
-            // Reset the socket connection
-            if let Err(e) = socket_reset(stack, remote_endpoint, socket_ptr).await {
-                println!("Failed to reset socket: {:?}", e);
-                attempt += 1;
-                if attempt >= MAX_ATTEMPTS {
-                    println!("Exceeded maximum retry attempts. Giving up.");
-                    break;
-                }
-                let backoff = 2u64.pow(attempt as u32);
-                println!("Retrying in {} seconds...", backoff);
-                Timer::after(Duration::from_secs(backoff)).await;
-                continue;
-            }
+        // Initialize the TLS session once and reuse it
+        let mut tls_initialized = false;
 
-            // Reinitialize TLS session and fetch data
-            if let Err(e) =
-                fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await
-            {
+        // Reinitialize TLS session and fetch data
+        match fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time, &mut tls_initialized).await {
+            Ok(_) => {
+                // Reset the attempt counter after a successful fetch
+                attempt = 0;
+            }
+            Err(e) => {
                 println!("Failed to fetch data: {:?}", e);
                 attempt += 1;
                 if attempt >= MAX_ATTEMPTS {
@@ -668,18 +659,10 @@ async fn fetch_data_loop(
                 Timer::after(Duration::from_secs(backoff)).await;
                 continue;
             }
-
-            // Reset the attempt counter after a successful fetch
-            attempt = 0;
-
-            // Small delay before the next iteration
-            Timer::after(Duration::from_millis(1150)).await;
         }
 
-        // Exponential backoff in case of continuous failures
-        let backoff = 2u64.pow(MAX_ATTEMPTS as u32);
-        println!("Continuous failures. Waiting for {} seconds before retrying...", backoff);
-        Timer::after(Duration::from_secs(backoff)).await;
+        // Small delay before the next iteration
+        Timer::after(Duration::from_millis(1150)).await;
     }
 }
 
@@ -707,12 +690,12 @@ async fn socket_reset(
     }
 }
 
-
 async fn fetch_data_https(
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
     start_time: &mut NaiveDateTime,
     end_time: &mut NaiveDateTime,
+    tls_initialized: &mut bool,
 ) -> Result<(), embedded_tls::TlsError> {
     const BUFFER_SIZE: usize = 8192; // Increased buffer size
 
@@ -737,200 +720,102 @@ async fn fetch_data_https(
     let mut rng = SimpleRng::new(1234);
     let context = TlsContext::new(&config, &mut rng);
 
-    match tls.open::<_, NoVerify>(context).await {
+    if !*tls_initialized {
+        match tls.open::<_, NoVerify>(context).await {
+            Ok(_) => {
+                println!("TLS session initialized successfully");
+                *tls_initialized = true;
+            }
+            Err(e) => {
+                println!("TLS session initialization failed: {:?}", e);
+                return Err(e);
+            }
+        }
+    }
+
+    let session_key = "9149";
+    let driver_number = 1;
+
+    let mut url: Heapless08String<256> = Heapless08String::new();
+    url.push_str("GET /v1/location?session_key=").unwrap();
+    url.push_str(session_key).unwrap();
+    url.push_str("&driver_number=").unwrap();
+    push_u32(&mut url, driver_number).unwrap();
+    url.push_str("&date%3E").unwrap();
+    url.push_str(start_time_str).unwrap();
+    url.push_str("&date%3C").unwrap();
+    url.push_str(end_time_str).unwrap();
+    url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n").unwrap();
+
+    println!("Sending request: {}", url);
+
+    // Write the HTTP GET request to the TLS stream
+    match tls.write_all(url.as_bytes()).await {
         Ok(_) => {
-            println!("TLS session initialized successfully");
+            println!("Request sent successfully");
 
-            let session_key = "9149";
-            let driver_number = 1;
+            let mut response = [0u8; BUFFER_SIZE];
+            let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
 
-            let mut url: Heapless08String<256> = Heapless08String::new();
-            url.push_str("GET /v1/location?session_key=").unwrap();
-            url.push_str(session_key).unwrap();
-            url.push_str("&driver_number=").unwrap();
-            push_u32(&mut url, driver_number).unwrap();
-            url.push_str("&date%3E").unwrap();
-            url.push_str(start_time_str).unwrap();
-            url.push_str("&date%3C").unwrap();
-            url.push_str(end_time_str).unwrap();
-            url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n").unwrap();
+            // Read the response from the server
+            match tls.read(&mut response).await {
+                Ok(n) => {
+                    if n == 0 {
+                        println!("Connection closed by peer");
+                        return Err(embedded_tls::TlsError::ConnectionClosed);
+                    }
 
-            println!("Sending request: {}", url);
+                    // n represents the number of bytes read
+                    println!("Received response ({} bytes): {:?}", n, &response[..n]);
+                    if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                        println!("Received OK response");
 
-            // Write the HTTP GET request to the TLS stream
-            match tls.write_all(url.as_bytes()).await {
-                Ok(_) => {
-                    println!("Request sent successfully");
+                        // Additional debug info for response content
+                        if let Some(body_start) = find_http_body(&response[..n]) {
+                            let body = &response[body_start..n];
+                            println!("Response body: {:?}", body);
 
-                    let mut response = [0u8; BUFFER_SIZE];
-                    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
-
-                    // Read the response from the server
-                    match tls.read(&mut response).await {
-                        Ok(n) => {
-                            if n == 0 {
-                                println!("Connection closed by peer");
-                                return Err(embedded_tls::TlsError::ConnectionClosed);
-                            }
-
-                            // n represents the number of bytes read
-                            println!("Received response ({} bytes): {:?}", n, &response[..n]);
-                            if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
-                                println!("Received OK response");
-
-                                // Additional debug info for response content
-                                if let Some(body_start) = find_http_body(&response[..n]) {
-                                    let body = &response[body_start..n];
-                                    println!("Response body: {:?}", body);
-
-                                    match postcard::from_bytes::<FetchedDataWrapper>(body) {
-                                        Ok(wrapper) => {
-                                            println!("Parsed data: {:?}", wrapper);
-                                            let data_size = core::mem::size_of_val(&wrapper);
-                                            unsafe {
-                                                let fetched_data_size = FETCHED_DATA_SIZE.get();
-                                                *fetched_data_size += data_size;
-                                            }
-                                            for item in &wrapper.data {
-                                                all_data.push(item.clone()).unwrap();
-                                            }
-                                        }
-                                        Err(e) => {
-                                            println!("Failed to parse JSON: {:?}", e);
-                                        }
+                            match postcard::from_bytes::<FetchedDataWrapper>(body) {
+                                Ok(wrapper) => {
+                                    println!("Parsed data: {:?}", wrapper);
+                                    let data_size = core::mem::size_of_val(&wrapper);
+                                    unsafe {
+                                        let fetched_data_size = FETCHED_DATA_SIZE.get();
+                                        *fetched_data_size += data_size;
                                     }
-                                } else {
-                                    println!("Failed to find body in HTTP response.");
+                                    for item in &wrapper.data {
+                                        all_data.push(item.clone()).unwrap();
+                                    }
                                 }
-
-                                fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
-                                return Ok(());
-                            } else {
-                                println!("Non-200 HTTP response received");
-                                println!("Response: {:?}", &response[..n]);
-                                return Err(embedded_tls::TlsError::InternalError);
+                                Err(e) => {
+                                    println!("Failed to parse JSON: {:?}", e);
+                                }
                             }
+                        } else {
+                            println!("Failed to find body in HTTP response.");
                         }
-                        Err(e) => {
-                            println!("Read error: {:?}", e);
-                            return Err(e);
-                        }
+
+                        fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
+                        return Ok(());
+                    } else {
+                        println!("Non-200 HTTP response received");
+                        println!("Response: {:?}", &response[..n]);
+                        return Err(embedded_tls::TlsError::InternalError);
                     }
                 }
                 Err(e) => {
-                    println!("Write error: {:?}", e);
+                    println!("Read error: {:?}", e);
                     return Err(e);
                 }
             }
         }
         Err(e) => {
-            println!("TLS session initialization failed: {:?}", e);
+            println!("Write error: {:?}", e);
             return Err(e);
         }
     }
 }
-             /* 
-                        match embassy_time::with_timeout(
-                            Duration::from_secs(10),
-                            tls.read(&mut response),
-                        )
-                        .await
-                        {
-                            Ok(Ok(n)) => {
-                                if n == 0 {
-                                    println!("Connection closed by peer");
-                                    break;
-                                }
 
-                                if response.starts_with(b"HTTP/1.1 200 OK")
-                                    || response.starts_with(b"HTTP/1.0 200 OK")
-                                {
-                                    println!("Received OK response");
-
-                                    if let Some(body_start) = find_http_body(&response[..n]) {
-                                        let body = &response[body_start..n];
-                                        println!("Response body: {:?}", body);
-
-                                        match postcard::from_bytes::<FetchedDataWrapper>(body) {
-                                            Ok(wrapper) => {
-                                                println!("Parsed data: {:?}", wrapper);
-                                                let data_size = core::mem::size_of_val(&wrapper);
-                                                unsafe {
-                                                    let fetched_data_size = FETCHED_DATA_SIZE.get();
-                                                    *fetched_data_size += data_size;
-                                                }
-                                                for item in &wrapper.data {
-                                                    all_data.push(item.clone()).unwrap();
-                                                }
-                                            }
-                                            Err(e) => {
-                                                println!("Failed to parse JSON: {:?}", e);
-                                            }
-                                        }
-                                    } else {
-                                        println!("Failed to find body in HTTP response.");
-                                    }
-                                } else {
-                                    println!("Non-200 HTTP response received");
-                                    println!("Response: {:?}", &response[..n]);
-                                }
-                            }
-                            Ok(Err(embedded_tls::TlsError::ConnectionClosed)) => {
-                                println!("TLS connection closed by peer");
-                                break;
-                            }
-                            Ok(Err(e)) => {
-                                println!("Read error: {:?}", e);
-                                break;
-                            }
-                            Err(_) => {
-                                println!("Read operation timed out");
-                                break;
-                            }
-                        }
-                    }
-                    Err(e) => {
-                        println!("Write error: {:?}", e);
-                        continue;
-                    }
-                }
-
-                api_call_count += 1;
-                if api_call_count % 20 == 0 {
-                    Timer::after(Duration::from_millis(1150)).await;
-                    if DYNAMIC_TIME_UPDATES {
-                        *start_time = add_milliseconds_to_naive_datetime(*end_time, 1);
-                        *end_time = add_milliseconds_to_naive_datetime(*end_time, 251);
-
-                        println!(
-                            "Updated times for next iteration: start_time={}, end_time={}",
-                            naive_datetime_to_iso8601(*start_time),
-                            naive_datetime_to_iso8601(*end_time)
-                        );
-                    }
-                }
-
-                if MEMORY_FULL.load(Ordering::SeqCst) {
-                    println!("Memory is full, pausing fetch...");
-                    while MEMORY_FULL.load(Ordering::SeqCst) {
-                        Timer::after(Duration::from_secs(1)).await;
-                    }
-                    println!("Resuming fetch...");
-                }
-            }
-
-            fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
-
-            Ok(())
-        }
-        Err(e) => {
-            println!("TLS session connection failed: {:?}", e);
-            Err(e)
-        }
-    }
-    
-}
-*/
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();
     write!(temp, "{}", num).unwrap();
