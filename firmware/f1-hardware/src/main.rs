@@ -10,9 +10,9 @@ use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
 use chrono::{Datelike, Duration as ChronoDuration, NaiveDateTime, Timelike};
-use core::str;
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
+use core::str;
 use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
@@ -42,21 +42,21 @@ use grounded::uninit::GroundedCell;
 use hd108::HD108;
 use heapless08::{String as Heapless08String, Vec as Heapless08Vec};
 use panic_halt as _;
+use postcard;
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
-use postcard;
 
 // Importing necessary TLS modules
-use embedded_io_async::{Read, Write};
-use embedded_tls::{Aes128GcmSha256, Certificate, TlsConfig, TlsConnection, TlsContext, NoVerify};
 use embassy_net::tcp::{ConnectError, TcpSocket};
+use embedded_io_async::{Read, Write};
+use embedded_tls::{Aes128GcmSha256, Certificate, NoVerify, TlsConfig, TlsConnection, TlsContext};
+use esp_hal::rng::Rng;
 use esp_wifi::{
     initialize,
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
-use esp_hal::rng::Rng;
 
 use simple_rng::SimpleRng; // Import your custom RNG
 
@@ -194,16 +194,22 @@ async fn main(spawner: Spawner) {
     }
 
     // Spawn the button task with ownership of the button pin and the sender
-    if let Err(e) = spawner.spawn(button_task(button_pin, button_channel.sender())) {
+    if let Err(e) = spawner
+        .spawn(button_task(button_pin, button_channel.sender().into()))
+    {
         println!("Failed to spawn button_task: {:?}", e);
     }
 
     // Spawn the run_race_task with the receiver
-    if let Err(e) = spawner.spawn(run_race_task(hd108, button_channel.receiver())) {
+    if let Err(e) = spawner
+        .spawn(run_race_task(hd108, button_channel.receiver().into()))
+    {
         println!("Failed to spawn run_race_task: {:?}", e);
     }
 
-    if let Err(e) = spawner.spawn(store_data(fetch_channel.receiver())) {
+    if let Err(e) = spawner
+        .spawn(store_data(fetch_channel.receiver().into()))
+    {
         println!("Failed to spawn store_data: {:?}", e);
     }
 
@@ -251,12 +257,14 @@ async fn main(spawner: Spawner) {
                         )
                     );
 
-                    if let Err(e) = spawner.spawn(wifi_connection(
-                        controller,
-                        stack,
-                        connection_channel.receiver(),
-                        connection_channel.sender(),
-                    )) {
+                    if let Err(e) = spawner
+                        .spawn(wifi_connection(
+                            controller,
+                            stack,
+                            connection_channel.receiver().into(),
+                            connection_channel.sender().into(),
+                        ))
+                    {
                         println!("Failed to spawn wifi_connection: {:?}", e);
                     } else {
                         println!("WiFi Connection spawned...");
@@ -278,13 +286,15 @@ async fn main(spawner: Spawner) {
                     // Add a delay to ensure the network stack has time to initialize
                     Timer::after(Duration::from_secs(2)).await;
 
-                    if let Err(e) = spawner.spawn(fetch_update_frames(
-                        connection_channel.receiver(),
-                        stack,
-                        fetch_channel.sender(),
-                        connection_channel.sender(),
-                        spawner,
-                    )) {
+                    if let Err(e) = spawner
+                        .spawn(fetch_update_frames(
+                            connection_channel.receiver().into(),
+                            stack,
+                            fetch_channel.sender().into(),
+                            connection_channel.sender().into(),
+                            spawner,
+                        ))
+                    {
                         println!("Failed to spawn fetch_update_frames: {:?}", e);
                     } else {
                         println!("Fetch Update Frames Spawned...");
@@ -544,7 +554,7 @@ async fn fetch_update_frames(
     connection_receiver: Receiver<'static, NoopRawMutex, ConnectionMessage, 1>,
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-    connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
+    _connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
     spawner: Spawner,
 ) {
     match connection_receiver.receive().await {
@@ -568,12 +578,14 @@ async fn fetch_update_frames(
                 if let Some(socket) = SOCKET.as_mut() {
                     let socket_ptr = addr_of_mut!(*socket);
 
-                    if let Err(e) = spawner.spawn(fetch_data_loop(
-                        stack,
-                        remote_endpoint,
-                        socket_ptr,
-                        fetch_sender,
-                    )) {
+                    if let Err(e) = spawner
+                        .spawn(fetch_data_loop(
+                            stack,
+                            remote_endpoint,
+                            socket_ptr,
+                            fetch_sender,
+                        ))
+                    {
                         println!("Failed to spawn fetch_data_loop: {:?}", e);
                     }
                 } else {
@@ -593,7 +605,7 @@ async fn fetch_update_frames(
 async fn dns_query_task(
     stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-    connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
+    _connection_sender: Sender<'static, NoopRawMutex, ConnectionMessage, 1>,
     spawner: Spawner,
 ) {
     let dns_socket = DnsSocket::new(stack);
@@ -619,12 +631,14 @@ async fn dns_query_task(
                     if let Some(socket) = SOCKET.as_mut() {
                         let socket_ptr = addr_of_mut!(*socket);
 
-                        if let Err(e) = spawner.spawn(fetch_data_loop(
-                            stack,
-                            remote_endpoint,
-                            socket_ptr,
-                            fetch_sender,
-                        )) {
+                        if let Err(e) = spawner
+                            .spawn(fetch_data_loop(
+                                stack,
+                                remote_endpoint,
+                                socket_ptr,
+                                fetch_sender,
+                            ))
+                        {
                             println!("Failed to spawn fetch_data_loop: {:?}", e);
                         }
                     } else {
@@ -644,8 +658,8 @@ async fn dns_query_task(
 
 #[embassy_executor::task]
 async fn fetch_data_loop(
-    stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
-    remote_endpoint: (Ipv4Address, u16),
+    _stack: &'static Stack<WifiDevice<'static, WifiStaDevice>>,
+    _remote_endpoint: (Ipv4Address, u16),
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
@@ -708,9 +722,7 @@ async fn fetch_data_https(
 
     println!("Initializing TLS session");
 
-    let config = TlsConfig::new()
-        .with_server_name("localhost")
-        .enable_rsa_signatures();
+    let config = configure_tls().unwrap();
 
     let mut rx_buffer = [0u8; BUFFER_SIZE];
     let mut tx_buffer = [0u8; BUFFER_SIZE];
@@ -736,7 +748,8 @@ async fn fetch_data_https(
     }
 
     let mut url: Heapless08String<256> = Heapless08String::new();
-    url.push_str("GET /mud/ HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n").unwrap();
+    url.push_str("GET /mud/ HTTP/1.1\r\nHost: localhost\r\nConnection: keep-alive\r\n\r\n")
+        .unwrap();
 
     println!("Sending request: {}", url);
 
@@ -757,7 +770,9 @@ async fn fetch_data_https(
 
                     // n represents the number of bytes read
                     println!("Received response ({} bytes): {:?}", n, &response[..n]);
-                    if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                    if response.starts_with(b"HTTP/1.1 200 OK")
+                        || response.starts_with(b"HTTP/1.0 200 OK")
+                    {
                         println!("Received OK response");
 
                         // Additional debug info for response content
@@ -817,4 +832,16 @@ async fn store_data(receiver: Receiver<'static, NoopRawMutex, FetchMessage, 1>) 
             }
         }
     }
+}
+
+fn configure_tls() -> Result<TlsConfig<'static, Aes128GcmSha256>, &'static str> {
+    let certificate_bytes: &[u8] =
+        include_bytes!("/Applications/XAMPP/xamppfiles/etc/ssl.crt/server.crt");
+    let certificate = Certificate::X509(certificate_bytes);
+
+    let config = TlsConfig::new()
+        .with_server_name("localhost")
+        .with_cert(certificate);
+
+    Ok(config)
 }
