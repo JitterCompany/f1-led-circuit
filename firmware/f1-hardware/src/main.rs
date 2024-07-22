@@ -552,14 +552,34 @@ async fn fetch_update_frames(
             // Handle the case where the IP address is acquired
             println!("IP Address acquired.");
 
-            // Spawn the DNS query task
-            if let Err(e) = spawner.spawn(dns_query_task(
-                stack,
-                fetch_sender,
-                connection_sender,
-                spawner,
-            )) {
-                println!("Failed to spawn dns_query_task: {:?}", e);
+            // Directly use the IP address for localhost
+            let remote_endpoint = (Ipv4Address::new(127, 0, 0, 1), 443);
+
+            // Initialize static buffers
+            let rx_buffer = SOCKET_RX_BUFFER.init([0; 4096]);
+            let tx_buffer = SOCKET_TX_BUFFER.init([0; 4096]);
+
+            static mut SOCKET: Option<TcpSocket<'static>> = None;
+            unsafe {
+                if SOCKET.is_none() {
+                    SOCKET = Some(TcpSocket::new(stack, rx_buffer, tx_buffer));
+                }
+
+                if let Some(socket) = SOCKET.as_mut() {
+                    let socket_ptr = addr_of_mut!(*socket);
+
+                    if let Err(e) = spawner.spawn(fetch_data_loop(
+                        stack,
+                        remote_endpoint,
+                        socket_ptr,
+                        fetch_sender,
+                    )) {
+                        println!("Failed to spawn fetch_data_loop: {:?}", e);
+                    }
+                } else {
+                    // Handle the case where the socket is not initialized
+                    println!("Socket not initialized");
+                }
             }
         }
         _ => {
@@ -577,7 +597,7 @@ async fn dns_query_task(
     spawner: Spawner,
 ) {
     let dns_socket = DnsSocket::new(stack);
-    let hostname = "jsonplaceholder.typicode.com";
+    let hostname = "localhost";
 
     println!("Querying DNS for {}", hostname);
     match dns_socket.query(hostname, DnsQueryType::A).await {
@@ -629,57 +649,29 @@ async fn fetch_data_loop(
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
 ) {
-    let start_time_str = "2023-08-27T12:58:56.234";
-    let end_time_str = "2023-08-27T12:58:57.154";
-    let mut start_time = parse_iso8601_timestamp(start_time_str).unwrap();
-    let mut end_time = parse_iso8601_timestamp(end_time_str).unwrap();
-
     loop {
         let mut attempt = 0;
         const MAX_ATTEMPTS: usize = 5;
 
-        loop {
-            // Reset the socket connection
-            if let Err(e) = socket_reset(stack, remote_endpoint, socket_ptr).await {
-                println!("Failed to reset socket: {:?}", e);
-                attempt += 1;
-                if attempt >= MAX_ATTEMPTS {
-                    println!("Exceeded maximum retry attempts. Giving up.");
-                    break;
-                }
-                let backoff = 2u64.pow(attempt as u32);
-                println!("Retrying in {} seconds...", backoff);
-                Timer::after(Duration::from_secs(backoff)).await;
-                continue;
-            }
+        // Initialize the TLS session once and reuse it
+        let mut tls_initialized = false;
 
-            // Reinitialize TLS session and fetch data
-            if let Err(e) =
-                fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time).await
-            {
+        match fetch_data_https(socket_ptr, fetch_sender, &mut tls_initialized).await {
+            Ok(_) => {
+                println!("Data fetched successfully.");
+            }
+            Err(e) => {
                 println!("Failed to fetch data: {:?}", e);
-                attempt += 1;
                 if attempt >= MAX_ATTEMPTS {
-                    println!("Exceeded maximum retry attempts. Giving up.");
+                    println!("Max attempts reached. Giving up.");
                     break;
                 }
-                let backoff = 2u64.pow(attempt as u32);
-                println!("Retrying in {} seconds...", backoff);
-                Timer::after(Duration::from_secs(backoff)).await;
-                continue;
+                attempt += 1;
             }
-
-            // Reset the attempt counter after a successful fetch
-            attempt = 0;
-
-            // Small delay before the next iteration
-            Timer::after(Duration::from_millis(1150)).await;
         }
 
-        // Exponential backoff in case of continuous failures
-        let backoff = 2u64.pow(MAX_ATTEMPTS as u32);
-        println!("Continuous failures. Waiting for {} seconds before retrying...", backoff);
-        Timer::after(Duration::from_secs(backoff)).await;
+        // Small delay before the next iteration
+        Timer::after(Duration::from_millis(1150)).await;
     }
 }
 
@@ -710,39 +702,14 @@ async fn socket_reset(
 async fn fetch_data_https(
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-    start_time: &mut NaiveDateTime,
-    end_time: &mut NaiveDateTime,
+    tls_initialized: &mut bool,
 ) -> Result<(), embedded_tls::TlsError> {
     const BUFFER_SIZE: usize = 8192; // Increased buffer size
 
     println!("Initializing TLS session");
 
-    // Chain the certificates together
-    let ca_chain = b"-----BEGIN CERTIFICATE-----
-MIIDejCCAmKgAwIBAgIQf+UwvzMTQ77dghYQST2KGzANBgkqhkiG9w0BAQsFADBX
-MQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEQMA4GA1UE
-CxMHUm9vdCBDQTEbMBkGA1UEAxMSR2xvYmFsU2lnbiBSb290IENBMB4XDTIzMTEx
-NTAzNDMyMVoXDTI4MDEyODAwMDA0MlowRzELMAkGA1UEBhMCVVMxIjAgBgNVBAoT
-GUdvb2dsZSBUcnVzdCBTZXJ2aWNlcyBMTEMxFDASBgNVBAMTC0dUUyBSb290IFI0
-MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE83Rzp2iLYK5DuDXFgTB7S0md+8Fhzube
-Rr1r1WEYNa5A3XP3iZEwWus87oV8okB2O6nGuEfYKueSkWpz6bFyOZ8pn6KY019e
-WIZlD6GEZQbR3IvJx3PIjGov5cSr0R2Ko4H/MIH8MA4GA1UdDwEB/wQEAwIBhjAd
-BgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDwYDVR0TAQH/BAUwAwEB/zAd
-BgNVHQ4EFgQUgEzW63T/STaj1dj8tT7FavCUHYwwHwYDVR0jBBgwFoAUYHtmGkUN
-l8qJUC99BM00qP/8/UswNgYIKwYBBQUHAQEEKjAoMCYGCCsGAQUFBzAChhpodHRw
-Oi8vaS5wa2kuZ29vZy9nc3IxLmNydDAtBgNVHR8EJjAkMCKgIKAehhxodHRwOi8v
-Yy5wa2kuZ29vZy9yL2dzcjEuY3JsMBMGA1UdIAQMMAowCAYGZ4EMAQIBMA0GCSqG
-SIb3DQEBCwUAA4IBAQAYQrsPBtYDh5bjP2OBDwmkoWhIDDkic574y04tfzHpn+cJ
-odI2D4SseesQ6bDrarZ7C30ddLibZatoKiws3UL9xnELz4ct92vID24FfVbiI1hY
-+SW6FoVHkNeWIP0GCbaM4C6uVdF5dTUsMVs/ZbzNnIdCp5Gxmx5ejvEau8otR/Cs
-kGN+hr/W5GvT1tMBjgWKZ1i4//emhA1JG1BbPzoLJQvyEotc03lXjTaCzv8mEbep
-8RqZ7a2CPsgRbuvTPBwcOMBBmuFeU88+FSBX6+7iP0il8b4Z0QFqIwwMHfs/L6K1
-vepuoxtGzi4CZ68zJpiq1UvSqTbFJjtbD4seiMHl
------END CERTIFICATE-----";
-
-let config = TlsConfig::new()
-        .with_server_name("jsonplaceholder.typicode.com")
-        .with_ca(Certificate::X509(ca_chain))
+    let config = TlsConfig::new()
+        .with_server_name("localhost")
         .enable_rsa_signatures();
 
     let mut rx_buffer = [0u8; BUFFER_SIZE];
@@ -755,83 +722,67 @@ let config = TlsConfig::new()
     let mut rng = SimpleRng::new(1234);
     let context = TlsContext::new(&config, &mut rng);
 
-    match tls.open::<_, NoVerify>(context).await {
+    if !*tls_initialized {
+        match tls.open::<_, NoVerify>(context).await {
+            Ok(_) => {
+                println!("TLS session initialized successfully");
+                *tls_initialized = true;
+            }
+            Err(e) => {
+                println!("TLS session initialization failed: {:?}", e);
+                return Err(e);
+            }
+        }
+    }
+
+    let mut url: Heapless08String<256> = Heapless08String::new();
+    url.push_str("GET /mud/ HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n").unwrap();
+
+    println!("Sending request: {}", url);
+
+    // Write the HTTP GET request to the TLS stream
+    match tls.write_all(url.as_bytes()).await {
         Ok(_) => {
-            println!("TLS session initialized successfully");
+            println!("Request sent successfully");
 
-            let mut url: Heapless08String<256> = Heapless08String::new();
-            url.push_str("GET /todos/1 HTTP/1.1\r\nHost: jsonplaceholder.typicode.com\r\nConnection: keep-alive\r\n\r\n").unwrap();
+            let mut response = [0u8; BUFFER_SIZE];
 
-            println!("Sending request: {}", url);
+            // Read the response from the server
+            match tls.read(&mut response).await {
+                Ok(n) => {
+                    if n == 0 {
+                        println!("Connection closed by peer");
+                        return Err(embedded_tls::TlsError::ConnectionClosed);
+                    }
 
-            // Write the HTTP GET request to the TLS stream
-            match tls.write_all(url.as_bytes()).await {
-                Ok(_) => {
-                    println!("Request sent successfully");
+                    // n represents the number of bytes read
+                    println!("Received response ({} bytes): {:?}", n, &response[..n]);
+                    if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                        println!("Received OK response");
 
-                    let mut response = [0u8; BUFFER_SIZE];
-                    let mut all_data = Heapless08Vec::<FetchedData, 64>::new();
-
-                    // Read the response from the server
-                    match tls.read(&mut response).await {
-                        Ok(n) => {
-                            if n == 0 {
-                                println!("Connection closed by peer");
-                                return Err(embedded_tls::TlsError::ConnectionClosed);
-                            }
-
-                            // n represents the number of bytes read
-                            println!("Received response ({} bytes): {:?}", n, &response[..n]);
-                            if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
-                                println!("Received OK response");
-
-                                // Additional debug info for response content
-                                if let Some(body_start) = find_http_body(&response[..n]) {
-                                    let body = &response[body_start..n];
-                                    println!("Response body: {:?}", body);
-
-                                    match serde_json_core::from_slice::<FetchedDataWrapper>(body) {
-                                        Ok((wrapper, _)) => {
-                                            println!("Parsed data: {:?}", wrapper);
-                                            let data_size = core::mem::size_of_val(&wrapper);
-                                            unsafe {
-                                                let fetched_data_size = FETCHED_DATA_SIZE.get();
-                                                *fetched_data_size += data_size;
-                                            }
-                                            for item in &wrapper.data {
-                                                all_data.push(item.clone()).unwrap();
-                                            }
-                                        }
-                                        Err(e) => {
-                                            println!("Failed to parse JSON: {:?}", e);
-                                        }
-                                    }
-                                } else {
-                                    println!("Failed to find body in HTTP response.");
-                                }
-
-                                fetch_sender.send(FetchMessage::FetchedData(all_data)).await;
-                                return Ok(());
-                            } else {
-                                println!("Non-200 HTTP response received");
-                                println!("Response: {:?}", &response[..n]);
-                                return Err(embedded_tls::TlsError::InternalError);
-                            }
+                        // Additional debug info for response content
+                        if let Some(body_start) = find_http_body(&response[..n]) {
+                            let body = &response[body_start..n];
+                            println!("Response body: {:?}", body);
+                        } else {
+                            println!("Failed to find body in HTTP response.");
                         }
-                        Err(e) => {
-                            println!("Read error: {:?}", e);
-                            return Err(e);
-                        }
+
+                        return Ok(());
+                    } else {
+                        println!("Non-200 HTTP response received");
+                        println!("Response: {:?}", &response[..n]);
+                        return Err(embedded_tls::TlsError::InternalError);
                     }
                 }
                 Err(e) => {
-                    println!("Write error: {:?}", e);
+                    println!("Read error: {:?}", e);
                     return Err(e);
                 }
             }
         }
         Err(e) => {
-            println!("TLS session initialization failed: {:?}", e);
+            println!("Write error: {:?}", e);
             return Err(e);
         }
     }
