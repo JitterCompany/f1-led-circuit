@@ -1,4 +1,4 @@
-use rand_core::{RngCore, CryptoRng, Error, impls};
+use rand_core::{impls, CryptoRng, Error, RngCore};
 
 pub struct SimpleRng {
     seed: u64,

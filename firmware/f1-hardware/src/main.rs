@@ -10,9 +10,9 @@ use data::VISUALIZATION_DATA;
 use driver_info::DRIVERS;
 
 use chrono::{Datelike, Duration as ChronoDuration, NaiveDateTime, Timelike};
-use core::str;
 use core::fmt::Write as FmtWrite;
 use core::ptr::addr_of_mut;
+use core::str;
 use core::sync::atomic::{AtomicBool, Ordering};
 use embassy_executor::Spawner;
 use embassy_net::dns::{DnsQueryType, DnsSocket};
@@ -42,21 +42,21 @@ use grounded::uninit::GroundedCell;
 use hd108::HD108;
 use heapless08::{String as Heapless08String, Vec as Heapless08Vec};
 use panic_halt as _;
+use postcard;
 use serde::{Deserialize, Serialize};
 use serde_json_core::from_slice;
 use static_cell::StaticCell;
-use postcard;
 
 // Importing necessary TLS modules
-use embedded_io_async::{Read, Write};
-use embedded_tls::{Aes128GcmSha256, Certificate, TlsConfig, TlsConnection, TlsContext, NoVerify};
 use embassy_net::tcp::{ConnectError, TcpSocket};
+use embedded_io_async::{Read, Write};
+use embedded_tls::{Aes128GcmSha256, Certificate, NoVerify, TlsConfig, TlsConnection, TlsContext};
+use esp_hal::rng::Rng;
 use esp_wifi::{
     initialize,
     wifi::{ClientConfiguration, Configuration, WifiController, WifiDevice, WifiStaDevice},
     EspWifiInitFor,
 };
-use esp_hal::rng::Rng;
 
 use simple_rng::SimpleRng; // Import your custom RNG
 
@@ -577,7 +577,7 @@ async fn dns_query_task(
     spawner: Spawner,
 ) {
     let dns_socket = DnsSocket::new(stack);
-    let hostname = "api.openf1.org";
+    let hostname = "jsonplaceholder.typicode.com"; // Updated hostname
 
     println!("Querying DNS for {}", hostname);
     match dns_socket.query(hostname, DnsQueryType::A).await {
@@ -641,23 +641,12 @@ async fn fetch_data_loop(
         // Initialize the TLS session once and reuse it
         let mut tls_initialized = false;
 
-        // Reinitialize TLS session and fetch data
-        match fetch_data_https(socket_ptr, fetch_sender, &mut start_time, &mut end_time, &mut tls_initialized).await {
+        match fetch_data_https(socket_ptr, fetch_sender, &mut tls_initialized).await {
             Ok(_) => {
-                // Reset the attempt counter after a successful fetch
-                attempt = 0;
+                println!("Data fetched successfully.");
             }
             Err(e) => {
                 println!("Failed to fetch data: {:?}", e);
-                attempt += 1;
-                if attempt >= MAX_ATTEMPTS {
-                    println!("Exceeded maximum retry attempts. Giving up.");
-                    break;
-                }
-                let backoff = 2u64.pow(attempt as u32);
-                println!("Retrying in {} seconds...", backoff);
-                Timer::after(Duration::from_secs(backoff)).await;
-                continue;
             }
         }
 
@@ -693,20 +682,76 @@ async fn socket_reset(
 async fn fetch_data_https(
     socket_ptr: *mut TcpSocket<'static>,
     fetch_sender: Sender<'static, NoopRawMutex, FetchMessage, 1>,
-    start_time: &mut NaiveDateTime,
-    end_time: &mut NaiveDateTime,
     tls_initialized: &mut bool,
 ) -> Result<(), embedded_tls::TlsError> {
     const BUFFER_SIZE: usize = 8192; // Increased buffer size
 
-    let start_time_str = "2023-08-27T12:58:56.234";
-    let end_time_str = "2023-08-27T12:58:57.154";
-
     println!("Initializing TLS session");
 
-    let ca_chain = include_bytes!("root_cert.pem");
+    // Chain the certificates together
+    let ca_chain = b"-----BEGIN CERTIFICATE-----
+MIIDqTCCA1CgAwIBAgIRAOV5Qz5Tsjc5EWvO6Bc+Lt8wCgYIKoZIzj0EAwIwOzEL
+MAkGA1UEBhMCVVMxHjAcBgNVBAoTFUdvb2dsZSBUcnVzdCBTZXJ2aWNlczEMMAoG
+A1UEAxMDV0UxMB4XDTI0MDYyMjA3MDMzOVoXDTI0MDkyMDA3MDMzOFowFzEVMBMG
+A1UEAxMMdHlwaWNvZGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEbMlv
+7DMlOSDetc3csBvx2yTHp8ZdoAr7kFMriB+zciwij1uALdS9AVXaOI4wX+bSUbkV
+pL532nli8OWpReu++aOCAlcwggJTMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUEDDAK
+BggrBgEFBQcDATAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBRV2gQbUJxY5MfqDgO7
+a7so2H/vVDAfBgNVHSMEGDAWgBSQd5I1Z8T/qMyp5nvZgHl7zJP5ODBeBggrBgEF
+BQcBAQRSMFAwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vLnBraS5nb29nL3Mvd2UxLzVY
+azAlBggrBgEFBQcwAoYZaHR0cDovL2kucGtpLmdvb2cvd2UxLmNydDAnBgNVHREE
+IDAeggx0eXBpY29kZS5jb22CDioudHlwaWNvZGUuY29tMBMGA1UdIAQMMAowCAYG
+Z4EMAQIBMDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jLnBraS5nb29nL3dlMS9m
+LUxxQnNPOTBnWS5jcmwwggEGBgorBgEEAdZ5AgQCBIH3BIH0APIAdwB2/4g/Crb7
+lVHCYcz1h7o0tKTNuyncaEIKn+ZnTFo6dAAAAZA++O5zAAAEAwBIMEYCIQDLhYgZ
+J8UEuOSJRnyJRZ1v9+gl8UydqyvIRmT2UGLHWQIhAOAYbpwG5TUvkGMjsEiYX1ZH
+U7yNbFFYwc4Ol5zZcJrLAHcASLDja9qmRzQP5WoC+p0w6xxSActW3SyB2bu/qznY
+hHMAAAGQPvjuZgAABAMASDBGAiEA2PynE8HlU6mCfcH3uSt5DtfcBZ+FDEGjxhg/
+XLIxpbMCIQCmmY74ptvsaSVHAVLu8sXstqS6ZoGYL8gaaH90+BKnPjAKBggqhkjO
+PQQDAgNHADBEAiAoE3jlnew18NDzumPCA94SBbv46DX4+3OzOCjeBlQEPwIgZTe8
+uhb0TkLI1yw6zyUyiei1zoUK0Axd0Jzz8DYmID4=
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+MIICnzCCAiWgAwIBAgIQf/MZd5csIkp2FV0TttaF4zAKBggqhkjOPQQDAzBHMQsw
+CQYDVQQGEwJVUzEiMCAGA1UEChMZR29vZ2xlIFRydXN0IFNlcnZpY2VzIExMQzEU
+MBIGA1UEAxMLR1RTIFJvb3QgUjQwHhcNMjMxMjEzMDkwMDAwWhcNMjkwMjIwMTQw
+MDAwWjA7MQswCQYDVQQGEwJVUzEeMBwGA1UEChMVR29vZ2xlIFRydXN0IFNlcnZp
+Y2VzMQwwCgYDVQQDEwNXRTEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAARvzTr+
+Z1dHTCEDhUDCR127WEcPQMFcF4XGGTfn1XzthkubgdnXGhOlCgP4mMTG6J7/EFmP
+LCaY9eYmJbsPAvpWo4H+MIH7MA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggr
+BgEFBQcDAQYIKwYBBQUHAwIwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQU
+kHeSNWfE/6jMqeZ72YB5e8yT+TgwHwYDVR0jBBgwFoAUgEzW63T/STaj1dj8tT7F
+avCUHYwwNAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUFBzAChhhodHRwOi8vaS5wa2ku
+Z29vZy9yNC5jcnQwKwYDVR0fBCQwIjAgoB6gHIYaaHR0cDovL2MucGtpLmdvb2cv
+ci9yNC5jcmwwEwYDVR0gBAwwCjAIBgZngQwBAgEwCgYIKoZIzj0EAwMDaAAwZQIx
+AOcCq1HW90OVznX+0RGU1cxAQXomvtgM8zItPZCuFQ8jSBJSjz5keROv9aYsAm5V
+sQIwJonMaAFi54mrfhfoFNZEfuNMSQ6/bIBiNLiyoX46FohQvKeIoJ99cx7sUkFN
+7uJW
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+MIIDejCCAmKgAwIBAgIQf+UwvzMTQ77dghYQST2KGzANBgkqhkiG9w0BAQsFADBX
+MQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEQMA4GA1UE
+CxMHUm9vdCBDQTEbMBkGA1UEAxMSR2xvYmFsU2lnbiBSb290IENBMB4XDTIzMTEx
+NTAzNDMyMVoXDTI4MDEyODAwMDA0MlowRzELMAkGA1UEBhMCVVMxIjAgBgNVBAoT
+GUdvb2dsZSBUcnVzdCBTZXJ2aWNlcyBMTEMxFDASBgNVBAMTC0dUUyBSb290IFI0
+MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE83Rzp2iLYK5DuDXFgTB7S0md+8Fhzube
+Rr1r1WEYNa5A3XP3iZEwWus87oV8okB2O6nGuEfYKueSkWpz6bFyOZ8pn6KY019e
+WIZlD6GEZQbR3IvJx3PIjGov5cSr0R2Ko4H/MIH8MA4GA1UdDwEB/wQEAwIBhjAd
+BgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDwYDVR0TAQH/BAUwAwEB/zAd
+BgNVHQ4EFgQUgEzW63T/STaj1dj8tT7FavCUHYwwHwYDVR0jBBgwFoAUYHtmGkUN
+l8qJUC99BM00qP/8/UswNgYIKwYBBQUHAQEEKjAoMCYGCCsGAQUFBzAChhpodHRw
+Oi8vaS5wa2kuZ29vZy9nc3IxLmNydDAtBgNVHR8EJjAkMCKgIKAehhxodHRwOi8v
+Yy5wa2kuZ29vZy9yL2dzcjEuY3JsMBMGA1UdIAQMMAowCAYGZ4EMAQIBMA0GCSqG
+SIb3DQEBCwUAA4IBAQAYQrsPBtYDh5bjP2OBDwmkoWhIDDkic574y04tfzHpn+cJ
+odI2D4SseesQ6bDrarZ7C30ddLibZatoKiws3UL9xnELz4ct92vID24FfVbiI1hY
++SW6FoVHkNeWIP0GCbaM4C6uVdF5dTUsMVs/ZbzNnIdCp5Gxmx5ejvEau8otR/Cs
+kGN+hr/W5GvT1tMBjgWKZ1i4//emhA1JG1BbPzoLJQvyEotc03lXjTaCzv8mEbep
+8RqZ7a2CPsgRbuvTPBwcOMBBmuFeU88+FSBX6+7iP0il8b4Z0QFqIwwMHfs/L6K1
+vepuoxtGzi4CZ68zJpiq1UvSqTbFJjtbD4seiMHl
+-----END CERTIFICATE-----";
+
     let config = TlsConfig::new()
-        .with_server_name("api.openf1.org")
+        .with_server_name("jsonplaceholder.typicode.com")
         .with_ca(Certificate::X509(ca_chain))
         .enable_rsa_signatures();
 
@@ -733,19 +778,8 @@ async fn fetch_data_https(
         }
     }
 
-    let session_key = "9149";
-    let driver_number = 1;
-
     let mut url: Heapless08String<256> = Heapless08String::new();
-    url.push_str("GET /v1/location?session_key=").unwrap();
-    url.push_str(session_key).unwrap();
-    url.push_str("&driver_number=").unwrap();
-    push_u32(&mut url, driver_number).unwrap();
-    url.push_str("&date%3E").unwrap();
-    url.push_str(start_time_str).unwrap();
-    url.push_str("&date%3C").unwrap();
-    url.push_str(end_time_str).unwrap();
-    url.push_str(" HTTP/1.1\r\nHost: api.openf1.org\r\nConnection: keep-alive\r\n\r\n").unwrap();
+    url.push_str("GET /todos/1 HTTP/1.1\r\nHost: jsonplaceholder.typicode.com\r\nConnection: keep-alive\r\n\r\n").unwrap();
 
     println!("Sending request: {}", url);
 
@@ -767,7 +801,9 @@ async fn fetch_data_https(
 
                     // n represents the number of bytes read
                     println!("Received response ({} bytes): {:?}", n, &response[..n]);
-                    if response.starts_with(b"HTTP/1.1 200 OK") || response.starts_with(b"HTTP/1.0 200 OK") {
+                    if response.starts_with(b"HTTP/1.1 200 OK")
+                        || response.starts_with(b"HTTP/1.0 200 OK")
+                    {
                         println!("Received OK response");
 
                         // Additional debug info for response content
@@ -775,8 +811,9 @@ async fn fetch_data_https(
                             let body = &response[body_start..n];
                             println!("Response body: {:?}", body);
 
-                            match postcard::from_bytes::<FetchedDataWrapper>(body) {
-                                Ok(wrapper) => {
+                            // Since we are not dealing with `FetchedDataWrapper`, let's assume the structure of the response.
+                            match serde_json_core::from_slice::<FetchedDataWrapper>(body) {
+                                Ok((wrapper, _)) => {
                                     println!("Parsed data: {:?}", wrapper);
                                     let data_size = core::mem::size_of_val(&wrapper);
                                     unsafe {
@@ -815,6 +852,7 @@ async fn fetch_data_https(
         }
     }
 }
+
 
 fn push_u32(buf: &mut Heapless08String<256>, num: u32) -> Result<(), ()> {
     let mut temp: Heapless08String<10> = Heapless08String::new();
