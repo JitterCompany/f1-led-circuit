@@ -6,22 +6,55 @@ edition = "2021"
 [dependencies]
 esp-hal = { version = "0.18.0", features = ["esp32c3", "async"] }
 #esp32c3-hal = { version = "0.15.1", features = ["embassy_executor"] }
+embedded-io = "0.6.1"
 embedded-hal-async = "1.0.0"
-embassy-executor = { version = "0.5.0", features = ["executor-thread"] }
+embedded-io-async = "0.6.1"
+embedded-tls = { version = "0.17.0", default-features = false, features = [
+     "log",
+] }
+embassy-executor = { version = "0.5.0", features = ["executor-thread", "task-arena-size-40960"] }
 embedded-hal = "1.0.0"
 embedded-hal-bus = "0.2.0"
 esp-hal-embassy = { version = "0.1.0", features = ["esp32c3", "time-timg0"] }
+embassy-net = { version = "0.4.0", features = [
+     "dns",
+     "tcp",
+     "udp",
+     "dhcpv4",
+     "medium-ethernet",
+] }
+esp-wifi = { version = "0.6.0", features = [
+     "esp32c3",
+     "utils",
+     "wifi",
+     "wifi-default",
+     "async",
+     "embassy-net",
+     "phy-enable-usb",
+] }
 embassy-embedded-hal = "0.1.0"
-embassy-time = { version = "0.3.1", features = ["generic-queue"] }
+embassy-time = { version = "0.3.1", features = ["generic-queue-8"] }
 embassy-sync = "0.6.0"
 embassy-futures = "0.1.1"
 static_cell = { version = "2.1.0", features  = ["nightly"] }
-esp-println = { version = "0.9.1", features = ["esp32c3"] }
-esp-backtrace = { version = "0.12.1", features = ["esp32c3", "println"] }
+esp-println = { version = "0.9.1", features = ["esp32c3", "log"] }
+
+# esp-backtrace = { version = "0.13.0", default-features = false, features = [
+#     "exception-handler",
+#     "panic-handler",
+#     "println",
+#     "esp32c3",
+# ] }
 panic-halt = "0.2.0"
 riscv-rt = "0.12.2"
 riscv = "0.11.1"
-heapless = "0.8.0"
+heapless = { version = "0.8.0", features = ["serde"] }
+log = "0.4"
+portable-atomic = { version = "1.7", default-features = false }
+serde-json-core = "0.5.1"
+serde = { version = "1.0.204", default-features = false, features = ["derive"] }
+rand_core = "0.6"
+fugit = "0.3.7"
 
 [profile.dev]
 # Rust debug is too slow. 
