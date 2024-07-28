@@ -63,8 +63,8 @@ enum Message {
 static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
 
 // WiFi
-const SSID: &str = env!("WIFI_SSID");
-const PASSWORD: &str = env!("WIFI_PASSWORD");
+const SSID: &str = "SSID";
+const PASSWORD: &str = "PASSWORD";
 
 const CONNECT_ATTEMPTS: usize = 10;
 const RETRY_DELAY_MS: u64 = 5000;
@@ -120,7 +120,8 @@ async fn main(spawner: Spawner) {
 
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
-    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+    //let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+    let clocks = ClockControl::max(system.clock_control).freeze();
 
     let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
     esp_hal_embassy::init(&clocks, timg0);
