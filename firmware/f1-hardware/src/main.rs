@@ -3,10 +3,15 @@
 #![feature(type_alias_impl_trait)]
 
 //mod data;
-mod hd108;
 mod driver_info;
-use crate::driver_info::DRIVERS;
+mod hd108;
+use driver_info::{DriverInfo, DRIVERS};
 //use data::VISUALIZATION_DATA;
+use core::alloc::GlobalAlloc;
+use core::alloc::Layout;
+use core::fmt;
+use core::mem::MaybeUninit;
+use core::ptr::null_mut;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
@@ -28,20 +33,15 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
+use grounded::uninit::GroundedCell;
 use hd108::HD108;
 use heapless08::Vec;
 use panic_halt as _;
-use static_cell::StaticCell;
 use postcard::from_bytes;
-use grounded::uninit::GroundedCell;
-use core::alloc::GlobalAlloc;
-use serde::{Deserialize, Serialize};
-use serde::ser::{SerializeSeq, Serializer};
 use serde::de::{self, Deserializer, SeqAccess, Visitor};
-use core::alloc::Layout;
-use core::mem::MaybeUninit;
-use core::fmt;
-use core::ptr::null_mut;
+use serde::ser::{SerializeSeq, Serializer};
+use serde::{Deserialize, Serialize};
+use static_cell::StaticCell;
 
 // Define a simple global allocator using static mut
 struct SimpleAllocator;
@@ -136,7 +136,6 @@ pub struct UpdateFrame {
     pub frame: [Option<DriverData>; 20],
 }
 
-
 #[derive(Debug)]
 pub struct VisualizationData {
     pub update_rate_ms: u32,
@@ -148,7 +147,6 @@ enum ButtonMessage {
 }
 
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
-
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -204,34 +202,11 @@ async fn main(spawner: Spawner) {
 
     // Spawn the run race task with the receiver
     spawner
-        .spawn(run_race_task(hd108, button_channel.receiver()))
+        .spawn(led_task(hd108, button_channel.receiver()))
         .unwrap();
 }
 
-/* 
-#[embassy_executor::task]
-async fn led_task(
-    mut hd108: HD108<impl SpiBus<u8> + 'static>,
-    receiver: Receiver<'static, NoopRawMutex, Message, 1>,
-) {
-    loop {
-        // Wait for the start message
-        receiver.receive().await;
-        for i in 0..=96 {
-            let color = &driver_info::DRIVER_COLORS[i % driver_info::DRIVER_COLORS.len()];
-            hd108.set_led(i, driver_info::DRIVER_COLORS::r, driver_info::DRIVER_COLORS::g, driver_info::DRIVER_COLORS::b).await.unwrap(); 
-
-            // Check for a stop message
-            if receiver.try_receive().is_ok() {
-                hd108.set_off().await.unwrap();
-                break;
-            }
-            Timer::after(Duration::from_millis(25)).await; // Debounce delay
-        }
-    }
-}
-*/
-
+/*  OLD
 #[embassy_executor::task]
 async fn run_race_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
@@ -287,6 +262,98 @@ async fn run_race_task(
     }
 }
 
+*/
+
+/*
+#[embassy_executor::task]
+async fn led_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
+) {
+    loop {
+        // Wait for the start message
+        receiver.receive().await;
+        for i in 0..=96 {
+            let color = DRIVER_COLORS[i % DRIVER_COLORS.len()];
+            hd108.set_led(i, color.0, color.1, color.2).await.unwrap();
+
+            // Check for a stop message
+            if receiver.try_receive().is_ok() {
+                hd108.set_off().await.unwrap();
+                break;
+            }
+            Timer::after(Duration::from_millis(25)).await; // Debounce delay
+        }
+    }
+}
+*/
+
+#[embassy_executor::task]
+async fn led_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
+) {
+
+
+    loop {
+        // Wait for the start message
+        receiver.receive().await;
+
+        println!("Button pressed, starting race...");
+        
+        // Load and deserialize the binary data
+        let data_bin = include_bytes!("data.bin");
+        let visualization_data: VisualizationData = match from_bytes(data_bin) {
+
+            Ok(data) => data,
+            Err(err) => {
+                println!("Failed to deserialize data: {:?}", err);
+                continue; // Skip this iteration if deserialization fails
+            }
+        };
+        
+
+        for frame in &visualization_data.frames {
+            let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
+
+            for driver_data_option in &frame.frame {
+                if let Some(driver_data) = driver_data_option {
+                    if let Some(driver) = DRIVERS
+                        .iter()
+                        .find(|d| d.number == driver_data.driver_number as u32)
+                    {
+                        led_updates
+                            .push((
+                                driver_data.led_num as usize,
+                                driver.color.0,
+                                driver.color.1,
+                                driver.color.2,
+                            ))
+                            .unwrap();
+                    }
+                }
+            }
+
+            if let Err(err) = hd108.set_leds(&led_updates).await {
+                println!("Failed to set LEDs: {:?}", err);
+            }
+
+            Timer::after(Duration::from_millis(
+                visualization_data.update_rate_ms as u64,
+            ))
+            .await;
+
+            if receiver.try_receive().is_ok() {
+                hd108.set_off().await.unwrap();
+                break;
+            }
+        }
+
+        hd108.set_off().await.unwrap();
+    }
+    
+    }
+
 #[embassy_executor::task]
 async fn button_task(
     mut button_pin: Input<'static, GpioPin<10>>,
@@ -299,3 +366,13 @@ async fn button_task(
         Timer::after(Duration::from_millis(400)).await; // Debounce delay
     }
 }
+
+const DRIVER_COLORS: [(u8, u8, u8); 20] = {
+    let mut colors = [(0, 0, 0); 20];
+    let mut i = 0;
+    while i < DRIVERS.len() {
+        colors[i] = DRIVERS[i].color;
+        i += 1;
+    }
+    colors
+};
