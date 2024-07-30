@@ -5,6 +5,7 @@
 //mod data;
 mod hd108;
 mod driver_info;
+use crate::driver_info::DRIVERS;
 //use data::VISUALIZATION_DATA;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
@@ -28,15 +29,92 @@ use esp_hal::{
 };
 use esp_println::println;
 use hd108::HD108;
-use heapless::Vec;
+use heapless08::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
+use serde::{Deserialize, Serialize};
+use postcard::from_bytes;
+use serde::ser::{Serialize, SerializeSeq, Serializer};
+use serde::de::{self, Deserialize, Deserializer, SeqAccess, Visitor};
+use core::fmt;
 
-enum Message {
+impl Serialize for VisualizationData {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut seq = serializer.serialize_seq(Some(self.frames.len()))?;
+        for frame in &self.frames {
+            seq.serialize_element(frame)?;
+        }
+        seq.end()
+    }
+}
+
+impl<'de> Deserialize<'de> for VisualizationData {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct FrameVisitor;
+
+        impl<'de> Visitor<'de> for FrameVisitor {
+            type Value = [UpdateFrame; 8879];
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("an array of 8879 UpdateFrame")
+            }
+
+            fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+            where
+                A: SeqAccess<'de>,
+            {
+                let mut frames: [MaybeUninit<UpdateFrame>; 8879] = MaybeUninit::uninit_array();
+                for i in 0..8879 {
+                    frames[i] = MaybeUninit::new(
+                        seq.next_element()?
+                            .ok_or_else(|| de::Error::invalid_length(i, &self))?,
+                    );
+                }
+                let frames = unsafe { MaybeUninit::array_assume_init(frames) };
+                Ok(frames)
+            }
+        }
+
+        let frames = deserializer.deserialize_seq(FrameVisitor)?;
+        Ok(VisualizationData {
+            update_rate_ms: 250, // Set this according to your data
+            frames,
+        })
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DriverData {
+    pub driver_number: u8,
+    pub led_num: u8,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateFrame {
+    pub frame: [Option<DriverData>; 20],
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct VisualizationData {
+    pub update_rate_ms: u32,
+    pub frames: [UpdateFrame; 8879],
+}
+
+enum ButtonMessage {
     ButtonPressed,
 }
 
-static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
+static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
+
+
+
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -83,19 +161,20 @@ async fn main(spawner: Spawner) {
     // Enable interrupts for the button pin
     button_pin.listen(Event::FallingEdge);
 
-    let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
+    let button_channel = BUTTON_CHANNEL.init(Channel::new());
 
     // Spawn the button task with ownership of the button pin and the sender
     spawner
-        .spawn(button_task(button_pin, signal_channel.sender()))
+        .spawn(button_task(button_pin, button_channel.sender()))
         .unwrap();
 
-    // Spawn the led task with the receiver
+    // Spawn the run race task with the receiver
     spawner
-        .spawn(led_task(hd108, signal_channel.receiver()))
+        .spawn(run_race_task(hd108, button_channel.receiver()))
         .unwrap();
 }
 
+/* 
 #[embassy_executor::task]
 async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
@@ -117,16 +196,71 @@ async fn led_task(
         }
     }
 }
+*/
+
+#[embassy_executor::task]
+async fn run_race_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
+) {
+    // Load and deserialize the binary data
+    let data_bin = include_bytes!("data.bin");
+    let visualization_data: VisualizationData = from_bytes(data_bin).unwrap();
+
+    loop {
+        match receiver.receive().await {
+            ButtonMessage::ButtonPressed => {
+                println!("Button pressed, starting race...");
+
+                for frame in &visualization_data.frames {
+                    let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
+
+                    for driver_data_option in &frame.frame {
+                        if let Some(driver_data) = driver_data_option {
+                            if let Some(driver) = DRIVERS
+                                .iter()
+                                .find(|d| d.number == driver_data.driver_number as u32)
+                            {
+                                led_updates
+                                    .push((
+                                        driver_data.led_num as usize,
+                                        driver.color.0,
+                                        driver.color.1,
+                                        driver.color.2,
+                                    ))
+                                    .unwrap();
+                            }
+                        }
+                    }
+
+                    hd108.set_leds(&led_updates).await.unwrap();
+
+                    Timer::after(Duration::from_millis(
+                        visualization_data.update_rate_ms as u64,
+                    ))
+                    .await;
+
+                    if receiver.try_receive().is_ok() {
+                        hd108.set_off().await.unwrap();
+                        break;
+                    }
+                }
+
+                hd108.set_off().await.unwrap();
+            }
+        }
+    }
+}
 
 #[embassy_executor::task]
 async fn button_task(
     mut button_pin: Input<'static, GpioPin<10>>,
-    sender: Sender<'static, NoopRawMutex, Message, 1>,
+    sender: Sender<'static, NoopRawMutex, ButtonMessage, 1>,
 ) {
     loop {
         // Wait for a button press
         button_pin.wait_for_falling_edge().await;
-        sender.send(Message::ButtonPressed).await;
+        sender.send(ButtonMessage::ButtonPressed).await;
         Timer::after(Duration::from_millis(400)).await; // Debounce delay
     }
 }
