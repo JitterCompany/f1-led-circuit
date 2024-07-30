@@ -41,6 +41,7 @@ use postcard::from_bytes;
 use serde::de::{self, Deserializer, SeqAccess, Visitor};
 use serde::ser::{SerializeSeq, Serializer};
 use serde::{Deserialize, Serialize};
+use serde_json_core::de::from_slice;
 use static_cell::StaticCell;
 
 // Define a simple global allocator using static mut
@@ -306,6 +307,160 @@ async fn led_task(
     }
 }
 
+/* 
+// Test 1 
+#[embassy_executor::task]
+async fn led_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
+) {
+    loop {
+        // Wait for the button press signal
+        receiver.receive().await;
+
+        println!("Button pressed, starting race...");
+
+        // Start deserialization in chunks
+        let data_bin = include_bytes!("data.bin");
+        let mut remaining_data = &data_bin[..];
+
+        while !remaining_data.is_empty() {
+            // Attempt to deserialize a single frame from the data
+            let result: Result<(UpdateFrame, &[u8]), postcard::Error> = postcard::take_from_bytes(remaining_data);
+
+            match result {
+                Ok((frame, rest)) => {
+                    // Update remaining data to point to the rest
+                    remaining_data = rest;
+
+                    // Manually serialize the first frame to a simple format
+                    println!("First frame data:");
+                    for driver_data_option in &frame.frame {
+                        if let Some(driver_data) = driver_data_option {
+                            println!("Driver number: {}, LED number: {}", driver_data.driver_number, driver_data.led_num);
+                        }
+                    }
+
+                    // Break after processing the first frame for debugging
+                    break;
+                }
+                Err(err) => {
+                    println!("Failed to deserialize frame: {:?}", err);
+                    break;
+                }
+            }
+        }
+
+        // Ensure LEDs are turned off at the end
+        hd108.set_off().await.unwrap();
+    }
+}
+    */
+
+/* 
+// Test 2 
+
+#[embassy_executor::task]
+async fn led_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
+) {
+    loop {
+        // Wait for the button press signal
+        receiver.receive().await;
+
+        println!("Button pressed, starting race...");
+
+        // Start deserialization in chunks
+        let data_bin = include_bytes!("data.bin");
+        let remaining_data = &data_bin[..];
+
+        while !remaining_data.is_empty() {
+            // Manually read the binary data
+            let result: Result<(UpdateFrame, &[u8]), postcard::Error> = postcard::take_from_bytes(remaining_data);
+
+            match result {
+                Ok((frame, rest)) => {
+                    // Update remaining data to point to the rest
+                    //remaining_data = rest;
+
+                    // Print the first frame in JSON format
+                    if let Ok(json_str) = serde_json_core::ser::to_string::<_, 1024>(&frame) {
+                        println!("First frame data: {}", json_str);
+                    } else {
+                        println!("Failed to serialize frame to JSON");
+                    }
+
+                    // Break after processing the first frame for debugging
+                    break;
+                }
+                Err(err) => {
+                    println!("Failed to deserialize frame: {:?}", err);
+                    break;
+                }
+            }
+        }
+        // Ensure LEDs are turned off at the end
+        hd108.set_off().await.unwrap();
+    }
+}
+*/
+
+/* 
+// Test 3
+
+#[embassy_executor::task]
+async fn led_task(
+    mut hd108: HD108<impl SpiBus<u8> + 'static>,
+    receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
+) {
+    loop {
+        // Wait for the button press signal
+        receiver.receive().await;
+
+        println!("Button pressed, starting race...");
+
+        // Start deserialization in chunks
+        let data_bin = include_bytes!("data.bin");
+        let mut remaining_data: &[u8] = data_bin; // Use &[u8] instead of &[u8; 532748]
+
+        while !remaining_data.is_empty() {
+            // Attempt to interpret the data as JSON
+            if let Ok(json_str) = core::str::from_utf8(remaining_data) {
+                println!("Interpreting data as JSON string...");
+                match from_slice::<UpdateFrame>(json_str.as_bytes()) {
+                    Ok((frame, remaining)) => {
+                        // Update remaining data
+                        remaining_data = &remaining_data[remaining..];
+
+                        // Prepare LED updates (not shown for brevity)
+                        // ...
+
+                        // Wait for the next frame update
+                        Timer::after(Duration::from_millis(250)).await;
+                    }
+                    Err(err) => {
+                        println!("Failed to deserialize frame: {:?}", err);
+                        break;
+                    }
+                }
+            } else {
+                println!("Data is not valid UTF-8");
+                break;
+            }
+
+            // Check if a stop message was received
+            if receiver.try_receive().is_ok() {
+                hd108.set_off().await.unwrap();
+                break;
+            }
+        }
+
+        // Ensure LEDs are turned off at the end
+        hd108.set_off().await.unwrap();
+    }
+}
+*/
 
 
 #[embassy_executor::task]
