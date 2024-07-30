@@ -12,7 +12,7 @@ pub struct UpdateFrame {
 }
 
 impl UpdateFrame {
-    const SERIALIZED_SIZE: usize = NUM_DRIVERS * 2;
+    pub const SERIALIZED_SIZE: usize = NUM_DRIVERS * 2;
 
     pub fn to_bytes(&self) -> Result<[u8; Self::SERIALIZED_SIZE], ()> {
         let mut buf = [0u8; Self::SERIALIZED_SIZE];
@@ -25,7 +25,6 @@ impl UpdateFrame {
             }
         }
         Err(())
-
     }
 
     pub fn try_from_bytes(buf: &[u8]) -> Result<Self, ()> {

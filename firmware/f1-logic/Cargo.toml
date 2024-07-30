@@ -17,6 +17,12 @@ test = false
 bench = false
 required-features = ["use-std"]
 
+[[bin]]
+name = "deserialize_in_chunks"
+test = false
+bench = false
+required-features = ["use-std"]
+
 [profile.dev]
 # Rust debug is too slow.
 # For debug builds always builds with some optimization

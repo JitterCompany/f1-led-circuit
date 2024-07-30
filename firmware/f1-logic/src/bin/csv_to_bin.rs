@@ -5,7 +5,7 @@ use f1_logic::data_frame::{DriverData, UpdateFrame, NUM_DRIVERS};
 
 fn main() -> std::io::Result<()> {
     // Read the CSV file
-    let file_path = "zandvoort_grouped_10hz.csv";
+    let file_path = "../zandvoort_grouped_10hz.csv";
     let mut rdr = csv::Reader::from_path(file_path)?;
 
     let headers = rdr.headers()?.clone();
@@ -28,14 +28,17 @@ fn main() -> std::io::Result<()> {
         frames.push(UpdateFrame { frame });
     }
 
+    println!("Serializing {} frames", frames.len());
+
     let mut all_bytes = Vec::with_capacity(3_000_000);
     for frame in frames {
         let frame_bytes = frame.to_bytes().unwrap();
         all_bytes.extend_from_slice(&frame_bytes);
     }
 
+    println!("Saving {} bytes", all_bytes.len());
     // Output Binary format
-    let bin_file = File::create("output.bin")?;
+    let bin_file = File::create("../output.bin")?;
     let mut writer = BufWriter::new(bin_file);
     // Write contents of all_bytes to bin_file
     writer.write_all(&all_bytes).unwrap();
