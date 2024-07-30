@@ -567,6 +567,7 @@ dependencies = [
  "esp-hal",
  "esp-hal-embassy",
  "esp-println",
+ "grounded",
  "heapless 0.7.17",
  "heapless 0.8.0",
  "panic-halt",
@@ -621,6 +622,15 @@ name = "gcd"
 version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1d758ba1b47b00caf47f24925c0074ecb20d6dfcffe7f6d53395c0465674841a"
+
+[[package]]
+name = "grounded"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "917d82402c7eb9755fdd87d52117701dae9e413a6abb309fac2a13af693b6080"
+dependencies = [
+ "portable-atomic",
+]
 
 [[package]]
 name = "hash32"

@@ -25,6 +25,7 @@ heapless07 = { package = "heapless", version = "0.7.0" }
 heapless08 = { package = "heapless", version = "0.8.0" }
 serde = { version = "1.0.204", default-features = false, features = ["derive"] }
 postcard = { version = "1.0.8", default-features = false, features = ["alloc"] }
+grounded = { version = "0.2.0", default-features = false, features = ["cas"] }
 
 [profile.dev]
 # Rust debug is too slow. 

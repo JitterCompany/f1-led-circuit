@@ -32,11 +32,40 @@ use hd108::HD108;
 use heapless08::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
-use serde::{Deserialize, Serialize};
 use postcard::from_bytes;
-use serde::ser::{Serialize, SerializeSeq, Serializer};
-use serde::de::{self, Deserialize, Deserializer, SeqAccess, Visitor};
+use grounded::uninit::GroundedCell;
+use core::alloc::GlobalAlloc;
+use serde::{Deserialize, Serialize};
+use serde::ser::{SerializeSeq, Serializer};
+use serde::de::{self, Deserializer, SeqAccess, Visitor};
+use core::alloc::Layout;
+use core::mem::MaybeUninit;
 use core::fmt;
+use core::ptr::null_mut;
+
+// Define a simple global allocator using static mut
+struct SimpleAllocator;
+
+// Implement GlobalAlloc for our allocator
+unsafe impl GlobalAlloc for SimpleAllocator {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        static mut ALLOCATOR: MaybeUninit<GroundedCell<[u8; 1024]>> = MaybeUninit::uninit();
+        let allocator = ALLOCATOR.assume_init_mut();
+        let ptr = allocator.get();
+        if ptr.is_null() {
+            null_mut()
+        } else {
+            ptr as *mut u8
+        }
+    }
+
+    unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
+        // No-op for this simple allocator
+    }
+}
+
+#[global_allocator]
+static GLOBAL: SimpleAllocator = SimpleAllocator;
 
 impl Serialize for VisualizationData {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -69,14 +98,21 @@ impl<'de> Deserialize<'de> for VisualizationData {
             where
                 A: SeqAccess<'de>,
             {
-                let mut frames: [MaybeUninit<UpdateFrame>; 8879] = MaybeUninit::uninit_array();
+                // Create an array of MaybeUninit for uninitialized memory
+                let mut frames: [MaybeUninit<UpdateFrame>; 8879] = unsafe {
+                    // SAFETY: An uninitialized `[MaybeUninit<UpdateFrame>; 8879]` is valid.
+                    MaybeUninit::uninit().assume_init()
+                };
+
                 for i in 0..8879 {
                     frames[i] = MaybeUninit::new(
                         seq.next_element()?
                             .ok_or_else(|| de::Error::invalid_length(i, &self))?,
                     );
                 }
-                let frames = unsafe { MaybeUninit::array_assume_init(frames) };
+
+                // SAFETY: All elements are initialized at this point
+                let frames = unsafe { core::mem::transmute::<_, [UpdateFrame; 8879]>(frames) };
                 Ok(frames)
             }
         }
@@ -101,7 +137,7 @@ pub struct UpdateFrame {
 }
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug)]
 pub struct VisualizationData {
     pub update_rate_ms: u32,
     pub frames: [UpdateFrame; 8879],
