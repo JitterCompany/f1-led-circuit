@@ -240,87 +240,6 @@ async fn main(spawner: Spawner) {
         .unwrap();
 }
 
-/*  OLD
-#[embassy_executor::task]
-async fn run_race_task(
-    mut hd108: HD108<impl SpiBus<u8> + 'static>,
-    receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
-) {
-
-    loop {
-        match receiver.receive().await {
-            ButtonMessage::ButtonPressed => {
-                println!("Button pressed, starting race...");
-
-                // Load and deserialize the binary data
-                let data_bin = include_bytes!("data.bin");
-                let visualization_data: VisualizationData = from_bytes(data_bin).unwrap();
-
-                for frame in &visualization_data.frames {
-                    let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
-
-                    for driver_data_option in &frame.frame {
-                        if let Some(driver_data) = driver_data_option {
-                            if let Some(driver) = DRIVERS
-                                .iter()
-                                .find(|d| d.number == driver_data.driver_number as u32)
-                            {
-                                led_updates
-                                    .push((
-                                        driver_data.led_num as usize,
-                                        driver.color.0,
-                                        driver.color.1,
-                                        driver.color.2,
-                                    ))
-                                    .unwrap();
-                            }
-                        }
-                    }
-
-                    hd108.set_leds(&led_updates).await.unwrap();
-
-                    Timer::after(Duration::from_millis(
-                        visualization_data.update_rate_ms as u64,
-                    ))
-                    .await;
-
-                    if receiver.try_receive().is_ok() {
-                        hd108.set_off().await.unwrap();
-                        break;
-                    }
-                }
-
-                hd108.set_off().await.unwrap();
-            }
-        }
-    }
-}
-
-*/
-
-/*
-#[embassy_executor::task]
-async fn led_task(
-    mut hd108: HD108<impl SpiBus<u8> + 'static>,
-    receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
-) {
-    loop {
-        // Wait for the start message
-        receiver.receive().await;
-        for i in 0..=96 {
-            let color = DRIVER_COLORS[i % DRIVER_COLORS.len()];
-            hd108.set_led(i, color.0, color.1, color.2).await.unwrap();
-
-            // Check for a stop message
-            if receiver.try_receive().is_ok() {
-                hd108.set_off().await.unwrap();
-                break;
-            }
-            Timer::after(Duration::from_millis(25)).await; // Debounce delay
-        }
-    }
-}
-*/
 
 #[embassy_executor::task]
 async fn led_task(
@@ -401,13 +320,3 @@ async fn button_task(
         Timer::after(Duration::from_millis(400)).await; // Debounce delay
     }
 }
-
-const DRIVER_COLORS: [(u8, u8, u8); 20] = {
-    let mut colors = [(0, 0, 0); 20];
-    let mut i = 0;
-    while i < DRIVERS.len() {
-        colors[i] = DRIVERS[i].color;
-        i += 1;
-    }
-    colors
-};
