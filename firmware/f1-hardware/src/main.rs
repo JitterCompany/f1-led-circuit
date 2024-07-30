@@ -293,66 +293,68 @@ async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
     receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
 ) {
-
-
     loop {
-        // Wait for the start message
+        // Wait for the button press signal
         receiver.receive().await;
 
         println!("Button pressed, starting race...");
-        
-        // Load and deserialize the binary data
+
+        // Start deserialization in chunks
         let data_bin = include_bytes!("data.bin");
-        let visualization_data: VisualizationData = match from_bytes(data_bin) {
+        let mut remaining_data = &data_bin[..];
 
-            Ok(data) => data,
-            Err(err) => {
-                println!("Failed to deserialize data: {:?}", err);
-                continue; // Skip this iteration if deserialization fails
-            }
-        };
-        
+        while !remaining_data.is_empty() {
+            // Attempt to deserialize a single frame from the data
+            let result: Result<(UpdateFrame, &[u8]), postcard::Error> = postcard::take_from_bytes(remaining_data);
 
-        for frame in &visualization_data.frames {
-            let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
+            match result {
+                Ok((frame, rest)) => {
+                    // Update remaining data to point to the rest
+                    remaining_data = rest;
 
-            for driver_data_option in &frame.frame {
-                if let Some(driver_data) = driver_data_option {
-                    if let Some(driver) = DRIVERS
-                        .iter()
-                        .find(|d| d.number == driver_data.driver_number as u32)
-                    {
-                        led_updates
-                            .push((
-                                driver_data.led_num as usize,
-                                driver.color.0,
-                                driver.color.1,
-                                driver.color.2,
-                            ))
-                            .unwrap();
+                    // Prepare LED updates
+                    let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
+                    for driver_data_option in &frame.frame {
+                        if let Some(driver_data) = driver_data_option {
+                            if let Some(driver) = DRIVERS.iter().find(|d| d.number == driver_data.driver_number as u32) {
+                                led_updates.push((
+                                    driver_data.led_num as usize,
+                                    driver.color.0,
+                                    driver.color.1,
+                                    driver.color.2,
+                                )).unwrap();
+                            }
+                        }
                     }
+
+                    // Set the LEDs for this frame
+                    if let Err(err) = hd108.set_leds(&led_updates).await {
+                        println!("Failed to set LEDs: {:?}", err);
+                    }
+
+                    // Wait for the next frame update
+                    Timer::after(Duration::from_millis(250)).await;
+                }
+                Err(err) => {
+                    println!("Failed to deserialize frame: {:?}", err);
+                    break;
                 }
             }
 
-            if let Err(err) = hd108.set_leds(&led_updates).await {
-                println!("Failed to set LEDs: {:?}", err);
-            }
-
-            Timer::after(Duration::from_millis(
-                visualization_data.update_rate_ms as u64,
-            ))
-            .await;
-
+            // Check if a stop message was received
             if receiver.try_receive().is_ok() {
                 hd108.set_off().await.unwrap();
                 break;
             }
         }
 
+        // Ensure LEDs are turned off at the end
         hd108.set_off().await.unwrap();
     }
-    
-    }
+}
+
+
+
 
 #[embassy_executor::task]
 async fn button_task(
