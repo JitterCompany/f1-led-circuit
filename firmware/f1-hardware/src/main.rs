@@ -150,8 +150,6 @@ enum ButtonMessage {
 static BUTTON_CHANNEL: StaticCell<Channel<NoopRawMutex, ButtonMessage, 1>> = StaticCell::new();
 
 
-
-
 #[main]
 async fn main(spawner: Spawner) {
     println!("Starting program!...");
@@ -239,14 +237,15 @@ async fn run_race_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
     receiver: Receiver<'static, NoopRawMutex, ButtonMessage, 1>,
 ) {
-    // Load and deserialize the binary data
-    let data_bin = include_bytes!("data.bin");
-    let visualization_data: VisualizationData = from_bytes(data_bin).unwrap();
 
     loop {
         match receiver.receive().await {
             ButtonMessage::ButtonPressed => {
                 println!("Button pressed, starting race...");
+
+                // Load and deserialize the binary data
+                let data_bin = include_bytes!("data.bin");
+                let visualization_data: VisualizationData = from_bytes(data_bin).unwrap();
 
                 for frame in &visualization_data.frames {
                     let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
