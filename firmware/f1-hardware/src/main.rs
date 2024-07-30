@@ -6,21 +6,15 @@ mod driver_info;
 mod hd108;
 use driver_info::{DriverInfo, DRIVERS};
 
-extern crate alloc;
-
-use panic_halt as _;
-use alloc::vec::Vec;
-use core::prelude::rust_2024::derive;
-use core::fmt::Debug;
-use core::marker::Sized;
-use core::result::Result;
-use core::option::Option;
 use core::alloc::GlobalAlloc;
 use core::alloc::Layout;
 use core::fmt;
+use core::fmt::Debug;
+use core::marker::Sized;
 use core::mem::MaybeUninit;
+use core::option::Option;
 use core::ptr::null_mut;
-use bincode::deserialize;
+use core::result::Result;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
@@ -44,6 +38,7 @@ use esp_hal::{
 use esp_println::println;
 use hd108::HD108;
 use heapless08::Vec;
+use panic_halt as _;
 use serde::{Deserialize, Serialize};
 use static_cell::StaticCell;
 //use grounded::uninit::GroundedCell;
@@ -52,22 +47,21 @@ use static_cell::StaticCell;
 //use serde::ser::{SerializeSeq, Serializer};
 //use serde_json_core::de::from_slice;
 
-
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Clone, Copy, Deserialize, PartialEq, Debug)]
 pub struct DriverData {
     pub driver_number: u8,
     pub led_num: u8,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Clone, Copy, Deserialize, PartialEq, Debug)]
 pub struct UpdateFrame {
     pub frame: [Option<DriverData>; 20],
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(PartialEq, Debug)]
 pub struct VisualizationData {
     pub update_rate_ms: u32,
-    pub frames: [UpdateFrame; 8879],
+    pub frames: heapless08::Vec<UpdateFrame, 8879>,
 }
 
 enum ButtonMessage {
@@ -134,7 +128,6 @@ async fn main(spawner: Spawner) {
         .unwrap();
 }
 
-
 #[embassy_executor::task]
 async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
@@ -150,50 +143,48 @@ async fn led_task(
         let data_bin = include_bytes!("data.bin");
         let mut remaining_data = &data_bin[..];
 
-        while !remaining_data.is_empty() {
-            // Attempt to deserialize a single frame from the data using bincode
-            let result: Result<UpdateFrame, bincode::Error> = bincode::deserialize(remaining_data);
+        while remaining_data.len() >= 40 {
+            let mut frame = UpdateFrame { frame: [None; 20] };
 
-            match result {
-                Ok(frame) => {
-                    // Find the size of the deserialized object to update remaining_data
-                    let frame_size = bincode::serialized_size(&frame).unwrap() as usize;
-                    remaining_data = &remaining_data[frame_size..];
+            for i in 0..20 {
+                // Deserialize the two bytes into DriverData
+                let driver_number = remaining_data[2 * i];
+                let led_num = remaining_data[2 * i + 1];
+                frame.frame[i] = Some(DriverData {
+                    driver_number,
+                    led_num,
+                });
+            }
 
-                    // Prepare LED updates
-                    let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
-                    for driver_data_option in &frame.frame {
-                        if let Some(driver_data) = driver_data_option {
-                            if let Some(driver) = DRIVERS.iter().find(|d| d.number == driver_data.driver_number as u32) {
-                                led_updates.push((
-                                    driver_data.led_num as usize,
-                                    driver.color.0,
-                                    driver.color.1,
-                                    driver.color.2,
-                                )).unwrap();
-                            }
-                        }
+            remaining_data = &remaining_data[40..];
+
+            // Prepare LED updates
+            let mut led_updates: Vec<(usize, u8, u8, u8), 20> = Vec::new();
+            for driver_data_option in &frame.frame {
+                if let Some(driver_data) = driver_data_option {
+                    if let Some(driver) = DRIVERS
+                        .iter()
+                        .find(|d| d.number == driver_data.driver_number as u32)
+                    {
+                        led_updates
+                            .push((
+                                driver_data.led_num as usize,
+                                driver.color.0,
+                                driver.color.1,
+                                driver.color.2,
+                            ))
+                            .unwrap();
                     }
-
-                    // Set the LEDs for this frame
-                    if let Err(err) = hd108.set_leds(&led_updates).await {
-                        println!("Failed to set LEDs: {:?}", err);
-                    }
-
-                    // Wait for the next frame update
-                    Timer::after(Duration::from_millis(250)).await;
-                }
-                Err(err) => {
-                    println!("Failed to deserialize frame: {:?}", err);
-                    break;
                 }
             }
 
-            // Check if a stop message was received
-            if receiver.try_receive().is_ok() {
-                hd108.set_off().await.unwrap();
-                break;
+            // Set the LEDs for this frame
+            if let Err(err) = hd108.set_leds(&led_updates).await {
+                println!("Failed to set LEDs: {:?}", err);
             }
+
+            // Wait for the next frame update
+            Timer::after(Duration::from_millis(250)).await;
         }
 
         // Ensure LEDs are turned off at the end
@@ -214,8 +205,8 @@ async fn button_task(
     }
 }
 
-/* 
-// Test 1 
+/*
+// Test 1
 #[embassy_executor::task]
 async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
@@ -264,8 +255,8 @@ async fn led_task(
 }
     */
 
-/* 
-// Test 2 
+/*
+// Test 2
 
 #[embassy_executor::task]
 async fn led_task(
@@ -313,7 +304,7 @@ async fn led_task(
 }
 */
 
-/* 
+/*
 // Test 3
 
 #[embassy_executor::task]
@@ -368,5 +359,3 @@ async fn led_task(
     }
 }
 */
-
-
