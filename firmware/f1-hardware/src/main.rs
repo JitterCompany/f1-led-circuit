@@ -2,16 +2,25 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
-//mod data;
 mod driver_info;
 mod hd108;
 use driver_info::{DriverInfo, DRIVERS};
-//use data::VISUALIZATION_DATA;
+
+extern crate alloc;
+
+use panic_halt as _;
+use alloc::vec::Vec;
+use core::prelude::rust_2024::derive;
+use core::fmt::Debug;
+use core::marker::Sized;
+use core::result::Result;
+use core::option::Option;
 use core::alloc::GlobalAlloc;
 use core::alloc::Layout;
 use core::fmt;
 use core::mem::MaybeUninit;
 use core::ptr::null_mut;
+use bincode::deserialize;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
@@ -33,145 +42,29 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
-use grounded::uninit::GroundedCell;
 use hd108::HD108;
 use heapless08::Vec;
-use panic_halt as _;
-use postcard::from_bytes;
-use serde::de::{self, Deserializer, SeqAccess, Visitor};
-use serde::ser::{SerializeSeq, Serializer};
 use serde::{Deserialize, Serialize};
-use serde_json_core::de::from_slice;
 use static_cell::StaticCell;
-
-// Define a simple global allocator using static mut
-struct SimpleAllocator;
-
-// Implement GlobalAlloc for our allocator
-unsafe impl GlobalAlloc for SimpleAllocator {
-    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        static mut ALLOCATOR: MaybeUninit<GroundedCell<[u8; 1024]>> = MaybeUninit::uninit();
-        let allocator = ALLOCATOR.assume_init_mut();
-        let ptr = allocator.get();
-        if ptr.is_null() {
-            null_mut()
-        } else {
-            ptr as *mut u8
-        }
-    }
-
-    unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
-        // No-op for this simple allocator
-    }
-}
-
-#[global_allocator]
-static GLOBAL: SimpleAllocator = SimpleAllocator;
-
-impl Serialize for VisualizationData {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut seq = serializer.serialize_seq(Some(self.frames.len()))?;
-        for frame in &self.frames {
-            seq.serialize_element(frame)?;
-        }
-        seq.end()
-    }
-}
-
-impl<'de> Deserialize<'de> for VisualizationData {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct FrameVisitor;
-
-        impl<'de> Visitor<'de> for FrameVisitor {
-            type Value = [UpdateFrame; 8879];
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("an array of 8879 UpdateFrame")
-            }
-
-            fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
-            where
-                A: SeqAccess<'de>,
-            {
-                // Create an array of MaybeUninit for uninitialized memory
-                let mut frames: [MaybeUninit<UpdateFrame>; 8879] = unsafe {
-                    // SAFETY: An uninitialized `[MaybeUninit<UpdateFrame>; 8879]` is valid.
-                    MaybeUninit::uninit().assume_init()
-                };
-
-                for i in 0..8879 {
-                    frames[i] = MaybeUninit::new(
-                        seq.next_element()?
-                            .ok_or_else(|| de::Error::invalid_length(i, &self))?,
-                    );
-                }
-
-                // SAFETY: All elements are initialized at this point
-                let frames = unsafe { core::mem::transmute::<_, [UpdateFrame; 8879]>(frames) };
-                Ok(frames)
-            }
-        }
-
-        let frames = deserializer.deserialize_seq(FrameVisitor)?;
-        Ok(VisualizationData {
-            update_rate_ms: 250, // Set this according to your data
-            frames,
-        })
-    }
-}
+//use grounded::uninit::GroundedCell;
+//use postcard::from_bytes;
+//use serde::de::{self, Deserializer, SeqAccess, Visitor};
+//use serde::ser::{SerializeSeq, Serializer};
+//use serde_json_core::de::from_slice;
 
 
-// Implementing custom deserialization logic for UpdateFrame
-impl<'de> Deserialize<'de> for UpdateFrame {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        struct FrameVisitor;
-
-        impl<'de> Visitor<'de> for FrameVisitor {
-            type Value = UpdateFrame;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("an array of driver data")
-            }
-
-            fn visit_seq<A>(self, mut seq: A) -> Result<UpdateFrame, A::Error>
-            where
-                A: SeqAccess<'de>,
-            {
-                let mut frame: [Option<DriverData>; 20] = [None; 20];
-
-                for i in 0..20 {
-                    frame[i] = seq.next_element()?;
-                }
-
-                Ok(UpdateFrame { frame })
-            }
-        }
-
-        deserializer.deserialize_seq(FrameVisitor)
-    }
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct DriverData {
     pub driver_number: u8,
     pub led_num: u8,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct UpdateFrame {
     pub frame: [Option<DriverData>; 20],
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct VisualizationData {
     pub update_rate_ms: u32,
     pub frames: [UpdateFrame; 8879],
@@ -258,13 +151,14 @@ async fn led_task(
         let mut remaining_data = &data_bin[..];
 
         while !remaining_data.is_empty() {
-            // Attempt to deserialize a single frame from the data
-            let result: Result<(UpdateFrame, &[u8]), postcard::Error> = postcard::take_from_bytes(remaining_data);
+            // Attempt to deserialize a single frame from the data using bincode
+            let result: Result<UpdateFrame, bincode::Error> = bincode::deserialize(remaining_data);
 
             match result {
-                Ok((frame, rest)) => {
-                    // Update remaining data to point to the rest
-                    remaining_data = rest;
+                Ok(frame) => {
+                    // Find the size of the deserialized object to update remaining_data
+                    let frame_size = bincode::serialized_size(&frame).unwrap() as usize;
+                    remaining_data = &remaining_data[frame_size..];
 
                     // Prepare LED updates
                     let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
@@ -304,6 +198,19 @@ async fn led_task(
 
         // Ensure LEDs are turned off at the end
         hd108.set_off().await.unwrap();
+    }
+}
+
+#[embassy_executor::task]
+async fn button_task(
+    mut button_pin: Input<'static, GpioPin<10>>,
+    sender: Sender<'static, NoopRawMutex, ButtonMessage, 1>,
+) {
+    loop {
+        // Wait for a button press
+        button_pin.wait_for_falling_edge().await;
+        sender.send(ButtonMessage::ButtonPressed).await;
+        Timer::after(Duration::from_millis(400)).await; // Debounce delay
     }
 }
 
@@ -463,15 +370,3 @@ async fn led_task(
 */
 
 
-#[embassy_executor::task]
-async fn button_task(
-    mut button_pin: Input<'static, GpioPin<10>>,
-    sender: Sender<'static, NoopRawMutex, ButtonMessage, 1>,
-) {
-    loop {
-        // Wait for a button press
-        button_pin.wait_for_falling_edge().await;
-        sender.send(ButtonMessage::ButtonPressed).await;
-        Timer::after(Duration::from_millis(400)).await; // Debounce delay
-    }
-}
