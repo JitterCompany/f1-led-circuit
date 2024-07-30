@@ -125,13 +125,47 @@ impl<'de> Deserialize<'de> for VisualizationData {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+
+// Implementing custom deserialization logic for UpdateFrame
+impl<'de> Deserialize<'de> for UpdateFrame {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct FrameVisitor;
+
+        impl<'de> Visitor<'de> for FrameVisitor {
+            type Value = UpdateFrame;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("an array of driver data")
+            }
+
+            fn visit_seq<A>(self, mut seq: A) -> Result<UpdateFrame, A::Error>
+            where
+                A: SeqAccess<'de>,
+            {
+                let mut frame: [Option<DriverData>; 20] = [None; 20];
+
+                for i in 0..20 {
+                    frame[i] = seq.next_element()?;
+                }
+
+                Ok(UpdateFrame { frame })
+            }
+        }
+
+        deserializer.deserialize_seq(FrameVisitor)
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct DriverData {
     pub driver_number: u8,
     pub led_num: u8,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 pub struct UpdateFrame {
     pub frame: [Option<DriverData>; 20],
 }
@@ -352,7 +386,6 @@ async fn led_task(
         hd108.set_off().await.unwrap();
     }
 }
-
 
 
 
