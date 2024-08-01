@@ -1,22 +1,24 @@
-mod led_data;
 mod driver_info;
+mod led_data;
 
+use chrono::{DateTime, Duration as ChronoDuration, Utc};
+use driver_info::DRIVERS;
 use iced::alignment;
 use iced::executor;
 use iced::theme::{self, Theme};
 use iced::time;
-use iced::widget::{button, container, row, text, column};
+use iced::widget::{button, column, container, row, text};
 use iced::{
-    Alignment, Application, Command, Element, Length, Settings, Subscription,
-    widget::canvas::{self, Canvas, Path, Frame, Program}, Color, Point, Size, mouse, Renderer
+    mouse,
+    widget::canvas::{self, Canvas, Frame, Path, Program},
+    Alignment, Application, Color, Command, Element, Length, Point, Renderer, Settings, Size,
+    Subscription,
 };
+use led_data::{LedCoordinate, UpdateFrame, LED_DATA};
 use reqwest::Client;
 use serde::Deserialize;
-use std::time::{Duration, Instant};
-use led_data::{LedCoordinate, LED_DATA, UpdateFrame};
-use driver_info::DRIVERS;
 use std::f32;
-use chrono::{DateTime, Utc, Duration as ChronoDuration};
+use std::time::{Duration, Instant};
 use tokio::time::sleep;
 
 #[derive(Debug, Deserialize)]
@@ -71,7 +73,9 @@ impl Application for RaceSimulation {
     type Flags = ();
 
     fn new(_flags: ()) -> (RaceSimulation, Command<SimulationMessage>) {
-        let start_time = DateTime::parse_from_rfc3339("2023-08-27T12:58:56.200Z").unwrap().with_timezone(&Utc);
+        let start_time = DateTime::parse_from_rfc3339("2023-08-27T12:58:56.200Z")
+            .unwrap()
+            .with_timezone(&Utc);
         let end_time = start_time + ChronoDuration::minutes(5); // Fetch 5 minutes of data
         let next_data_fetch_start_time = end_time + ChronoDuration::milliseconds(1);
         let next_data_fetch_end_time = next_data_fetch_start_time + ChronoDuration::minutes(5);
@@ -107,12 +111,23 @@ impl Application for RaceSimulation {
         match message {
             SimulationMessage::ToggleSimulation => match self.state {
                 SimulationState::IdleState => {
-                    println!("[{}] Data fetching started", self.application_start_time.elapsed().as_secs());
+                    println!(
+                        "[{}] Data fetching started",
+                        self.application_start_time.elapsed().as_secs()
+                    );
                     self.state = SimulationState::FetchingDataState;
                     self.processed_update_frames.clear();
                     self.fetched_update_frames.clear();
                     self.current_visualization_frame_index = 0;
-                    return Command::perform(fetch_and_process_driver_data(self.http_client.clone(), self.driver_numbers.clone(), self.start_time, self.end_time), SimulationMessage::DriverDataFetched);
+                    return Command::perform(
+                        fetch_and_process_driver_data(
+                            self.http_client.clone(),
+                            self.driver_numbers.clone(),
+                            self.start_time,
+                            self.end_time,
+                        ),
+                        SimulationMessage::DriverDataFetched,
+                    );
                 }
                 SimulationState::FetchingDataState => {
                     self.state = SimulationState::IdleState;
@@ -130,7 +145,11 @@ impl Application for RaceSimulation {
 
                     if self.current_visualization_frame_index < self.frames_to_visualize.len() {
                         self.current_visualization_frame_index += 1;
-                        println!("[{}] Visualizing frame index {}", self.application_start_time.elapsed().as_secs(), self.current_visualization_frame_index);
+                        println!(
+                            "[{}] Visualizing frame index {}",
+                            self.application_start_time.elapsed().as_secs(),
+                            self.current_visualization_frame_index
+                        );
                     } else {
                         self.current_visualization_frame_index = 0; // Restart visualization if we reach the end
                     }
@@ -143,43 +162,80 @@ impl Application for RaceSimulation {
                 self.processed_update_frames.clear();
                 self.frames_to_visualize.clear();
                 self.fetched_update_frames.clear();
-                println!("[{}] Resetting all frames", self.application_start_time.elapsed().as_secs());
+                println!(
+                    "[{}] Resetting all frames",
+                    self.application_start_time.elapsed().as_secs()
+                );
             }
             SimulationMessage::ToggleLed => {
                 if !self.frames_to_visualize.is_empty() {
                     self.is_led_on = !self.is_led_on;
-                    println!("[{}] Toggling LED state to {}", self.application_start_time.elapsed().as_secs(), self.is_led_on);
+                    println!(
+                        "[{}] Toggling LED state to {}",
+                        self.application_start_time.elapsed().as_secs(),
+                        self.is_led_on
+                    );
                 }
             }
             SimulationMessage::DriverDataFetched(Ok(new_frames)) => {
-                println!("[{}] Data fetching ended with {} frames", self.application_start_time.elapsed().as_secs(), new_frames.len());
-                
+                println!(
+                    "[{}] Data fetching ended with {} frames",
+                    self.application_start_time.elapsed().as_secs(),
+                    new_frames.len()
+                );
+
                 // Append new data to frames_to_visualize without clearing
                 self.fetched_update_frames.extend(new_frames);
-                self.frames_to_visualize.append(&mut self.fetched_update_frames);
+                self.frames_to_visualize
+                    .append(&mut self.fetched_update_frames);
                 self.fetched_update_frames.clear();
-                
+
                 if !self.frames_to_visualize.is_empty() {
                     self.state = SimulationState::VisualizingState {
                         last_tick: Instant::now(),
                     };
-                    println!("[{}] Visualization started with {} frames", self.application_start_time.elapsed().as_secs(), self.frames_to_visualize.len());
-                    return Command::perform(wait_and_fetch_next_batch(self.next_data_fetch_start_time, self.next_data_fetch_end_time), |_| SimulationMessage::FetchNextDataBatch);
+                    println!(
+                        "[{}] Visualization started with {} frames",
+                        self.application_start_time.elapsed().as_secs(),
+                        self.frames_to_visualize.len()
+                    );
+                    return Command::perform(
+                        wait_and_fetch_next_batch(
+                            self.next_data_fetch_start_time,
+                            self.next_data_fetch_end_time,
+                        ),
+                        |_| SimulationMessage::FetchNextDataBatch,
+                    );
                 } else {
                     self.state = SimulationState::IdleState;
                 }
             }
             SimulationMessage::DriverDataFetched(Err(_)) => {
-                println!("[{}] Data fetching failed", self.application_start_time.elapsed().as_secs());
+                println!(
+                    "[{}] Data fetching failed",
+                    self.application_start_time.elapsed().as_secs()
+                );
                 self.state = SimulationState::IdleState;
             }
             SimulationMessage::FetchNextDataBatch => {
                 let new_start_time = self.next_data_fetch_start_time;
                 let new_end_time = self.next_data_fetch_end_time;
                 self.next_data_fetch_start_time = new_end_time + ChronoDuration::milliseconds(1);
-                self.next_data_fetch_end_time = self.next_data_fetch_start_time + ChronoDuration::minutes(5);
-                println!("[{}] Data fetching started for new time range", self.application_start_time.elapsed().as_secs());
-                return Command::perform(fetch_and_process_driver_data(self.http_client.clone(), self.driver_numbers.clone(), new_start_time, new_end_time), SimulationMessage::DriverDataFetched);
+                self.next_data_fetch_end_time =
+                    self.next_data_fetch_start_time + ChronoDuration::minutes(5);
+                println!(
+                    "[{}] Data fetching started for new time range",
+                    self.application_start_time.elapsed().as_secs()
+                );
+                return Command::perform(
+                    fetch_and_process_driver_data(
+                        self.http_client.clone(),
+                        self.driver_numbers.clone(),
+                        new_start_time,
+                        new_end_time,
+                    ),
+                    SimulationMessage::DriverDataFetched,
+                );
             }
         }
 
@@ -234,11 +290,9 @@ impl Application for RaceSimulation {
         .size(40);
 
         let button = |label| {
-            button(
-                text(label).horizontal_alignment(alignment::Horizontal::Center),
-            )
-            .padding(10)
-            .width(80)
+            button(text(label).horizontal_alignment(alignment::Horizontal::Center))
+                .padding(10)
+                .width(80)
         };
 
         let toggle_button = {
@@ -349,7 +403,12 @@ impl<Message> Program<Message> for LedCircuitGraph {
     }
 }
 
-async fn fetch_and_process_driver_data(client: Client, driver_numbers: Vec<u32>, start_time: DateTime<Utc>, end_time: DateTime<Utc>) -> Result<Vec<UpdateFrame>, String> {
+async fn fetch_and_process_driver_data(
+    client: Client,
+    driver_numbers: Vec<u32>,
+    start_time: DateTime<Utc>,
+    end_time: DateTime<Utc>,
+) -> Result<Vec<UpdateFrame>, String> {
     let session_key = "9149";
 
     let mut all_data: Vec<LocationData> = Vec::new();
@@ -366,10 +425,18 @@ async fn fetch_and_process_driver_data(client: Client, driver_numbers: Vec<u32>,
             let resp = client.get(&url).send().await.map_err(|e| e.to_string())?;
             if resp.status().is_success() {
                 let data: Vec<LocationData> = resp.json().await.map_err(|e| e.to_string())?;
-                let valid_data: Vec<LocationData> = data.into_iter().filter(|d| d.x != 0.0 && d.y != 0.0).collect();
+                let valid_data: Vec<LocationData> = data
+                    .into_iter()
+                    .filter(|d| d.x != 0.0 && d.y != 0.0)
+                    .collect();
                 fetched_entries += valid_data.len();
                 all_data.extend(valid_data);
-                println!("[{}] Fetched {} entries for driver {}", Utc::now(), fetched_entries, driver_number);
+                println!(
+                    "[{}] Fetched {} entries for driver {}",
+                    Utc::now(),
+                    fetched_entries,
+                    driver_number
+                );
             } else {
                 eprintln!(
                     "Failed to fetch data for driver {}: HTTP {}",
@@ -388,7 +455,9 @@ async fn fetch_and_process_driver_data(client: Client, driver_numbers: Vec<u32>,
     let mut current_frame: Option<UpdateFrame> = None;
 
     for data in all_data {
-        let timestamp = DateTime::parse_from_rfc3339(&data.date).map_err(|e| e.to_string())?.timestamp_millis() as u64;
+        let timestamp = DateTime::parse_from_rfc3339(&data.date)
+            .map_err(|e| e.to_string())?
+            .timestamp_millis() as u64;
         let x = data.x;
         let y = data.y;
         let driver_number = data.driver_number;
@@ -403,7 +472,8 @@ async fn fetch_and_process_driver_data(client: Client, driver_numbers: Vec<u32>,
 
         let color = driver.color;
 
-        let nearest_led = LED_DATA.iter()
+        let nearest_led = LED_DATA
+            .iter()
             .min_by(|a, b| {
                 let dist_a = ((a.x_led - x).powi(2) + (a.y_led - y).powi(2)).sqrt();
                 let dist_b = ((b.x_led - x).powi(2) + (b.y_led - y).powi(2)).sqrt();
@@ -417,13 +487,27 @@ async fn fetch_and_process_driver_data(client: Client, driver_numbers: Vec<u32>,
             } else {
                 update_frames.push(frame.clone());
                 current_frame = Some(UpdateFrame::new(timestamp));
-                current_frame.as_mut().unwrap().set_led_state(nearest_led.led_number, color);
-                println!("[{}] Created new frame for timestamp {}", Utc::now(), timestamp);
+                current_frame
+                    .as_mut()
+                    .unwrap()
+                    .set_led_state(nearest_led.led_number, color);
+                println!(
+                    "[{}] Created new frame for timestamp {}",
+                    Utc::now(),
+                    timestamp
+                );
             }
         } else {
             current_frame = Some(UpdateFrame::new(timestamp));
-            current_frame.as_mut().unwrap().set_led_state(nearest_led.led_number, color);
-            println!("[{}] Created initial frame for timestamp {}", Utc::now(), timestamp);
+            current_frame
+                .as_mut()
+                .unwrap()
+                .set_led_state(nearest_led.led_number, color);
+            println!(
+                "[{}] Created initial frame for timestamp {}",
+                Utc::now(),
+                timestamp
+            );
         }
     }
 
@@ -431,13 +515,21 @@ async fn fetch_and_process_driver_data(client: Client, driver_numbers: Vec<u32>,
         update_frames.push(frame);
     }
 
-    println!("[{}] Total update frames created: {}", Utc::now(), update_frames.len());
+    println!(
+        "[{}] Total update frames created: {}",
+        Utc::now(),
+        update_frames.len()
+    );
 
     Ok(update_frames)
 }
 
 async fn wait_and_fetch_next_batch(start_time: DateTime<Utc>, end_time: DateTime<Utc>) {
     let visualization_time = Duration::from_secs(60);
-    println!("[{}] Waiting for {} seconds before next fetch", Utc::now(), visualization_time.as_secs());
+    println!(
+        "[{}] Waiting for {} seconds before next fetch",
+        Utc::now(),
+        visualization_time.as_secs()
+    );
     sleep(visualization_time).await;
 }
