@@ -4,6 +4,7 @@
 
 mod data;
 mod hd108;
+mod driver_info;
 use data::VISUALIZATION_DATA;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
