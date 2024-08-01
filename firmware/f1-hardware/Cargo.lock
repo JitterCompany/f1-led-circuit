@@ -574,12 +574,21 @@ dependencies = [
  "esp-hal",
  "esp-hal-embassy",
  "esp-println",
+ "f1-logic",
  "heapless 0.7.17",
  "heapless 0.8.0",
  "panic-halt",
  "riscv",
  "riscv-rt",
  "static_cell",
+]
+
+[[package]]
+name = "f1-logic"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "heapless 0.8.0",
 ]
 
 [[package]]
