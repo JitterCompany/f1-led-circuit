@@ -48,7 +48,7 @@ jobs:
         targets: riscv32imc-unknown-none-elf
         components: llvm-tools
     - name: Build f1-logic
-      run: cargo build --locked --release
+      run: cargo build --release
       working-directory: ./firmware/f1-logic
 
 # f1-hardware
@@ -76,7 +76,7 @@ jobs:
         targets: riscv32imc-unknown-none-elf
         components: llvm-tools
     - name: Build f1-hardware
-      run: cargo build --locked --release
+      run: cargo build --release
       working-directory: ./firmware/f1-hardware
 
 # f1-simulation
@@ -104,5 +104,5 @@ jobs:
         targets: riscv32imc-unknown-none-elf
         components: llvm-tools
     - name: Build f1-simulation
-      run: cargo build --locked --release
+      run: cargo build --release
       working-directory: ./firmware/f1-simulation
