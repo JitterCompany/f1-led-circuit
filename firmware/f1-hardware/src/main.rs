@@ -26,51 +26,11 @@ use esp_hal::{
     timer::timg::TimerGroup,
 };
 use esp_println::println;
+use f1_logic::data_frame::{DriverData, UpdateFrame, NUM_DRIVERS};
 use hd108::HD108;
 use heapless08::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
-
-#[derive(Debug, bincode::Encode, bincode::Decode, PartialEq, Default)]
-pub struct DriverData {
-    pub driver_number: u8,
-    pub led_num: u8,
-}
-
-pub const NUM_DRIVERS: usize = 20;
-
-#[derive(Debug, bincode::Encode, bincode::Decode, PartialEq, Default)]
-pub struct UpdateFrame {
-    pub frame: [DriverData; NUM_DRIVERS],
-}
-
-impl UpdateFrame {
-    pub const SERIALIZED_SIZE: usize = NUM_DRIVERS * 2;
-
-    pub fn to_bytes(&self) -> Result<[u8; Self::SERIALIZED_SIZE], ()> {
-        let mut buf = [0u8; Self::SERIALIZED_SIZE];
-        let config = bincode::config::standard()
-            .with_little_endian()
-            .with_fixed_int_encoding();
-        if let Ok(l) = bincode::encode_into_slice(&self, &mut buf[..], config) {
-            if l == Self::SERIALIZED_SIZE {
-                return Ok(buf);
-            }
-        }
-        Err(())
-    }
-
-    pub fn try_from_bytes(buf: &[u8]) -> Result<Self, ()> {
-        let config = bincode::config::standard()
-            .with_little_endian()
-            .with_fixed_int_encoding();
-        if let Ok((frame, _n)) = bincode::decode_from_slice(buf, config) {
-            Ok(frame)
-        } else {
-            Err(())
-        }
-    }
-}
 
 enum Message {
     ButtonPressed,
