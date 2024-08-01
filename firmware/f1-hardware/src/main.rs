@@ -2,9 +2,8 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
-
-mod hd108;
 mod driver_info;
+mod hd108;
 use crate::driver_info::DRIVERS;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
@@ -72,8 +71,6 @@ impl UpdateFrame {
         }
     }
 }
-
-
 
 enum Message {
     ButtonPressed,
@@ -163,15 +160,21 @@ async fn led_task(
                     remaining_data = &remaining_data[frame_size..];
 
                     // Prepare LED updates
-                    let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
+                    let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> =
+                        heapless08::Vec::new();
                     for driver_data in &frame.frame {
-                        if let Some(driver) = DRIVERS.iter().find(|d| d.number == driver_data.driver_number as u32) {
-                            led_updates.push((
-                                driver_data.led_num as usize,
-                                driver.color.0,
-                                driver.color.1,
-                                driver.color.2,
-                            )).unwrap();
+                        if let Some(driver) = DRIVERS
+                            .iter()
+                            .find(|d| d.number == driver_data.driver_number as u32)
+                        {
+                            led_updates
+                                .push((
+                                    driver_data.led_num as usize,
+                                    driver.color.0,
+                                    driver.color.1,
+                                    driver.color.2,
+                                ))
+                                .unwrap();
                         }
                     }
 
