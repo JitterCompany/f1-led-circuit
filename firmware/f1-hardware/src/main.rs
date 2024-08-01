@@ -2,11 +2,10 @@
 #![no_main]
 #![feature(type_alias_impl_trait)]
 
-mod data;
+
 mod hd108;
 mod driver_info;
-use firmware::f1_logic::data_frame::{DriverData, UpdateFrame, NUM_DRIVERS};
-use firrmware::f1_logic::data_frame::UpdateFrame::{ to_bytes, try_from_bytes };
+use crate::driver_info::DRIVERS;
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
@@ -29,9 +28,51 @@ use esp_hal::{
 };
 use esp_println::println;
 use hd108::HD108;
-use heapless::Vec;
+use heapless08::Vec;
 use panic_halt as _;
 use static_cell::StaticCell;
+
+#[derive(Debug, bincode::Encode, bincode::Decode, PartialEq, Default)]
+pub struct DriverData {
+    pub driver_number: u8,
+    pub led_num: u8,
+}
+
+pub const NUM_DRIVERS: usize = 20;
+
+#[derive(Debug, bincode::Encode, bincode::Decode, PartialEq, Default)]
+pub struct UpdateFrame {
+    pub frame: [DriverData; NUM_DRIVERS],
+}
+
+impl UpdateFrame {
+    pub const SERIALIZED_SIZE: usize = NUM_DRIVERS * 2;
+
+    pub fn to_bytes(&self) -> Result<[u8; Self::SERIALIZED_SIZE], ()> {
+        let mut buf = [0u8; Self::SERIALIZED_SIZE];
+        let config = bincode::config::standard()
+            .with_little_endian()
+            .with_fixed_int_encoding();
+        if let Ok(l) = bincode::encode_into_slice(&self, &mut buf[..], config) {
+            if l == Self::SERIALIZED_SIZE {
+                return Ok(buf);
+            }
+        }
+        Err(())
+    }
+
+    pub fn try_from_bytes(buf: &[u8]) -> Result<Self, ()> {
+        let config = bincode::config::standard()
+            .with_little_endian()
+            .with_fixed_int_encoding();
+        if let Ok((frame, _n)) = bincode::decode_from_slice(buf, config) {
+            Ok(frame)
+        } else {
+            Err(())
+        }
+    }
+}
+
 
 
 enum Message {
@@ -107,19 +148,56 @@ async fn led_task(
         // Wait for the start message
         receiver.receive().await;
 
-        /* 
-        for i in 0..=96 {
-            let color = &DRIVER_COLORS[i % DRIVER_COLORS.len()]; // Get the corresponding color
-            hd108.set_led(i, color.r, color.g, color.b).await.unwrap(); // Pass the RGB values directly
+        println!("Button pressed, starting race...");
 
-            // Check for a stop message
+        // Start deserialization in chunks
+        let data_bin = include_bytes!("output.bin");
+        let mut remaining_data = &data_bin[..];
+
+        while !remaining_data.is_empty() {
+            // Attempt to deserialize a single frame from the data using `try_from_bytes`
+            match UpdateFrame::try_from_bytes(remaining_data) {
+                Ok(frame) => {
+                    // Move the remaining_data pointer forward by the size of the serialized frame
+                    let frame_size = UpdateFrame::SERIALIZED_SIZE;
+                    remaining_data = &remaining_data[frame_size..];
+
+                    // Prepare LED updates
+                    let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 20> = heapless08::Vec::new();
+                    for driver_data in &frame.frame {
+                        if let Some(driver) = DRIVERS.iter().find(|d| d.number == driver_data.driver_number as u32) {
+                            led_updates.push((
+                                driver_data.led_num as usize,
+                                driver.color.0,
+                                driver.color.1,
+                                driver.color.2,
+                            )).unwrap();
+                        }
+                    }
+
+                    // Set the LEDs for this frame
+                    if let Err(err) = hd108.set_leds(&led_updates).await {
+                        println!("Failed to set LEDs: {:?}", err);
+                    }
+
+                    // Wait for the next frame update
+                    Timer::after(Duration::from_millis(50)).await;
+                }
+                Err(_) => {
+                    println!("Failed to deserialize frame");
+                    break;
+                }
+            }
+
+            // Check if a stop message was received
             if receiver.try_receive().is_ok() {
                 hd108.set_off().await.unwrap();
                 break;
             }
-            Timer::after(Duration::from_millis(25)).await; // Debounce delay
         }
-        */
+
+        // Ensure LEDs are turned off at the end
+        hd108.set_off().await.unwrap();
     }
 }
 
