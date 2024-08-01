@@ -3,7 +3,7 @@
 
 Generate binary driver dataset from csv file
 
-``bash
+```bash
 cargo run --bin csv_to_bin --features use-std
 ```
 
