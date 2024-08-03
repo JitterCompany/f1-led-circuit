@@ -1,0 +1,7889 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "e5ea68b2-4bda-4d2e-9fae-9f4c8a082407")
+	(paper "A4")
+	(lib_symbols
+		(symbol "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at 0 19.558 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "HD108-2020"
+				(at 0.508 21.844 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+				(at 0.762 24.892 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "HD108-2020_1_1"
+				(rectangle
+					(start -6.35 6.35)
+					(end 6.35 -6.35)
+					(stroke
+						(width 0)
+						(type default)
+						(color 132 0 0 1)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin power_in line
+					(at 0 8.89 270)
+					(length 2.54)
+					(name "VDD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 8.89 2.54 180)
+					(length 2.54)
+					(name "DOUT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 8.89 -2.54 180)
+					(length 2.54)
+					(name "DCKO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -8.89 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -8.89 -2.54 0)
+					(length 2.54)
+					(name "DCKI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -8.89 2.54 0)
+					(length 2.54)
+					(name "DIN"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "HD108-2020_1"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at 0 19.558 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "HD108-2020"
+				(at 0.508 21.844 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+				(at 0.762 24.892 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "HD108-2020_1_1_1"
+				(rectangle
+					(start -6.35 6.35)
+					(end 6.35 -6.35)
+					(stroke
+						(width 0)
+						(type default)
+						(color 132 0 0 1)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin power_in line
+					(at 0 8.89 270)
+					(length 2.54)
+					(name "VDD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 8.89 2.54 180)
+					(length 2.54)
+					(name "DOUT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 8.89 -2.54 180)
+					(length 2.54)
+					(name "DCKO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -8.89 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -8.89 -2.54 0)
+					(length 2.54)
+					(name "DCKI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -8.89 2.54 0)
+					(length 2.54)
+					(name "DIN"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "adams_library_symbols:GND"
+			(power)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0) hide
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "power:+5V"
+			(power)
+			(pin_numbers hide)
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "+5V"
+				(at 0 3.556 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"+5V\""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "+5V_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "+5V_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 167.64 36.83) (xy 172.72 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "018c36d6-9d9a-421a-9822-c9e0e2b5bad5")
+	)
+	(wire
+		(pts
+			(xy 237.49 41.91) (xy 243.84 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "028eff8e-6f94-46e1-b31b-38e3f3d7daa3")
+	)
+	(wire
+		(pts
+			(xy 196.85 81.28) (xy 203.2 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "08fef392-67a6-4cf6-9e4a-670dac3af971")
+	)
+	(wire
+		(pts
+			(xy 128.27 120.65) (xy 133.35 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "091dbb4b-c8ad-4817-9174-524a7e1c8d24")
+	)
+	(wire
+		(pts
+			(xy 53.34 41.91) (xy 58.42 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "205226a0-728c-406c-bab0-f99b2b7645d5")
+	)
+	(wire
+		(pts
+			(xy 99.06 36.83) (xy 104.14 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "255069d6-0a3e-4152-897a-f26ec54c1cef")
+	)
+	(wire
+		(pts
+			(xy 220.98 76.2) (xy 227.33 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "28fb702a-dd99-4c11-9fe0-395e8b22506e")
+	)
+	(wire
+		(pts
+			(xy 105.41 76.2) (xy 110.49 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2d3f1d65-d0b3-4a5e-b88b-fec015689714")
+	)
+	(wire
+		(pts
+			(xy 121.92 36.83) (xy 127 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "31da6786-6b8e-4e5b-8bcd-95986b04e600")
+	)
+	(wire
+		(pts
+			(xy 121.92 41.91) (xy 127 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "32f68d34-61ef-4060-a7ac-2d535a8e7c45")
+	)
+	(wire
+		(pts
+			(xy 76.2 36.83) (xy 81.28 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3b710e54-c623-4655-85e7-af73644cbea1")
+	)
+	(wire
+		(pts
+			(xy 144.78 41.91) (xy 149.86 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3b8810fc-a6e4-4912-8e0a-defba134f159")
+	)
+	(wire
+		(pts
+			(xy 203.2 76.2) (xy 196.85 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3cfe00fe-4c08-4ef1-8cfe-49dda5fe9843")
+	)
+	(wire
+		(pts
+			(xy 128.27 81.28) (xy 133.35 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "49fe5dcf-d3d8-48f1-9f3c-adeaa6c6e6d3")
+	)
+	(wire
+		(pts
+			(xy 190.5 41.91) (xy 195.58 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4ad4a16f-4e1d-42f4-a5ca-cd2cd324c662")
+	)
+	(wire
+		(pts
+			(xy 203.2 115.57) (xy 196.85 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4eb4d508-8413-442d-b2ca-e1ea9760d380")
+	)
+	(wire
+		(pts
+			(xy 196.85 120.65) (xy 203.2 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4fd5e8c2-0d15-4f40-9e23-9ea303b37c86")
+	)
+	(wire
+		(pts
+			(xy 76.2 41.91) (xy 81.28 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "520014df-249e-4827-83a9-8ce1e3e547cb")
+	)
+	(wire
+		(pts
+			(xy 99.06 41.91) (xy 104.14 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "54789cd9-827b-4dbd-b41c-1e699877c196")
+	)
+	(wire
+		(pts
+			(xy 59.69 115.57) (xy 64.77 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5ddef633-c841-4616-9653-258e4dfe5553")
+	)
+	(wire
+		(pts
+			(xy 128.27 76.2) (xy 133.35 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5e52b150-4a7d-40a9-9385-67163b356e7a")
+	)
+	(wire
+		(pts
+			(xy 151.13 81.28) (xy 156.21 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "662612f1-f4ad-4bd7-a097-6996761b8af2")
+	)
+	(wire
+		(pts
+			(xy 151.13 115.57) (xy 156.21 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "66fe1804-daff-4263-82a8-e01bc98c87a0")
+	)
+	(wire
+		(pts
+			(xy 173.99 115.57) (xy 179.07 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d7a7376-285d-4af8-a520-1420879dd7e7")
+	)
+	(wire
+		(pts
+			(xy 66.04 156.21) (xy 59.69 156.21)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "706b885e-23f8-4fbe-9366-81a181e92793")
+	)
+	(wire
+		(pts
+			(xy 105.41 81.28) (xy 110.49 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7798755a-242d-4414-ad1c-548224693aa6")
+	)
+	(wire
+		(pts
+			(xy 220.98 81.28) (xy 227.33 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "80d1fc6a-1043-4603-9fd7-332cc7015d35")
+	)
+	(wire
+		(pts
+			(xy 220.98 115.57) (xy 227.33 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "81950bb5-cad2-499c-99b1-ab89874a8968")
+	)
+	(wire
+		(pts
+			(xy 151.13 120.65) (xy 156.21 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "82c837e2-9c4e-4803-b57a-89e2f9631dab")
+	)
+	(wire
+		(pts
+			(xy 173.99 76.2) (xy 179.07 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "92097849-f1b8-41f8-9a73-eaf02d4949d3")
+	)
+	(wire
+		(pts
+			(xy 82.55 76.2) (xy 87.63 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "92efb9fb-b2eb-4a47-a866-f97014087b7b")
+	)
+	(wire
+		(pts
+			(xy 59.69 120.65) (xy 64.77 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "943b388e-2065-4672-af3e-fba476dad4cd")
+	)
+	(wire
+		(pts
+			(xy 59.69 161.29) (xy 66.04 161.29)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "94c71b1f-51e6-49b9-8baa-87cd5aaf0b8b")
+	)
+	(wire
+		(pts
+			(xy 128.27 115.57) (xy 133.35 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9a1079a2-36de-4865-b920-703143b641a5")
+	)
+	(wire
+		(pts
+			(xy 82.55 81.28) (xy 87.63 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ed2abc1-c712-46db-b672-7b4cbe1954f6")
+	)
+	(wire
+		(pts
+			(xy 219.71 36.83) (xy 213.36 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0ac1d4b-68cc-49ae-9295-a42ea5f5cd31")
+	)
+	(wire
+		(pts
+			(xy 220.98 120.65) (xy 227.33 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a887b921-239a-4eb8-973c-8aebece76bb7")
+	)
+	(wire
+		(pts
+			(xy 59.69 76.2) (xy 64.77 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a8ad0e34-9d06-4744-a2ab-a508f9068b8e")
+	)
+	(wire
+		(pts
+			(xy 167.64 41.91) (xy 172.72 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a8c0b853-9e50-414d-b3da-b33f64d668f6")
+	)
+	(wire
+		(pts
+			(xy 53.34 36.83) (xy 58.42 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a9f7a769-ee68-44ab-95bd-abf43cc3297d")
+	)
+	(wire
+		(pts
+			(xy 151.13 76.2) (xy 156.21 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "aa05158c-e820-449e-a198-6d52492132f9")
+	)
+	(wire
+		(pts
+			(xy 190.5 36.83) (xy 195.58 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b12e3d3e-16f8-479c-b409-58fc73568c4d")
+	)
+	(wire
+		(pts
+			(xy 82.55 115.57) (xy 87.63 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ba95a157-5fe4-4e5a-89dd-ffb6bcae9929")
+	)
+	(wire
+		(pts
+			(xy 105.41 120.65) (xy 110.49 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cce69164-1a73-43a0-bda9-3751b824cd0e")
+	)
+	(wire
+		(pts
+			(xy 105.41 115.57) (xy 110.49 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ce4c739e-80a9-40fd-9fc2-bf490230080e")
+	)
+	(wire
+		(pts
+			(xy 173.99 120.65) (xy 179.07 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d478b86a-88ea-491b-9a78-33ef6ce56fe4")
+	)
+	(wire
+		(pts
+			(xy 213.36 41.91) (xy 219.71 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d916d3cb-d238-48a7-8b28-08ecd50e2e22")
+	)
+	(wire
+		(pts
+			(xy 144.78 36.83) (xy 149.86 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e7863c7f-6c82-43f7-b9b7-420e1ccacd45")
+	)
+	(wire
+		(pts
+			(xy 59.69 81.28) (xy 64.77 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e9883b68-174c-4b3a-b10c-de775f6a7541")
+	)
+	(wire
+		(pts
+			(xy 173.99 81.28) (xy 179.07 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f65f0fe8-dd32-4e26-a574-7a4ee40a6137")
+	)
+	(wire
+		(pts
+			(xy 82.55 120.65) (xy 87.63 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f69cc297-a637-45aa-92bd-2d1bc2b85334")
+	)
+	(wire
+		(pts
+			(xy 237.49 36.83) (xy 243.84 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f94399d2-9940-4aac-a97f-74af184b104d")
+	)
+	(text "April 10th, 2024\n"
+		(exclude_from_sim no)
+		(at 214.63 193.294 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "0f09dda5-584f-4201-868c-f7b1b485162d")
+	)
+	(text "CHAIN 8"
+		(exclude_from_sim no)
+		(at 62.23 138.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "29dbdd68-edd6-43c9-ab99-5d7eecc35115")
+	)
+	(text "F1 LED Circuit Project"
+		(exclude_from_sim no)
+		(at 197.866 189.992 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "482f6134-3097-4527-930f-ac713a3a4501")
+	)
+	(text "CHAIN 6"
+		(exclude_from_sim no)
+		(at 140.97 58.42 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "aa1009c3-5d80-4270-bd8e-0add9535a256")
+	)
+	(text "F1 LED CIRCUIT PROJECT\nJITTER"
+		(exclude_from_sim no)
+		(at 181.864 174.498 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+			)
+			(justify left)
+		)
+		(uuid "aed522db-d76f-4f30-bc3c-14437f8659f9")
+	)
+	(text "CHAIN 7"
+		(exclude_from_sim no)
+		(at 141.986 98.806 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "da5ae216-de10-486d-b336-4b93b50d0dec")
+	)
+	(text "CHAIN 5"
+		(exclude_from_sim no)
+		(at 140.97 18.288 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "f08f81ac-f8b0-4792-938a-8531617feae6")
+	)
+	(global_label "DATA_CHAIN_5_TO_6"
+		(shape input)
+		(at 41.91 76.2 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1af326f1-118b-463b-afb5-685c72c4a3d1")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 20.2981 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CLOCK_CHAIN_6_TO_7"
+		(shape input)
+		(at 41.91 120.65 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "3241747e-460d-43db-87b2-4f6e6a6d222d")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 18.5443 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CLOCK_CHAIN_6_TO_7"
+		(shape output)
+		(at 245.11 81.28 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "343e31ad-5f45-487a-bd35-e1483e09605c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 268.4757 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "DATA_CHAIN_7_TO_8"
+		(shape output)
+		(at 245.11 115.57 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "37ab2c2d-9096-40b7-811a-ad61c769e826")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 266.7219 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CLOCK_CHAIN_5_TO_6"
+		(shape input)
+		(at 41.91 81.28 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4fd9478e-483c-4c14-bd0b-7ff0c0981aad")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 18.5443 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CLOCK_CHAIN_7_TO_8"
+		(shape output)
+		(at 245.11 120.65 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "54680344-5abd-416d-838f-3ad27dfd3d58")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 268.4757 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "DATA_CHAIN_6_TO_7"
+		(shape output)
+		(at 245.11 76.2 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9af33e6f-7019-4cd7-900f-01a672254716")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 266.7219 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CLOCK_CHAIN_7_TO_8"
+		(shape input)
+		(at 41.91 161.29 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9b9e0321-975a-4c12-afb9-3a6150ce1c42")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 18.5443 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "DATA_CHAIN_7_TO_8"
+		(shape input)
+		(at 41.91 156.21 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9f0c4f28-3f9c-4d11-b4e5-497a64e839c0")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 20.2981 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CLOCK_CHAIN_5_TO_6"
+		(shape output)
+		(at 261.62 41.91 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b3c3b11d-99f6-4f16-b789-526697531df5")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 284.9857 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "DATA_CHAIN_6_TO_7"
+		(shape input)
+		(at 41.91 115.57 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "c3c1cebf-08d8-4379-828c-e700931a0196")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 20.2981 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "DATA_CHAIN_5_TO_6"
+		(shape output)
+		(at 261.62 36.83 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "d15945a4-f30a-4591-b715-c7fd18a063e2")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 283.2319 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(hierarchical_label "DATA_CHAIN_4_TO_5"
+		(shape output)
+		(at 35.56 36.83 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "11b10155-53dd-4ff1-acb6-a1e4283a06f2")
+	)
+	(hierarchical_label "CLOCK_CHAIN_4_TO_5"
+		(shape output)
+		(at 35.56 41.91 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "217a6104-58a8-4ddb-bb0a-f83937b4e619")
+	)
+	(hierarchical_label "CLOCK_CHAIN_8_TO_9"
+		(shape output)
+		(at 83.82 161.29 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "598e2b7a-1981-46d1-a971-eeb658c7c1b2")
+	)
+	(hierarchical_label "DATA_CHAIN_8_TO_9"
+		(shape output)
+		(at 83.82 156.21 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "6f69b64a-5ff8-4f2b-845a-7c8392d73537")
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 44.45 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "036aab00-fa85-4d21-bcda-0c9b42a7906a")
+		(property "Reference" "#PWR072"
+			(at 44.45 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 44.45 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 44.45 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 44.45 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 44.45 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "022125f9-0454-4bdf-8152-178da51f0fde")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR072")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 236.22 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "05023bfe-aaba-4440-809c-f6256923dc08")
+		(property "Reference" "U62"
+			(at 238.4141 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 236.728 96.266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 236.982 93.218 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 236.22 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 236.22 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "0ad50ab1-0b81-4168-8dba-c9cdd260d398")
+		)
+		(pin "3"
+			(uuid "95450b9b-6aaf-4753-a44e-a891fa6c1c36")
+		)
+		(pin "5"
+			(uuid "8735943d-73a2-4e96-9b40-52c598314d14")
+		)
+		(pin "6"
+			(uuid "c922ca68-0b06-43d0-bb2c-4fee45970c89")
+		)
+		(pin "2"
+			(uuid "3682ad8d-beff-4986-a66a-957405545608")
+		)
+		(pin "1"
+			(uuid "45e47908-4055-458e-8885-7b4c3abcc080")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U62")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 236.22 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "051a70bb-a697-4672-86c9-438c8badd2c1")
+		(property "Reference" "#PWR0125"
+			(at 236.22 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 236.22 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 236.22 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 236.22 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 236.22 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "af30f49c-2da5-4ad7-aed6-92c24519ab96")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0125")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 252.73 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "114fb2c9-b22a-4135-b353-4a8196944398")
+		(property "Reference" "#PWR0129"
+			(at 252.73 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 252.73 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 252.73 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 252.73 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 252.73 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bff9036f-94af-431f-a19a-3be99acf1a8c")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0129")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 158.75 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "13cc57df-fa93-4fac-b2c6-6e6cec85d9c5")
+		(property "Reference" "#PWR0105"
+			(at 158.75 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 158.75 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 158.75 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 158.75 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 158.75 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ebc26b30-1178-4183-9b41-14e41a1ca2bb")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0105")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 236.22 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "150dc622-9474-4ff7-be0a-f0494023eb83")
+		(property "Reference" "#PWR0126"
+			(at 236.22 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 236.22 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 236.22 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 236.22 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 236.22 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4e1169d1-b6e5-4076-bb62-fbaf4b9f2c4f")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0126")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 228.6 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1742150f-ba38-4878-8e6f-05349459ccfe")
+		(property "Reference" "#PWR0123"
+			(at 228.6 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 228.6 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 228.6 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 228.6 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 228.6 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "94e8df2c-190e-496f-8795-ae7527ab4ea7")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0123")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 50.8 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1755a2b0-d3a1-4e3b-b9a3-dad064c725d7")
+		(property "Reference" "#PWR076"
+			(at 50.8 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 50.8 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 50.8 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 50.8 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d045323f-5c23-4678-9b68-dbe39b272d04")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR076")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 142.24 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "179ebee3-b0a6-43b6-a296-ccd2694c4000")
+		(property "Reference" "#PWR0102"
+			(at 142.24 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 142.24 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 142.24 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 142.24 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 142.24 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3619e4ae-1013-4753-a7c0-58a25dcc08fa")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0102")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 74.93 158.75 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "181df424-a5ca-4464-a6ab-412d4982f992")
+		(property "Reference" "U41"
+			(at 77.1241 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 75.438 136.906 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 75.692 133.858 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 74.93 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 74.93 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "825345f4-97af-4e34-a661-807ac9fedf23")
+		)
+		(pin "3"
+			(uuid "d7af9805-b142-4530-95ba-cac763144788")
+		)
+		(pin "5"
+			(uuid "cf988502-3d6e-4343-bb9f-bd217de3443d")
+		)
+		(pin "6"
+			(uuid "39731a1b-0cdb-4cb1-9b0e-99fdbfc71590")
+		)
+		(pin "2"
+			(uuid "475cf79d-d247-4b50-b81e-90c86e342937")
+		)
+		(pin "1"
+			(uuid "efc39650-d7f1-43fe-af8a-bb7fd5556a1e")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U41")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 50.8 149.86 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "19127e05-0edb-4a92-a848-c788ff10c1b4")
+		(property "Reference" "#PWR077"
+			(at 50.8 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 50.8 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 50.8 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 50.8 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "399d9f9f-cd2a-4d67-9edf-afb13b67bf34")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR077")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 50.8 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "19c8930d-0d34-4e1d-abb1-78e36f2c37b4")
+		(property "Reference" "#PWR074"
+			(at 50.8 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 50.8 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 50.8 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 50.8 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a05fe19a-3f66-404d-b47c-a0780cda9a45")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR074")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 50.8 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1a312b05-5a80-4a43-b9dc-9dd84abe74c9")
+		(property "Reference" "U35"
+			(at 54.356 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 51.308 57.658 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 51.562 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 50.8 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "06b59dca-41a7-4b59-824e-a949dbbf7f18")
+		)
+		(pin "2"
+			(uuid "d100576b-0d28-4094-81b7-ff093c651690")
+		)
+		(pin "1"
+			(uuid "0448ea83-400c-4b86-8b5c-2ba01ca18751")
+		)
+		(pin "5"
+			(uuid "7ccae2eb-6856-4775-8d72-9ffa45ef8344")
+		)
+		(pin "4"
+			(uuid "578a923f-1640-4245-8156-750c17febf71")
+		)
+		(pin "6"
+			(uuid "983e5d0e-5fb0-4768-bad6-76c5a4512927")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U35")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 165.1 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1f7e428b-ecd3-44db-850d-75da40b01c32")
+		(property "Reference" "#PWR0109"
+			(at 165.1 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 165.1 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 165.1 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 165.1 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 165.1 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2b664ad0-9475-4793-8ae3-79d494047de7")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0109")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 187.96 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1fbe6f51-77d0-46b9-b054-3ea00e0a0aac")
+		(property "Reference" "#PWR0114"
+			(at 187.96 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 187.96 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 187.96 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 187.96 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 187.96 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "52c79ccc-76a2-4bba-82a9-e7c8c837c93c")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0114")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 50.8 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2070661d-9006-4fd7-81ff-a34119af2f49")
+		(property "Reference" "#PWR073"
+			(at 50.8 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 50.8 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 50.8 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 50.8 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "28b9760f-f5b3-4dc4-9ddd-d9668d4907ab")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR073")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 90.17 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "23ed87bd-05c6-47fb-8a3e-b1ff53d154d6")
+		(property "Reference" "#PWR087"
+			(at 90.17 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 90.17 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 90.17 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 90.17 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 90.17 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9f7c2ac2-cc01-4392-8f4b-e12a559e8458")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR087")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 142.24 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2a4cb768-299c-4589-a8b4-d270ccf98905")
+		(property "Reference" "#PWR0103"
+			(at 142.24 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 142.24 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 142.24 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 142.24 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 142.24 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8fd83aab-fac9-418f-a9c4-14c3d6e5fefd")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0103")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 165.1 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2a8829af-9b27-409a-9d45-607726f5ff8a")
+		(property "Reference" "U53"
+			(at 167.894 110.236 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 165.608 96.266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 165.862 93.218 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 165.1 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 165.1 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "985352fc-32ce-4826-926c-7ec9ae339167")
+		)
+		(pin "5"
+			(uuid "eb734ef1-80be-45d9-af4e-23a1dbc8eec0")
+		)
+		(pin "4"
+			(uuid "852847dd-68ec-4c56-9749-a7206319bf43")
+		)
+		(pin "2"
+			(uuid "4f2e1601-2030-4dda-87f3-2866d4ede1b1")
+		)
+		(pin "3"
+			(uuid "9365b705-ae58-42e5-bc6c-b24350423cbc")
+		)
+		(pin "6"
+			(uuid "2bef526d-3e09-4776-9eab-2b4a9151ad2a")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U53")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 187.96 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2b44a718-1a2c-473a-b7b0-d91800a0beb5")
+		(property "Reference" "#PWR0116"
+			(at 187.96 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 187.96 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 187.96 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 187.96 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 187.96 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "49eb3e1d-324d-489e-ba42-7ef49d3c164a")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0116")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 212.09 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2cd88de7-7a53-409b-a7b8-5f9f613cfaf3")
+		(property "Reference" "#PWR0121"
+			(at 212.09 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 212.09 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 212.09 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 212.09 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 212.09 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9b206c1c-5a33-4698-b238-70cc9eadb22e")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0121")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 187.96 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2e70aaa0-f72a-48bc-923d-68698cc36396")
+		(property "Reference" "U56"
+			(at 190.246 110.236 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 188.468 96.266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 188.722 93.218 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 187.96 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 187.96 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "d08529fa-f213-45bd-8e79-abfce74271d8")
+		)
+		(pin "1"
+			(uuid "9bbcc765-941b-41d0-9a74-80319a34437f")
+		)
+		(pin "2"
+			(uuid "0ed0c0ef-21e6-4c78-a705-eecae68b9fa2")
+		)
+		(pin "4"
+			(uuid "dc96d69a-26ed-439a-9004-56a417c9cf6d")
+		)
+		(pin "5"
+			(uuid "5711250f-7f11-4043-9fd0-261a82d4d8a4")
+		)
+		(pin "6"
+			(uuid "98308459-b3fc-4455-ae74-19533a778331")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U56")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 67.31 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2fd88fee-5564-4cd4-8880-7cf48e7c2479")
+		(property "Reference" "#PWR080"
+			(at 67.31 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 67.31 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 67.31 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 67.31 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 67.31 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "896ac3ed-2989-4bd7-b93d-37e20322ac83")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR080")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 135.89 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3001aa38-6220-4e6a-afc2-7f81d7497c24")
+		(property "Reference" "U48"
+			(at 139.192 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 136.398 17.526 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 136.652 14.478 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 135.89 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 135.89 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "e770ad49-03ac-495a-ac2f-c2124b673274")
+		)
+		(pin "3"
+			(uuid "46f1b086-359a-4618-829b-b9cf84d167f7")
+		)
+		(pin "5"
+			(uuid "04bf8f31-867a-4c6d-a237-8d25ea7c53d4")
+		)
+		(pin "6"
+			(uuid "d6ec1481-6a8f-4d69-a23e-0fc488e3e864")
+		)
+		(pin "2"
+			(uuid "7f19b7f7-dde3-44b4-aad1-679748732e2b")
+		)
+		(pin "1"
+			(uuid "9e553e10-a9f4-4b5c-b1d4-90564580bb6b")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U48")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 165.1 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "32740d9a-4296-42e5-a081-aa0832094df2")
+		(property "Reference" "U52"
+			(at 167.894 70.866 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 165.608 56.896 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 165.862 53.848 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 165.1 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 165.1 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d76129a1-d294-4f66-96f6-32783130d875")
+		)
+		(pin "5"
+			(uuid "ba61c5c0-8988-4517-9077-67ea14468e1b")
+		)
+		(pin "4"
+			(uuid "7afddf51-0639-416c-9b7a-4eb21b5c7ab2")
+		)
+		(pin "2"
+			(uuid "6bcd621c-9d0d-400e-b77b-dbe91f6d90ce")
+		)
+		(pin "3"
+			(uuid "a08c0c6e-3551-4219-acc2-26fbdb1b76a1")
+		)
+		(pin "6"
+			(uuid "402aeaba-8ca8-4dca-9d33-e072f30d9b58")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U52")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 236.22 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "33bf1a55-3567-460d-852d-d92d85e3e76d")
+		(property "Reference" "#PWR0128"
+			(at 236.22 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 236.22 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 236.22 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 236.22 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 236.22 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7b4956bf-d8a7-479b-8d7b-380026255a80")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0128")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 236.22 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "41d3aa45-dca9-499b-8609-ff41d93c6561")
+		(property "Reference" "U61"
+			(at 238.4141 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 236.728 56.896 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 236.982 53.848 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 236.22 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 236.22 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "fcf5067a-7b1c-4ae4-a801-7431f985ba4b")
+		)
+		(pin "3"
+			(uuid "fc0d360c-88d6-4d16-a873-16d04a5036d8")
+		)
+		(pin "5"
+			(uuid "d31bb21f-4506-4210-92d4-580dbde3dc3c")
+		)
+		(pin "6"
+			(uuid "7c0b657c-8819-4ed6-8053-ac96d6a17d1f")
+		)
+		(pin "2"
+			(uuid "88c29c17-2d89-485c-a139-bb16506aa8e0")
+		)
+		(pin "1"
+			(uuid "3fd822d0-8b76-4733-bcf7-8186208ce717")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U61")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 67.31 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "49aab0e7-2df3-4159-b61a-78cf459dea10")
+		(property "Reference" "#PWR079"
+			(at 67.31 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 67.31 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 67.31 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 67.31 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 67.31 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0b3dce44-85df-447f-b80f-c777fe8ba76d")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR079")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 73.66 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4b252c6f-fddd-46bd-927d-9b0c417d0984")
+		(property "Reference" "#PWR081"
+			(at 73.66 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 73.66 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 73.66 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5563532c-3dd7-4be8-873d-56388a01e6fa")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR081")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 67.31 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4b403d37-12b6-4d00-8c40-5fa40fa7e0cb")
+		(property "Reference" "U38"
+			(at 70.866 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 67.818 18.288 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 68.072 15.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 67.31 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 67.31 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "5b9fdbe8-4d8b-4b7d-a5f6-2e1fb1c0f295")
+		)
+		(pin "2"
+			(uuid "4653aa63-059c-4a43-b4c0-6c0536e47e94")
+		)
+		(pin "1"
+			(uuid "72a29085-6411-4586-8e40-97cf9da601e5")
+		)
+		(pin "5"
+			(uuid "c9de82f5-3a20-4af6-965f-3c157c68b807")
+		)
+		(pin "4"
+			(uuid "3f67b1f8-5c30-4b1a-a01c-d296d39111b9")
+		)
+		(pin "6"
+			(uuid "de47ead0-6be7-4073-8c07-722bcf803539")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U38")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 74.93 167.64 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4e0443eb-1f91-4aba-8466-0eb57e6d086a")
+		(property "Reference" "#PWR086"
+			(at 74.93 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 74.93 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 74.93 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 74.93 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 74.93 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "db548f24-36fb-4733-8b1c-bb446527f650")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR086")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 73.66 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5229630b-6d10-4840-a164-9a5451c92d41")
+		(property "Reference" "U40"
+			(at 76.962 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 74.168 96.266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 74.422 93.218 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 73.66 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "36b0c986-b46a-4166-98d6-7afd4f0f3b3d")
+		)
+		(pin "5"
+			(uuid "f179a247-62c2-4cb1-89be-d95c32ee8b64")
+		)
+		(pin "4"
+			(uuid "1fa6fe06-bafc-4e37-a1e2-81b52981b7cb")
+		)
+		(pin "2"
+			(uuid "06e2f973-ad04-4b2c-a87c-2e93f40a0dd5")
+		)
+		(pin "3"
+			(uuid "6cb0819c-d0af-49c9-829b-868a749ee350")
+		)
+		(pin "6"
+			(uuid "5df1765e-f01d-43dc-9585-9835f4af7c83")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U40")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 228.6 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "52b206ea-6de5-4ff3-b666-953b0da82c83")
+		(property "Reference" "#PWR0124"
+			(at 228.6 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 228.6 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 228.6 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 228.6 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 228.6 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4d8a8ee1-e12f-4b14-8d78-e9e0a0065cfb")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0124")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 96.52 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "533d497e-7fee-42b8-bd32-826f73f2d44f")
+		(property "Reference" "#PWR091"
+			(at 96.52 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 96.52 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 96.52 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "06af540a-048b-45ef-b7e6-fd3e5ff88c82")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR091")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 96.52 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5801c111-b216-4067-bf9b-c6e1b9f99fd2")
+		(property "Reference" "#PWR089"
+			(at 96.52 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 96.52 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 96.52 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "df876e36-0b37-4562-918a-23a3d63e8b33")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR089")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 142.24 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5d3ab29d-c285-4aa1-b2b3-29434af55684")
+		(property "Reference" "#PWR0101"
+			(at 142.24 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 142.24 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 142.24 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 142.24 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 142.24 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3a6460e8-6e4a-4cfc-96a9-347925a997fb")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0101")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 212.09 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "60d40374-d123-4fe0-bdb4-bf76ba3b8f96")
+		(property "Reference" "#PWR0122"
+			(at 212.09 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 212.09 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 212.09 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 212.09 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 212.09 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5d6fb824-0f98-4569-98a9-4cae3b3a6530")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0122")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 187.96 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "614992c8-bd8d-4628-9c66-d43b59051c3b")
+		(property "Reference" "#PWR0115"
+			(at 187.96 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 187.96 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 187.96 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 187.96 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 187.96 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2f621b4e-4077-4d24-8cfa-0e542d5a689a")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0115")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 50.8 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "647dab67-f8b5-450f-a742-80b5a0fc0e6f")
+		(property "Reference" "U36"
+			(at 54.356 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 51.308 97.028 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 51.562 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 50.8 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "ec240e6a-ae6e-4f87-ac7c-860867378cab")
+		)
+		(pin "2"
+			(uuid "6420d253-9662-43af-b114-b64707a8ee29")
+		)
+		(pin "1"
+			(uuid "0c1d87f6-00ed-4743-8b0c-3fdc76857593")
+		)
+		(pin "5"
+			(uuid "8ba192a1-6bfd-4080-8186-a6f74bdd9a80")
+		)
+		(pin "4"
+			(uuid "8fdd71bd-5735-4c9d-96be-07c651124f49")
+		)
+		(pin "6"
+			(uuid "e17021a3-8f08-49f8-a6e4-52d4b57a4caa")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U36")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 142.24 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6674ed61-f788-4b52-b9f3-b70adea24139")
+		(property "Reference" "U50"
+			(at 146.05 110.236 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 142.748 97.028 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 143.002 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 142.24 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 142.24 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "a6cc6768-431b-44c0-aba8-55012f1a92f4")
+		)
+		(pin "2"
+			(uuid "532c6cac-b9ed-4e8e-b3d7-0f29353d89f6")
+		)
+		(pin "1"
+			(uuid "c605445c-067f-4886-abfa-ea35931663f1")
+		)
+		(pin "5"
+			(uuid "2b049c5e-af4b-4ae7-9c1b-5fb594cb5755")
+		)
+		(pin "4"
+			(uuid "6155b692-fd2c-4646-8e5e-2fef91f41699")
+		)
+		(pin "6"
+			(uuid "64e747a0-e927-47d6-935a-ecaacdd46962")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U50")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 119.38 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "768366f3-644e-49e7-a2c6-8e0a8475df49")
+		(property "Reference" "U46"
+			(at 122.682 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 119.888 56.896 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 120.142 53.848 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 119.38 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "90502978-a545-4421-bd3c-5733db47f33f")
+		)
+		(pin "3"
+			(uuid "e1ce2c77-b9c5-4615-8363-ad3cdc1ff80f")
+		)
+		(pin "5"
+			(uuid "f789c850-1cf8-4865-8532-340cd196b8ad")
+		)
+		(pin "6"
+			(uuid "bb4483cd-1368-4aa8-928c-493335f0ffc3")
+		)
+		(pin "2"
+			(uuid "723a7bdc-0845-4dd4-bf80-d0fc62711487")
+		)
+		(pin "1"
+			(uuid "583ddae0-d22f-4276-a723-12d3ca3babf8")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U46")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 212.09 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "785edbb3-0ec5-4114-ad7b-599257eec456")
+		(property "Reference" "U58"
+			(at 214.2841 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 212.598 56.896 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 212.852 53.848 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 212.09 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 212.09 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "c5442021-7fbb-45e4-ae8b-2f66107e22af")
+		)
+		(pin "3"
+			(uuid "f1913236-e951-4be8-9cf0-f2f47e5eb32e")
+		)
+		(pin "5"
+			(uuid "0e688493-2eb2-4ae9-a381-ce25abbcc4ee")
+		)
+		(pin "6"
+			(uuid "372444b6-0e39-4bf4-8a34-8bd228fc58a6")
+		)
+		(pin "2"
+			(uuid "45ebde20-50a6-4881-b80a-57347affae26")
+		)
+		(pin "1"
+			(uuid "900f5a25-60ed-4d2c-8a4d-0eb2387eb4fa")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U58")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 119.38 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "79e2f8e6-47c7-4fed-b711-69505fe8ac8d")
+		(property "Reference" "#PWR096"
+			(at 119.38 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 119.38 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 119.38 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1a5d1a04-987c-4f0d-a82c-7f9a079b3f1d")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR096")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 252.73 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7d75335c-af0b-4675-842e-d2b74dc22ab5")
+		(property "Reference" "U63"
+			(at 254.9241 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 253.238 17.526 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 253.492 14.478 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 252.73 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 252.73 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "0639c5f5-425d-46ef-bd33-f3fe72915348")
+		)
+		(pin "3"
+			(uuid "d64345ca-0adc-4d2f-a035-13d6bec22048")
+		)
+		(pin "5"
+			(uuid "071c5082-c21c-4fb4-b7df-df5286b27e4d")
+		)
+		(pin "6"
+			(uuid "f5cbe60f-f1fe-42e7-b7a0-1e9fd4d6b1d7")
+		)
+		(pin "2"
+			(uuid "f5e083f9-97fc-4b17-811f-c9573e79ec20")
+		)
+		(pin "1"
+			(uuid "292aa6d5-9123-4d2f-80c3-41813ecadf7c")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U63")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 50.8 167.64 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7dd5e959-07b5-4340-97b2-004a628c10b8")
+		(property "Reference" "#PWR078"
+			(at 50.8 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 50.8 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 50.8 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 50.8 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "138ad1ca-9b57-48f1-b3fa-ad74484cf464")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR078")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 212.09 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "83567f80-f911-4b35-9e29-0ae7b51376c7")
+		(property "Reference" "#PWR0120"
+			(at 212.09 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 212.09 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 212.09 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 212.09 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 212.09 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fc5da590-df18-452e-8d80-a8000176aabd")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0120")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 135.89 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "85771952-42b5-4aea-8915-a64117cc7e52")
+		(property "Reference" "#PWR099"
+			(at 135.89 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 135.89 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 135.89 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 135.89 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 135.89 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6f973890-12cd-4a8e-89f2-3f7496442a22")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR099")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 90.17 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8732a34c-8b03-4114-9bdc-b7f8fbf097d8")
+		(property "Reference" "U42"
+			(at 93.472 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 90.678 17.526 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 90.932 14.478 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 90.17 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 90.17 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ce74695e-b2b9-4cf7-a45d-9b775daa2a30")
+		)
+		(pin "5"
+			(uuid "1d566f2b-2b26-43d3-ab35-a359d555c69f")
+		)
+		(pin "4"
+			(uuid "13ef2d5b-d5cc-4af1-864d-b7a84c50a249")
+		)
+		(pin "2"
+			(uuid "7bc395e7-e0fb-4f1d-80b1-0d5ec737ec2a")
+		)
+		(pin "3"
+			(uuid "8e44fe7e-0922-4673-81ea-cd7941ba6ce3")
+		)
+		(pin "6"
+			(uuid "62336aed-0762-4d64-b11e-7263428d9dd7")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U42")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 113.03 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "89be0d30-7f14-40c0-a7aa-16d3954bb136")
+		(property "Reference" "#PWR094"
+			(at 113.03 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 113.03 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 113.03 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 113.03 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 113.03 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "723f4b94-d47d-4b35-a352-242a577b1852")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR094")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 165.1 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8c4694bc-9cd8-46cc-bafd-8e308c0a69d0")
+		(property "Reference" "#PWR0107"
+			(at 165.1 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 165.1 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 165.1 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 165.1 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 165.1 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a5d826e7-2b88-40f8-9333-20054315957a")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0107")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 113.03 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8fa13928-4789-4fc6-8c56-2fe80296c862")
+		(property "Reference" "#PWR093"
+			(at 113.03 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 113.03 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 113.03 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 113.03 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 113.03 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1a668bf3-a6a3-465a-a7e6-d4b0fe8e27cd")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR093")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 73.66 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8fb532cd-09e2-4d79-b95a-7bc54c8e416f")
+		(property "Reference" "#PWR084"
+			(at 73.66 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 73.66 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 73.66 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "404534a1-3726-4ecf-a4d2-9f50bcc278d6")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR084")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 135.89 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "901ea14e-7918-4e59-871e-9ec5b21228a2")
+		(property "Reference" "#PWR0100"
+			(at 135.89 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 135.89 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 135.89 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 135.89 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 135.89 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "67850d72-a95d-4cf1-bbac-1021c1948465")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0100")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 165.1 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "99e17647-15f3-49a6-b644-2b04b4792b88")
+		(property "Reference" "#PWR0108"
+			(at 165.1 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 165.1 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 165.1 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 165.1 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 165.1 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bf62f733-ab34-465c-8578-f4a5d5b752e3")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0108")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 212.09 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9b928a75-add7-4f07-a0e2-bcffec6897e5")
+		(property "Reference" "#PWR0119"
+			(at 212.09 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 212.09 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 212.09 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 212.09 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 212.09 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "76f6db5c-4de3-44f3-9c2c-5e499dc4bf1b")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0119")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 96.52 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "9d1f29bc-1454-4dbb-86c0-0c00c1114c77")
+		(property "Reference" "#PWR092"
+			(at 96.52 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 96.52 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 96.52 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "915bc6ce-d183-498a-b2fa-c9810e318c60")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR092")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 113.03 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a450b752-5f86-4568-8cef-1d40070d70a9")
+		(property "Reference" "U45"
+			(at 116.84 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 113.538 17.526 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 113.792 14.478 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 113.03 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 113.03 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "8021e513-d815-4a45-b7a0-1c389117d193")
+		)
+		(pin "1"
+			(uuid "30c73aa3-6f0c-49e5-a5dd-e960ed67393e")
+		)
+		(pin "2"
+			(uuid "48c48efc-c94e-49fb-8bb8-b392aee6531f")
+		)
+		(pin "4"
+			(uuid "3390eb32-f734-4b01-a67e-315cb94c3aa4")
+		)
+		(pin "5"
+			(uuid "cdc15b7f-407c-488d-aa6d-39a389097366")
+		)
+		(pin "6"
+			(uuid "ad6f1202-1162-4230-8dd8-f7d72f700837")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U45")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 74.93 149.86 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a4dce4ad-086e-445e-a477-e63cbd424088")
+		(property "Reference" "#PWR085"
+			(at 74.93 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 74.93 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 74.93 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 74.93 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 74.93 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b891c43b-8abe-401e-a8ac-51d54f8d41d6")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR085")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 204.47 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a7e412cf-c3b1-4af0-a6b5-9900f3457b16")
+		(property "Reference" "U57"
+			(at 206.756 31.496 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 204.978 17.526 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 205.232 14.478 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 204.47 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 204.47 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "92dfb727-76c3-40b7-9a4e-e02e73f2e0aa")
+		)
+		(pin "1"
+			(uuid "1dfeb689-9243-429b-b235-e1be8f18f19a")
+		)
+		(pin "2"
+			(uuid "9ac94f7f-674b-4889-a5ff-b02d14a325a5")
+		)
+		(pin "4"
+			(uuid "3b4aba32-dbba-4e8c-a585-6d71d9c1493e")
+		)
+		(pin "5"
+			(uuid "4e21731a-080e-458c-b4c7-41ebf826dec8")
+		)
+		(pin "6"
+			(uuid "cf55917c-ae94-4271-9bca-289b4fa940ad")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U57")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 181.61 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a9834c10-882a-4a93-a9c1-2222ba5a96ed")
+		(property "Reference" "U54"
+			(at 184.404 31.496 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 182.118 17.526 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 182.372 14.478 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 181.61 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 181.61 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4bd83fec-8387-46f3-8cf5-ecb519de6ea0")
+		)
+		(pin "5"
+			(uuid "21c39d99-2dc8-43a0-a7d8-5007b0864c3c")
+		)
+		(pin "4"
+			(uuid "c59b47b4-c6eb-47d2-bb65-ca31f03f8bbc")
+		)
+		(pin "2"
+			(uuid "149d05e5-c305-4f12-839f-67148ca39c80")
+		)
+		(pin "3"
+			(uuid "d2380bf4-2453-4674-88cd-b516852db59b")
+		)
+		(pin "6"
+			(uuid "a739992b-d3b0-4398-a45b-544bfa92e58d")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U54")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 181.61 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "aa4cda47-d34f-4163-a29b-3d532a15a7cb")
+		(property "Reference" "#PWR0111"
+			(at 181.61 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 181.61 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 181.61 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 181.61 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 181.61 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "950d52cb-190b-4b4f-963e-9562cba23ab1")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0111")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 212.09 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "aa9bd59f-5e6f-4cf4-b71d-88fc6ce22871")
+		(property "Reference" "U59"
+			(at 214.2841 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 212.598 96.266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 212.852 93.218 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 212.09 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 212.09 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "29833791-7391-45a8-be95-8518da5d2e97")
+		)
+		(pin "3"
+			(uuid "141d80ad-31a5-4860-8550-697833c4e081")
+		)
+		(pin "5"
+			(uuid "53de6d0a-5463-4609-8026-ab68c6d17db1")
+		)
+		(pin "6"
+			(uuid "c6a54056-d40a-4dad-9734-b8db29dfb529")
+		)
+		(pin "2"
+			(uuid "e89a5eca-978a-4f9f-940d-9c91202a8ffa")
+		)
+		(pin "1"
+			(uuid "842159bd-4ae0-4d4d-840c-7d7be6c983da")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U59")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 142.24 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "aeec92d8-ea3b-4439-81e8-0a61a4f4384f")
+		(property "Reference" "U49"
+			(at 146.05 70.866 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 142.748 57.658 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 143.002 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 142.24 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 142.24 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "148692d0-8b1e-4689-adfe-66b02c2880b7")
+		)
+		(pin "2"
+			(uuid "11226026-f0e9-4f59-8bb7-c179acc96e2c")
+		)
+		(pin "1"
+			(uuid "91ed874c-480b-4409-8e1c-13d83c37fa6f")
+		)
+		(pin "5"
+			(uuid "64d14321-30a1-4493-b071-76b1d136a5c3")
+		)
+		(pin "4"
+			(uuid "9451691b-971d-4177-b915-72bddec00171")
+		)
+		(pin "6"
+			(uuid "e6fd48cf-08b7-4616-9e89-0a3825f637bb")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U49")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 204.47 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "af57c018-9d98-425d-b825-5a065157fbc8")
+		(property "Reference" "#PWR0117"
+			(at 204.47 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 204.47 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 204.47 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 204.47 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 204.47 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5dfcf11b-a834-472b-a35b-05b5661b8aaf")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0117")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 158.75 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b3952167-3ecb-438f-a7a2-b65e5b9993c3")
+		(property "Reference" "#PWR0106"
+			(at 158.75 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 158.75 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 158.75 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 158.75 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 158.75 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2dae9bb4-075c-4949-88f5-10e54aee3156")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0106")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 187.96 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b5fc5187-46a9-44a8-affc-1783af560517")
+		(property "Reference" "U55"
+			(at 190.246 70.866 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 188.468 56.896 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 188.722 53.848 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 187.96 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 187.96 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "7990a593-0572-49f0-b5c5-bf0f8914fa9e")
+		)
+		(pin "1"
+			(uuid "d6a6da07-ba23-466f-b9f7-e667ad150134")
+		)
+		(pin "2"
+			(uuid "6d17ba47-2151-470c-ad99-6f77750a7897")
+		)
+		(pin "4"
+			(uuid "14f76464-b020-4793-ad91-6148cb13d245")
+		)
+		(pin "5"
+			(uuid "1aace3ac-d857-4395-ab8f-f21341748c17")
+		)
+		(pin "6"
+			(uuid "0f129572-fe28-43ef-a700-54080c67cbd4")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U55")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 252.73 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b73f480c-2f4b-4c9d-94cf-badbf1070a95")
+		(property "Reference" "#PWR0130"
+			(at 252.73 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 252.73 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 252.73 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 252.73 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 252.73 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a983349d-574f-4ab0-9b89-7f78d72c805f")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0130")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 73.66 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b7dc7940-c278-4d05-bb8f-919736903fba")
+		(property "Reference" "#PWR082"
+			(at 73.66 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 73.66 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 73.66 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fd129533-500a-46b2-bdc1-0c214474fe7c")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR082")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 187.96 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ba38df8b-f312-4674-a6ba-c34aa67d6007")
+		(property "Reference" "#PWR0113"
+			(at 187.96 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 187.96 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 187.96 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 187.96 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 187.96 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c5346883-eb3f-405e-81f5-b24cf4b142ef")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0113")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 44.45 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "bf355cbb-431b-45fe-9e76-440c15ed2293")
+		(property "Reference" "#PWR071"
+			(at 44.45 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 44.45 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 44.45 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 44.45 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 44.45 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9aa01362-1853-472b-8373-32cb3290ebdc")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR071")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 96.52 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c115a707-cfbe-4575-aa69-30a3a65a4b8b")
+		(property "Reference" "U44"
+			(at 100.33 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 97.028 96.266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 97.282 93.218 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 96.52 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "8c19c6a8-0839-4ff1-8c67-f3953c01c760")
+		)
+		(pin "1"
+			(uuid "b51abb40-38d0-40c3-a12e-ea0044f0242a")
+		)
+		(pin "2"
+			(uuid "29249794-7562-442d-98a6-d268a5ada476")
+		)
+		(pin "4"
+			(uuid "7d0e8efa-bdc7-488b-914b-ba7a42ea795c")
+		)
+		(pin "5"
+			(uuid "1df6d788-3db4-4456-bcc3-10fae1c65f41")
+		)
+		(pin "6"
+			(uuid "ca442212-d280-4a59-b295-657147900e03")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U44")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 90.17 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c3cbedf4-f372-41b4-a7dd-0ad5f06916a6")
+		(property "Reference" "#PWR088"
+			(at 90.17 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 90.17 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 90.17 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 90.17 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 90.17 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "069b3ed1-4a55-40ec-a1ed-42315521af93")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR088")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 228.6 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c4de12f9-7ff4-4c96-ac96-1fcf34037dd2")
+		(property "Reference" "U60"
+			(at 230.7941 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 229.108 17.526 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 229.362 14.478 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 228.6 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 228.6 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "8b666d91-9415-4064-9a36-546bfed8a27d")
+		)
+		(pin "3"
+			(uuid "585f5b69-31b9-4924-97ae-22429ea80b35")
+		)
+		(pin "5"
+			(uuid "ad670454-c235-4530-bd0d-894466d40237")
+		)
+		(pin "6"
+			(uuid "79c41e0a-cb97-4f26-9a41-10508a4b7f7f")
+		)
+		(pin "2"
+			(uuid "26a246a9-39c5-40b7-a551-bc8fbb2a235f")
+		)
+		(pin "1"
+			(uuid "5aeb5b0a-1f6c-4923-befa-bc18631c62f6")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U60")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 73.66 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c6ccdf26-821b-4f22-8294-9ff0aaba11a9")
+		(property "Reference" "#PWR083"
+			(at 73.66 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 73.66 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 73.66 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3b9ed4eb-9a7e-44da-9b8d-ce7e564a9fd4")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR083")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 50.8 158.75 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "cdba55cf-5f61-4279-b1b8-8216cd9e8f1b")
+		(property "Reference" "U37"
+			(at 53.086 150.876 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 51.308 136.906 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 51.562 133.858 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 50.8 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "96fc8d1a-3869-4152-bc9f-2387b8f5f5ee")
+		)
+		(pin "1"
+			(uuid "2d2beb66-ad28-49d4-a57a-bcf756d34207")
+		)
+		(pin "2"
+			(uuid "66420d8e-855b-4400-ab8d-b4259bac3f8b")
+		)
+		(pin "4"
+			(uuid "a639f142-1c4b-4af8-ad9e-63b9de2d696e")
+		)
+		(pin "5"
+			(uuid "17d7f106-e4d7-4e19-a1df-58881421dba0")
+		)
+		(pin "6"
+			(uuid "20f10192-3d96-48c2-9130-3479547db2dd")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U37")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 142.24 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "cdee28cc-1d5c-45c3-8871-da4be6a191cd")
+		(property "Reference" "#PWR0104"
+			(at 142.24 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 142.24 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 142.24 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 142.24 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 142.24 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3d92c568-030b-4fe5-8b07-aee1d98d2080")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0104")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 181.61 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d0efa310-d407-40fe-ac16-cbbea2c626fc")
+		(property "Reference" "#PWR0112"
+			(at 181.61 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 181.61 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 181.61 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 181.61 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 181.61 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8aa5614a-a082-482c-8435-4d63248a8efe")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0112")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 204.47 48.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d28498c6-cb1b-45d7-9a88-3f23d5009959")
+		(property "Reference" "#PWR0118"
+			(at 204.47 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 204.47 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 204.47 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 204.47 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 204.47 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "87df6e9d-efe4-41f8-89e0-f4607aed71f5")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0118")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 73.66 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d572cef0-ec1d-4a30-afd7-a9f5790bf8f5")
+		(property "Reference" "U39"
+			(at 76.962 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 74.168 56.896 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 74.422 53.848 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 73.66 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "43fa92af-3e36-4aa6-8d69-7bf0f088b027")
+		)
+		(pin "5"
+			(uuid "b43d7f00-8f76-4858-aa40-4f7901438b5e")
+		)
+		(pin "4"
+			(uuid "82478159-5c57-48cf-9171-286cc2bf90bb")
+		)
+		(pin "2"
+			(uuid "6eaf525d-622f-4794-af6f-206206de2232")
+		)
+		(pin "3"
+			(uuid "df3bb155-9699-4b0b-87b9-8602c951f045")
+		)
+		(pin "6"
+			(uuid "848711da-d2cd-4f6d-9b1d-08dc40121544")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U39")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 236.22 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d5db797c-af9c-4c94-b59d-0941937af449")
+		(property "Reference" "#PWR0127"
+			(at 236.22 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 236.22 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 236.22 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 236.22 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 236.22 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e5beb810-b696-49f6-afeb-5eedbe120993")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0127")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 165.1 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d7ad54b9-7691-4b89-85c9-c33f95bc1d95")
+		(property "Reference" "#PWR0110"
+			(at 165.1 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 165.1 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 165.1 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 165.1 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 165.1 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2fe7f1e0-929a-4ead-912d-e2c1a09b20db")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR0110")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 96.52 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d7d43003-16b0-4af7-b01c-22bae1138bd7")
+		(property "Reference" "#PWR090"
+			(at 96.52 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 96.52 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 96.52 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "338fb6d4-665b-413c-aa8c-f109ca2d4a8f")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR090")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 119.38 69.85 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d7eabc4d-c329-4a14-a09f-20191955467e")
+		(property "Reference" "#PWR095"
+			(at 119.38 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 119.38 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 119.38 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d50a3bb0-e0d3-4a02-9167-367586b0e092")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR095")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 119.38 118.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "dd6029bf-19ff-4c3d-9d55-1ebb4a8a7aba")
+		(property "Reference" "U47"
+			(at 122.682 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 119.888 96.266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 120.142 93.218 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 119.38 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "b2915c5f-3a4b-458c-8415-affbe520384d")
+		)
+		(pin "3"
+			(uuid "041fbe07-646d-4b26-8597-3cf7bf3537ae")
+		)
+		(pin "5"
+			(uuid "21b329b5-b676-47c8-b611-54adb193ff3e")
+		)
+		(pin "6"
+			(uuid "8d39ddf8-1d54-45ce-b86b-c2fe20141245")
+		)
+		(pin "2"
+			(uuid "61dede1b-4f1b-443f-9d5b-cd84b24d2566")
+		)
+		(pin "1"
+			(uuid "0b77eacd-8019-4f5a-acef-652ec8270371")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U47")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_name "HD108-2020_1")
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 44.45 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e2a50152-541b-4595-a7a3-b6f9790b60df")
+		(property "Reference" "U34"
+			(at 48.006 32.004 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 44.958 18.288 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 45.212 15.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 44.45 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 44.45 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "111edab2-fccc-4558-9d73-fd365f950ba1")
+		)
+		(pin "1"
+			(uuid "61163c42-b5f1-47c6-b83d-5cf96b0380b6")
+		)
+		(pin "6"
+			(uuid "ed3bed58-8aab-4d22-a0c0-a57c309f4344")
+		)
+		(pin "2"
+			(uuid "bba6524d-6c5f-4fbc-a1ba-36b374f9ee06")
+		)
+		(pin "5"
+			(uuid "8492fb23-583a-4ccc-b760-ab1e9b62647d")
+		)
+		(pin "3"
+			(uuid "da39f947-66a8-4bc8-bbb0-76842a1518b9")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U34")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "adams_library_symbols:GND")
+		(at 119.38 127 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e48017ba-c6a4-448f-b291-161cd07037b1")
+		(property "Reference" "#PWR098"
+			(at 119.38 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 119.38 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 119.38 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4d782793-6b31-47b0-a2af-d06a4643a121")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR098")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 50.8 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e7294dd2-2543-4768-a7d0-237f10a68f21")
+		(property "Reference" "#PWR075"
+			(at 50.8 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 50.8 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 50.8 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 50.8 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e9a32f9b-c759-4bf0-9ded-d30f1fe7ebd1")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR075")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 119.38 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ec20a961-63aa-4305-9999-1721c8b9131b")
+		(property "Reference" "#PWR097"
+			(at 119.38 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 119.38 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 119.38 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6c6fa57d-0bf8-473b-9b65-9231cf8828c4")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "#PWR097")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 96.52 78.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f1f5ce9e-2d9f-4f17-bd2d-9a9a62c486c1")
+		(property "Reference" "U43"
+			(at 100.33 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 97.028 56.896 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 97.282 53.848 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 96.52 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "a9a3d0c4-feb2-4400-883e-8c8c6db21221")
+		)
+		(pin "1"
+			(uuid "0b1c4f4c-dca7-498a-8f60-ebe7f6adf303")
+		)
+		(pin "2"
+			(uuid "4ff81546-4d37-4133-a677-456affc8a620")
+		)
+		(pin "4"
+			(uuid "b7a3067b-6fd3-4737-8589-6326ea2fb85b")
+		)
+		(pin "5"
+			(uuid "ad799c3f-e1e9-4565-bd39-16c96b0e33df")
+		)
+		(pin "6"
+			(uuid "4b486804-9333-412d-8e98-4d73142a2934")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U43")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
+		(at 158.75 39.37 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ffc19baa-72fd-4011-8bd6-ae961b588198")
+		(property "Reference" "U51"
+			(at 162.56 31.496 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HD108-2020"
+			(at 159.258 18.288 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
+			(at 159.512 15.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 158.75 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 158.75 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "cc29dd02-a8c3-4b1a-9e47-7dcfc0313251")
+		)
+		(pin "2"
+			(uuid "2d4c8919-7da3-43e2-b9e9-dca895aa8801")
+		)
+		(pin "1"
+			(uuid "1c96df2f-8547-41e8-a5af-02efc99d7b89")
+		)
+		(pin "5"
+			(uuid "28947a7a-4476-4dae-85ed-c20c3ad6d1ae")
+		)
+		(pin "4"
+			(uuid "eb098b0e-2853-4f26-b4a5-a253d15343a3")
+		)
+		(pin "6"
+			(uuid "d93a4891-7d34-4ebf-afba-cbafd6c16be0")
+		)
+		(instances
+			(project "f1-led-circuit"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800/79904105-a8d7-46a3-bc29-7dd5c0cc0978"
+					(reference "U51")
+					(unit 1)
+				)
+			)
+		)
+	)
+)
