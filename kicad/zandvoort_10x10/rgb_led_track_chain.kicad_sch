@@ -227,9 +227,9 @@
 					)
 				)
 				(pin output line
-					(at 8.89 -2.54 180)
+					(at 8.89 2.54 180)
 					(length 2.54)
-					(name "DCKO"
+					(name "DOUT"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -245,9 +245,9 @@
 					)
 				)
 				(pin output line
-					(at 8.89 2.54 180)
+					(at 8.89 -2.54 180)
 					(length 2.54)
-					(name "DOUT"
+					(name "DCKO"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2310,7 +2310,7 @@
 			(uuid "b343a60a-0fdd-4370-b048-530b787bf013")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR081")
 					(unit 1)
@@ -2409,7 +2409,7 @@
 			(uuid "af61b8c2-49bc-4019-8503-3d68938b5bb4")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U34")
 					(unit 1)
@@ -2487,7 +2487,7 @@
 			(uuid "104899e1-2f69-4c0d-8265-248eeeb142ce")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "C18")
 					(unit 1)
@@ -2562,7 +2562,7 @@
 			(uuid "cace0473-d590-4290-9609-319520bdde77")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0116")
 					(unit 1)
@@ -2637,7 +2637,7 @@
 			(uuid "4638f53c-ff69-450f-a30f-ae579bca48c8")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR084")
 					(unit 1)
@@ -2712,7 +2712,7 @@
 			(uuid "5f08ee4d-3b0e-4caf-8f90-6a4071d591a0")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0102")
 					(unit 1)
@@ -2811,7 +2811,7 @@
 			(uuid "c5caac04-ee73-40f6-9bc6-273c25f7e513")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U36")
 					(unit 1)
@@ -2886,7 +2886,7 @@
 			(uuid "05a881ce-dbff-4001-8320-9bc80fcdae27")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR082")
 					(unit 1)
@@ -2984,7 +2984,7 @@
 			(uuid "1d719a30-ae2c-4143-b6f1-ef3b09e24885")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U17")
 					(unit 1)
@@ -3059,7 +3059,7 @@
 			(uuid "f7c2b7f4-b4fa-40e9-98b5-97206f35bf97")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0110")
 					(unit 1)
@@ -3133,7 +3133,7 @@
 			(uuid "298642a6-9160-4407-8380-67877a9f0f55")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0101")
 					(unit 1)
@@ -3231,7 +3231,7 @@
 			(uuid "07139cb1-0fe9-4efb-8049-d4a322a28ba0")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U31")
 					(unit 1)
@@ -3306,7 +3306,7 @@
 			(uuid "d1008c1c-8082-4752-973e-6ba67eaae472")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0111")
 					(unit 1)
@@ -3404,7 +3404,7 @@
 			(uuid "426c98b8-541a-4337-b073-ae65e677f0b3")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U32")
 					(unit 1)
@@ -3479,7 +3479,7 @@
 			(uuid "bd00f47b-e501-404f-a8c8-2fbe45546141")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR086")
 					(unit 1)
@@ -3577,7 +3577,7 @@
 			(uuid "5659a1a3-8ae7-47ae-94e1-d1f7d48b69e6")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U11")
 					(unit 1)
@@ -3675,7 +3675,7 @@
 			(uuid "49eaba73-b98e-4080-b4ac-155af581604b")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U22")
 					(unit 1)
@@ -3750,7 +3750,7 @@
 			(uuid "3fa22dbb-c9fb-4c1b-b488-e3e658d2791b")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0117")
 					(unit 1)
@@ -3825,7 +3825,7 @@
 			(uuid "17a4528d-3e8a-4e6a-9965-762d12ef9bc2")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0100")
 					(unit 1)
@@ -3924,7 +3924,7 @@
 			(uuid "3a92a31f-5cbf-41c5-aef0-04a291433445")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U25")
 					(unit 1)
@@ -3999,7 +3999,7 @@
 			(uuid "12a191f3-3b07-48ed-ba79-631f0f9f7080")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR099")
 					(unit 1)
@@ -4097,7 +4097,7 @@
 			(uuid "eb9ef91b-9f3b-4322-a2f1-7eb1bfff52cc")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U8")
 					(unit 1)
@@ -4172,7 +4172,7 @@
 			(uuid "c2e3bced-72e7-40f8-a20c-ff58a959e9e7")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR090")
 					(unit 1)
@@ -4270,7 +4270,7 @@
 			(uuid "cbacab65-547f-44c6-86e6-8939ac2cddb6")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U27")
 					(unit 1)
@@ -4345,7 +4345,7 @@
 			(uuid "2c42060b-20e1-404d-b9e1-68368a9058f0")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0115")
 					(unit 1)
@@ -4420,7 +4420,7 @@
 			(uuid "a1d4e005-8229-46eb-a153-2fd94cb22f25")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0114")
 					(unit 1)
@@ -4518,7 +4518,7 @@
 			(uuid "c4353a29-1f45-4118-8c01-cd1f6203674a")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U26")
 					(unit 1)
@@ -4616,7 +4616,7 @@
 			(uuid "7622175f-eb39-4ce2-84dc-eeea5543d4be")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U30")
 					(unit 1)
@@ -4714,7 +4714,7 @@
 			(uuid "1f1cbc8d-094c-4cc7-85bb-d24dac87def5")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U20")
 					(unit 1)
@@ -4813,7 +4813,7 @@
 			(uuid "a7b8c68d-ec6f-4ab0-8ed8-6c18227d15ff")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U24")
 					(unit 1)
@@ -4888,7 +4888,7 @@
 			(uuid "dbc7217a-e74c-4991-bcc1-a5d9d9d0e9b5")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR095")
 					(unit 1)
@@ -4987,7 +4987,7 @@
 			(uuid "675b7c6e-ee75-4b52-87f2-24bf6391ce9d")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U16")
 					(unit 1)
@@ -5062,7 +5062,7 @@
 			(uuid "a8938caa-c7e1-4a05-831d-ffa10d394fb9")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR083")
 					(unit 1)
@@ -5140,7 +5140,7 @@
 			(uuid "1922787a-7096-428c-bd89-b5155e13ac36")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "C15")
 					(unit 1)
@@ -5215,7 +5215,7 @@
 			(uuid "a8b81a6a-99fe-429d-9456-d5cafc67773c")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0113")
 					(unit 1)
@@ -5313,7 +5313,7 @@
 			(uuid "d910ebe8-f5c0-4aa5-b6ff-7cc87c45f16f")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U9")
 					(unit 1)
@@ -5391,7 +5391,7 @@
 			(uuid "f9dc058b-5952-43f1-bf62-c4930df03054")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "C16")
 					(unit 1)
@@ -5466,7 +5466,7 @@
 			(uuid "16c2ee52-a53a-45dd-be11-e2b81cda8580")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR094")
 					(unit 1)
@@ -5541,7 +5541,7 @@
 			(uuid "6667779e-5c0a-425a-98c3-a58faabb6a35")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR085")
 					(unit 1)
@@ -5616,7 +5616,7 @@
 			(uuid "0d18aaf8-c03b-409b-98fa-f1d0d59304b8")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR089")
 					(unit 1)
@@ -5691,7 +5691,7 @@
 			(uuid "b6eb5613-1715-4605-a34b-6320c149d5b0")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR097")
 					(unit 1)
@@ -5766,7 +5766,7 @@
 			(uuid "937a801f-e450-42ef-b07a-ceea30dd01d4")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0107")
 					(unit 1)
@@ -5841,7 +5841,7 @@
 			(uuid "df024919-16ba-4604-a923-1f3778adf642")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR093")
 					(unit 1)
@@ -5939,7 +5939,7 @@
 			(uuid "1b79e663-e400-48d0-bd1a-594a31b381ff")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U10")
 					(unit 1)
@@ -6037,7 +6037,7 @@
 			(uuid "6f6cb2c3-91e4-4120-8bf8-8034dd92b42f")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U14")
 					(unit 1)
@@ -6135,7 +6135,7 @@
 			(uuid "6aaf348c-5ea6-4664-bafd-f01d96de96d8")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U13")
 					(unit 1)
@@ -6234,7 +6234,7 @@
 			(uuid "91181405-e0e1-4214-8d34-694fac3910c3")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U33")
 					(unit 1)
@@ -6332,7 +6332,7 @@
 			(uuid "f45dd189-b318-43ce-b562-75a11a805fbe")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U21")
 					(unit 1)
@@ -6407,7 +6407,7 @@
 			(uuid "0b722386-0c2f-43bb-ab06-4faeb16109d9")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0106")
 					(unit 1)
@@ -6505,7 +6505,7 @@
 			(uuid "a520f8b0-d680-47b6-b752-3b2567699ab4")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U23")
 					(unit 1)
@@ -6580,7 +6580,7 @@
 			(uuid "18eaeffa-41c7-4fcc-91cd-fe644b7e2edd")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0118")
 					(unit 1)
@@ -6655,7 +6655,7 @@
 			(uuid "6b4c769f-bee2-4f3e-8150-31b0c9dbcab0")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR088")
 					(unit 1)
@@ -6753,7 +6753,7 @@
 			(uuid "195056eb-91cb-473b-8b98-e5faf0a90745")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U28")
 					(unit 1)
@@ -6828,7 +6828,7 @@
 			(uuid "4af62664-de56-4424-8ded-05e14ef38e06")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR091")
 					(unit 1)
@@ -6927,7 +6927,7 @@
 			(uuid "e65756be-9e3e-4f05-9d7d-42dbded4c550")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U15")
 					(unit 1)
@@ -7025,7 +7025,7 @@
 			(uuid "e9756cf5-8c33-44da-b37f-038cdc443495")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U35")
 					(unit 1)
@@ -7100,7 +7100,7 @@
 			(uuid "9bf95b7f-64b6-4f80-a98c-4c6add1fb7d0")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0105")
 					(unit 1)
@@ -7174,7 +7174,7 @@
 			(uuid "0275e3d7-c4e4-428b-bcba-05a62b38fea9")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0103")
 					(unit 1)
@@ -7249,7 +7249,7 @@
 			(uuid "3cdea423-2382-456a-9152-e4bfc815d0a7")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0109")
 					(unit 1)
@@ -7324,7 +7324,7 @@
 			(uuid "f0ab41b6-87eb-4229-a802-b0edab37bc07")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0112")
 					(unit 1)
@@ -7422,7 +7422,7 @@
 			(uuid "0ad600c6-79e3-4672-aa00-c9497b8f18d8")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U18")
 					(unit 1)
@@ -7497,7 +7497,7 @@
 			(uuid "5f58b10f-88f3-429c-ad0a-69001c64bf11")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0108")
 					(unit 1)
@@ -7572,7 +7572,7 @@
 			(uuid "e2e13c77-56ff-49ac-9297-c5f239673e06")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR092")
 					(unit 1)
@@ -7670,7 +7670,7 @@
 			(uuid "98a01f83-63e2-48d4-be32-92cfd1262a31")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U29")
 					(unit 1)
@@ -7768,7 +7768,7 @@
 			(uuid "fdb96374-8eea-428a-9d03-4bdde4048560")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U7")
 					(unit 1)
@@ -7843,7 +7843,7 @@
 			(uuid "6b53bd85-dde7-48ef-900d-0c79fd07bc29")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR096")
 					(unit 1)
@@ -7921,7 +7921,7 @@
 			(uuid "cc19869e-d850-4836-9925-ef5b979d34e4")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "C17")
 					(unit 1)
@@ -7995,7 +7995,7 @@
 			(uuid "07fda8f1-5c9d-4235-89d4-cf347a0fa80e")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR0104")
 					(unit 1)
@@ -8093,7 +8093,7 @@
 			(uuid "8114192a-be12-4868-9dc5-6da7f994ee69")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U19")
 					(unit 1)
@@ -8167,7 +8167,7 @@
 			(uuid "b98115e7-8600-4fc4-b6dd-044e5aec15a5")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR087")
 					(unit 1)
@@ -8242,7 +8242,7 @@
 			(uuid "7ba3bbf9-d166-4e11-a70e-22141aaf54b9")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "#PWR098")
 					(unit 1)
@@ -8340,7 +8340,7 @@
 			(uuid "d7f82a77-652d-4a60-b100-fa82076ffc08")
 		)
 		(instances
-			(project "f1-led-circuit"
+			(project "f1-led-circuit-10x10"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800/9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f"
 					(reference "U12")
 					(unit 1)

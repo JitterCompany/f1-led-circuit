@@ -15939,7 +15939,7 @@
 			(uuid "8d88aa8b-7a17-4930-acd6-cb72c69ec055")
 		)
 		(pad "3" smd rect
-			(at -0.7 0.800001 19)
+			(at -0.7 0.800002 19)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 70 "Net-(U20-DOUT)")
@@ -15949,7 +15949,7 @@
 			(uuid "14df5f26-b89f-4e38-acd7-e640a4cd4c40")
 		)
 		(pad "4" smd rect
-			(at 0.7 -0.800001 19)
+			(at 0.7 -0.800002 19)
 			(size 0.6 0.4)
 			(layers "F.Cu" "F.Paste" "F.Mask")
 			(net 1 "GND")
