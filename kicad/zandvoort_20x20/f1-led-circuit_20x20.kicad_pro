@@ -497,7 +497,7 @@
     "page_layout_descr_file": "worksheet_template/kicad_worksheet_template.kicad_wks"
   },
   "schematic": {
-    "annotate_start_num": 370,
+    "annotate_start_num": 189,
     "bom_fmt_presets": [],
     "bom_fmt_settings": {
       "field_delimiter": ",",
@@ -638,32 +638,12 @@
       "LED_CHAIN5"
     ],
     [
-      "f4cd949b-ad69-4ecf-8a3b-f0ca17329bef",
+      "7842656e-a47c-4518-8816-d238239d47b0",
       "LED_CHAIN6"
     ],
     [
-      "42b2d0dd-ece0-458b-b770-466336906ce0",
+      "d9c93f8a-c967-4b82-ac84-76174b626f0a",
       "LED_CHAIN7"
-    ],
-    [
-      "a311b528-4f5f-46c0-992a-be3afad39663",
-      "LED_CHAIN8"
-    ],
-    [
-      "28dbc027-db6f-4c72-a76a-feb458b245fb",
-      "LED_CHAIN9"
-    ],
-    [
-      "06168afa-5824-4591-9543-f343b28bcd32",
-      "LED_CHAIN10"
-    ],
-    [
-      "d2df3509-215b-4b43-9346-1e86f057e0e8",
-      "LED_CHAIN11"
-    ],
-    [
-      "2c6ec2a6-2023-4058-95e7-f4285c1d5193",
-      "LED_CHAIN12"
     ]
   ],
   "text_variables": {}
