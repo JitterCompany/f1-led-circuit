@@ -4513,12 +4513,6 @@
 		(uuid "7ce9af34-1c4c-427c-a636-edafe1ba18d1")
 	)
 	(junction
-		(at 179.07 38.1)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "80a80260-6dd2-4f45-b040-7316fecb42cf")
-	)
-	(junction
 		(at 276.86 111.76)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4541,12 +4535,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "963726e5-84c2-4f98-aead-6bef0b5e2acb")
-	)
-	(junction
-		(at 135.89 38.1)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "9c21ceab-931a-4363-a1b2-7afe83ceb10d")
 	)
 	(junction
 		(at 242.57 111.76)
@@ -4609,12 +4597,6 @@
 		(uuid "d9d147b2-f2a9-4058-9cda-24a643513c02")
 	)
 	(junction
-		(at 157.48 38.1)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "eccc0bd6-d234-47e1-8b38-7cf770305b95")
-	)
-	(junction
 		(at 144.78 120.65)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4631,6 +4613,14 @@
 	(no_connect
 		(at 276.86 218.44)
 		(uuid "3c9b2d8e-9e0c-461a-84ae-642ecdce4dda")
+	)
+	(no_connect
+		(at 267.97 52.07)
+		(uuid "3f60c71e-c99c-4bdc-8bd7-c4edf7edb9ca")
+	)
+	(no_connect
+		(at 267.97 49.53)
+		(uuid "bc04593e-dac6-4937-b324-872e8fa94f24")
 	)
 	(no_connect
 		(at 276.86 198.12)
@@ -4682,16 +4672,6 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 48.26) (xy 191.77 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "07391a20-7a88-4544-b948-4c7a4a07f95c")
-	)
-	(wire
-		(pts
 			(xy 196.85 111.76) (xy 196.85 119.38)
 		)
 		(stroke
@@ -4702,7 +4682,7 @@
 	)
 	(wire
 		(pts
-			(xy 299.72 49.53) (xy 303.53 49.53)
+			(xy 232.41 49.53) (xy 236.22 49.53)
 		)
 		(stroke
 			(width 0)
@@ -4712,7 +4692,7 @@
 	)
 	(wire
 		(pts
-			(xy 264.16 52.07) (xy 267.97 52.07)
+			(xy 196.85 52.07) (xy 200.66 52.07)
 		)
 		(stroke
 			(width 0)
@@ -4772,7 +4752,7 @@
 	)
 	(wire
 		(pts
-			(xy 212.09 49.53) (xy 214.63 49.53)
+			(xy 146.05 49.53) (xy 147.32 49.53)
 		)
 		(stroke
 			(width 0)
@@ -4789,16 +4769,6 @@
 			(type default)
 		)
 		(uuid "1128e6c2-b85a-4fa1-9c7d-6e6087d1b0a5")
-	)
-	(wire
-		(pts
-			(xy 209.55 53.34) (xy 212.09 53.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "14e489e8-e221-45a1-ae9f-30f09d76f1b4")
 	)
 	(wire
 		(pts
@@ -4872,17 +4842,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 38.1) (xy 157.48 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "221a52e7-f628-479d-be1e-4b7b918e371f")
-	)
-	(wire
-		(pts
-			(xy 317.5 52.07) (xy 321.31 52.07)
+			(xy 250.19 52.07) (xy 254 52.07)
 		)
 		(stroke
 			(width 0)
@@ -4922,7 +4882,7 @@
 	)
 	(wire
 		(pts
-			(xy 246.38 49.53) (xy 250.19 49.53)
+			(xy 179.07 49.53) (xy 182.88 49.53)
 		)
 		(stroke
 			(width 0)
@@ -4942,7 +4902,7 @@
 	)
 	(wire
 		(pts
-			(xy 212.09 48.26) (xy 212.09 49.53)
+			(xy 146.05 48.26) (xy 146.05 49.53)
 		)
 		(stroke
 			(width 0)
@@ -4952,7 +4912,7 @@
 	)
 	(wire
 		(pts
-			(xy 299.72 52.07) (xy 303.53 52.07)
+			(xy 232.41 52.07) (xy 236.22 52.07)
 		)
 		(stroke
 			(width 0)
@@ -5052,7 +5012,7 @@
 	)
 	(wire
 		(pts
-			(xy 281.94 52.07) (xy 285.75 52.07)
+			(xy 214.63 52.07) (xy 218.44 52.07)
 		)
 		(stroke
 			(width 0)
@@ -5082,7 +5042,7 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 53.34) (xy 148.59 53.34)
+			(xy 144.78 53.34) (xy 146.05 53.34)
 		)
 		(stroke
 			(width 0)
@@ -5119,16 +5079,6 @@
 			(type default)
 		)
 		(uuid "61357fed-f9d4-4511-a800-d7639f6089e4")
-	)
-	(wire
-		(pts
-			(xy 209.55 48.26) (xy 212.09 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "61a9876d-4b03-4df8-97f4-d2e82d464f90")
 	)
 	(wire
 		(pts
@@ -5292,17 +5242,7 @@
 	)
 	(wire
 		(pts
-			(xy 200.66 38.1) (xy 200.66 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7f26ac79-3337-4fe1-9093-81b6a1cfbab1")
-	)
-	(wire
-		(pts
-			(xy 246.38 52.07) (xy 250.19 52.07)
+			(xy 179.07 52.07) (xy 182.88 52.07)
 		)
 		(stroke
 			(width 0)
@@ -5442,7 +5382,7 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 48.26) (xy 148.59 48.26)
+			(xy 144.78 48.26) (xy 146.05 48.26)
 		)
 		(stroke
 			(width 0)
@@ -5469,16 +5409,6 @@
 			(type default)
 		)
 		(uuid "94c8f840-750e-43a1-aa6c-59e6859d2e1d")
-	)
-	(wire
-		(pts
-			(xy 179.07 38.1) (xy 200.66 38.1)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9570f2c6-1356-4c6a-89e6-8d49e91c1db3")
 	)
 	(wire
 		(pts
@@ -5542,6 +5472,16 @@
 	)
 	(wire
 		(pts
+			(xy 267.97 49.53) (xy 267.97 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a554d346-faaf-4dd8-9f55-cea5a9a40bf4")
+	)
+	(wire
+		(pts
 			(xy 69.85 22.86) (xy 81.28 22.86)
 		)
 		(stroke
@@ -5549,26 +5489,6 @@
 			(type default)
 		)
 		(uuid "a6de78bc-6576-401d-81d2-47df96067035")
-	)
-	(wire
-		(pts
-			(xy 135.89 38.1) (xy 157.48 38.1)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a71fecfe-2efc-48f3-b206-494d470a5830")
-	)
-	(wire
-		(pts
-			(xy 166.37 53.34) (xy 170.18 53.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a7cb1aea-7fff-455f-aa0a-ad956a9cc3ae")
 	)
 	(wire
 		(pts
@@ -5602,7 +5522,7 @@
 	)
 	(wire
 		(pts
-			(xy 281.94 49.53) (xy 285.75 49.53)
+			(xy 214.63 49.53) (xy 218.44 49.53)
 		)
 		(stroke
 			(width 0)
@@ -5632,7 +5552,7 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 49.53) (xy 232.41 49.53)
+			(xy 161.29 49.53) (xy 165.1 49.53)
 		)
 		(stroke
 			(width 0)
@@ -5642,7 +5562,7 @@
 	)
 	(wire
 		(pts
-			(xy 212.09 52.07) (xy 214.63 52.07)
+			(xy 146.05 52.07) (xy 147.32 52.07)
 		)
 		(stroke
 			(width 0)
@@ -5682,7 +5602,7 @@
 	)
 	(wire
 		(pts
-			(xy 212.09 53.34) (xy 212.09 52.07)
+			(xy 146.05 53.34) (xy 146.05 52.07)
 		)
 		(stroke
 			(width 0)
@@ -5782,7 +5702,7 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 52.07) (xy 232.41 52.07)
+			(xy 161.29 52.07) (xy 165.1 52.07)
 		)
 		(stroke
 			(width 0)
@@ -5862,16 +5782,6 @@
 	)
 	(wire
 		(pts
-			(xy 179.07 38.1) (xy 179.07 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d60b01ec-f1f9-4610-be93-a3d5607f8a3f")
-	)
-	(wire
-		(pts
 			(xy 276.86 236.22) (xy 289.56 236.22)
 		)
 		(stroke
@@ -5909,16 +5819,6 @@
 			(type default)
 		)
 		(uuid "d84fe1fc-74c0-4d22-be9d-3db81f2a4785")
-	)
-	(wire
-		(pts
-			(xy 166.37 48.26) (xy 170.18 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d9e1e184-eb9d-484e-a16b-1925d21602ab")
 	)
 	(wire
 		(pts
@@ -5992,16 +5892,6 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 53.34) (xy 191.77 53.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e4917972-6ec3-41d9-90f2-66aba3f9835f")
-	)
-	(wire
-		(pts
 			(xy 114.3 38.1) (xy 114.3 41.91)
 		)
 		(stroke
@@ -6012,7 +5902,7 @@
 	)
 	(wire
 		(pts
-			(xy 264.16 49.53) (xy 267.97 49.53)
+			(xy 196.85 49.53) (xy 200.66 49.53)
 		)
 		(stroke
 			(width 0)
@@ -6092,7 +5982,7 @@
 	)
 	(wire
 		(pts
-			(xy 317.5 49.53) (xy 321.31 49.53)
+			(xy 250.19 49.53) (xy 254 49.53)
 		)
 		(stroke
 			(width 0)
@@ -6139,16 +6029,6 @@
 			(type default)
 		)
 		(uuid "fd9ece28-36ff-4acb-b0d7-7f1db6907020")
-	)
-	(wire
-		(pts
-			(xy 157.48 38.1) (xy 179.07 38.1)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fe378009-fa20-4901-8255-8b43b250c760")
 	)
 	(wire
 		(pts
@@ -6573,7 +6453,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "00bad007-10b7-4b9b-ab02-e81aea96bfd7")
-		(property "Reference" "U203"
+		(property "Reference" "U303"
 			(at 98.425 113.03 0)
 			(effects
 				(font
@@ -6646,7 +6526,7 @@
 		(instances
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U203")
+					(reference "U303")
 					(unit 1)
 				)
 			)
@@ -6794,255 +6674,6 @@
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "#PWR04")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "adams_library_symbols:GND")
-		(at 157.48 59.69 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0b10c95b-7334-4b2f-84f6-d3cc505b4e64")
-		(property "Reference" "#PWR0371"
-			(at 157.48 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 157.48 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" ""
-			(at 157.48 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 157.48 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 157.48 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3b77639d-ddf2-4a20-839c-4b4125e97920")
-		)
-		(instances
-			(project "f1-led-circuit_20x20"
-				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR0371")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
-		(at 200.66 50.8 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0da887d0-ac6f-4747-add8-1dffa77fb737")
-		(property "Reference" "U9"
-			(at 202.8541 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "HD108-2020"
-			(at 201.168 28.956 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 201.422 25.908 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 200.66 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "HD108-2020 RGB LED"
-			(at 200.66 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "HD108-2020"
-			(at 200.66 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "4"
-			(uuid "8ca3c9fc-eedd-4676-aba4-db126fb24298")
-		)
-		(pin "3"
-			(uuid "9279402b-15b4-4148-bbae-a2f39e338c57")
-		)
-		(pin "2"
-			(uuid "40608591-f0a0-4eae-9011-6eeb47f680b1")
-		)
-		(pin "6"
-			(uuid "f3f5ce86-693f-47bc-85a0-198bfe9b5c8b")
-		)
-		(pin "1"
-			(uuid "5169eab0-a19a-4e6c-a860-16f625849f14")
-		)
-		(pin "5"
-			(uuid "79d901e7-42b1-43eb-a14d-3396c12df98e")
-		)
-		(instances
-			(project "f1-led-circuit_20x20"
-				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U9")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
-		(at 179.07 50.8 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "10d8d49e-429c-4943-af49-29749948c669")
-		(property "Reference" "U8"
-			(at 181.2641 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "HD108-2020"
-			(at 179.578 28.956 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 179.832 25.908 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 179.07 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "HD108-2020 RGB LED"
-			(at 179.07 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "HD108-2020"
-			(at 179.07 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "4"
-			(uuid "54703d82-2e8e-49ce-a9ca-7e47659203b4")
-		)
-		(pin "3"
-			(uuid "6bfe9678-f530-4cf8-829e-05ae2c77c7c8")
-		)
-		(pin "2"
-			(uuid "e56797a6-3c25-4651-812a-b23d60603deb")
-		)
-		(pin "6"
-			(uuid "173c098f-4691-4e24-a031-63093c5859ae")
-		)
-		(pin "1"
-			(uuid "1025ba7a-79ce-4f8b-86e6-2bf0a834cddf")
-		)
-		(pin "5"
-			(uuid "253befce-eb06-426d-88bf-0541b16ad729")
-		)
-		(instances
-			(project "f1-led-circuit_20x20"
-				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U8")
 					(unit 1)
 				)
 			)
@@ -8106,73 +7737,6 @@
 		)
 	)
 	(symbol
-		(lib_id "adams_library_symbols:GND")
-		(at 200.66 59.69 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4819058a-1f33-417b-9329-6aca41474d83")
-		(property "Reference" "#PWR0373"
-			(at 200.66 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 200.66 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" ""
-			(at 200.66 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 200.66 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 200.66 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "96d8f5be-db50-4333-b202-14a013cff523")
-		)
-		(instances
-			(project "f1-led-circuit_20x20"
-				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR0373")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 294.64 210.82 180)
 		(unit 1)
@@ -8248,7 +7812,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4b3c2605-cfbd-4496-950b-747a5530fb27")
-		(property "Reference" "U201"
+		(property "Reference" "U301"
 			(at 297.688 115.57 0)
 			(effects
 				(font
@@ -8320,7 +7884,7 @@
 		(instances
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U201")
+					(reference "U301")
 					(unit 1)
 				)
 			)
@@ -9038,7 +8602,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6e8177ab-53e3-4370-b76c-b1dad3d5e292")
-		(property "Reference" "U202"
+		(property "Reference" "U302"
 			(at 221.996 107.696 0)
 			(effects
 				(font
@@ -9120,7 +8684,7 @@
 		(instances
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U202")
+					(reference "U302")
 					(unit 1)
 				)
 			)
@@ -9202,7 +8766,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6f1baee6-ba1d-483d-a8a6-0523174474d2")
-		(property "Reference" "U200"
+		(property "Reference" "U300"
 			(at 270.764 185.928 0)
 			(effects
 				(font
@@ -9418,74 +8982,7 @@
 		(instances
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U200")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "adams_library_symbols:GND")
-		(at 179.07 59.69 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "6fe2bb48-ea94-48e7-bcf3-6c704f264f91")
-		(property "Reference" "#PWR0372"
-			(at 179.07 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 179.07 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" ""
-			(at 179.07 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 179.07 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 179.07 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "323276d4-c76c-4a9e-a4b9-fa734dedb96d")
-		)
-		(instances
-			(project "f1-led-circuit_20x20"
-				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "#PWR0372")
+					(reference "U300")
 					(unit 1)
 				)
 			)
@@ -10375,97 +9872,6 @@
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "#FLG03")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "F1-LED-CIRCUIT-LIBRARY:HD108-2020")
-		(at 157.48 50.8 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "91ad0442-5a74-44d4-ba36-5aa17fc75d7c")
-		(property "Reference" "U7"
-			(at 159.6741 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "HD108-2020"
-			(at 157.988 28.956 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
-			(at 158.242 25.908 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 157.48 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "HD108-2020 RGB LED"
-			(at 157.48 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MPN" "HD108-2020"
-			(at 157.48 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "4"
-			(uuid "cb834e3e-b2ac-4776-97cb-8f4856c78ca4")
-		)
-		(pin "3"
-			(uuid "be21b908-6764-49d5-9e53-89daa60f9928")
-		)
-		(pin "2"
-			(uuid "800a1d6f-fbcb-4e14-b32c-a0bef955b1ea")
-		)
-		(pin "6"
-			(uuid "0a503ece-55c9-408f-928f-78ba0fb5fb23")
-		)
-		(pin "1"
-			(uuid "02cebfbf-42d7-402d-9b67-b72a385b13a1")
-		)
-		(pin "5"
-			(uuid "402f204d-a896-430f-be3f-05282d98e6dd")
-		)
-		(instances
-			(project "f1-led-circuit_20x20"
-				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "U7")
 					(unit 1)
 				)
 			)
@@ -12511,7 +11917,7 @@
 		)
 	)
 	(sheet
-		(at 232.41 44.45)
+		(at 165.1 44.45)
 		(size 13.97 12.7)
 		(stroke
 			(width 0.1524)
@@ -12522,7 +11928,7 @@
 		)
 		(uuid "0e0c93e3-84d7-42b2-b8bb-02a25955330c")
 		(property "Sheetname" "LED_CHAIN2"
-			(at 233.807 43.434 0)
+			(at 166.497 43.434 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12531,7 +11937,7 @@
 			)
 		)
 		(property "Sheetfile" "rgb_led_track_chain.kicad_sch"
-			(at 225.298 58.166 0)
+			(at 157.988 58.166 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12541,7 +11947,7 @@
 			)
 		)
 		(pin "DCKI" input
-			(at 232.41 52.07 180)
+			(at 165.1 52.07 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12551,7 +11957,7 @@
 			(uuid "55eb3b54-ed09-4521-b4fb-d232961f665b")
 		)
 		(pin "DIN" input
-			(at 232.41 49.53 180)
+			(at 165.1 49.53 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12561,7 +11967,7 @@
 			(uuid "d654fedc-8e9f-4b52-a373-7061d4607bc2")
 		)
 		(pin "DOUT" output
-			(at 246.38 49.53 0)
+			(at 179.07 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12571,7 +11977,7 @@
 			(uuid "1ff2331f-4144-4f90-ba5c-9b8012f298e3")
 		)
 		(pin "DCKO" output
-			(at 246.38 52.07 0)
+			(at 179.07 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12589,7 +11995,7 @@
 		)
 	)
 	(sheet
-		(at 250.19 44.45)
+		(at 182.88 44.45)
 		(size 13.97 12.7)
 		(stroke
 			(width 0.1524)
@@ -12600,7 +12006,7 @@
 		)
 		(uuid "76d7aa16-577c-458e-8b5c-a56aea9320e7")
 		(property "Sheetname" "LED_CHAIN3"
-			(at 251.587 43.434 0)
+			(at 184.277 43.434 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12609,7 +12015,7 @@
 			)
 		)
 		(property "Sheetfile" "rgb_led_track_chain.kicad_sch"
-			(at 243.078 58.166 0)
+			(at 175.768 58.166 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12619,7 +12025,7 @@
 			)
 		)
 		(pin "DCKI" input
-			(at 250.19 52.07 180)
+			(at 182.88 52.07 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12629,7 +12035,7 @@
 			(uuid "18fe5bc4-5269-43fd-af52-351a820bf974")
 		)
 		(pin "DIN" input
-			(at 250.19 49.53 180)
+			(at 182.88 49.53 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12639,7 +12045,7 @@
 			(uuid "79e211f3-77c6-4be5-a706-9e25184d67ad")
 		)
 		(pin "DOUT" output
-			(at 264.16 49.53 0)
+			(at 196.85 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12649,7 +12055,7 @@
 			(uuid "d38ada45-92dd-42ca-a153-2b3a8f89dad0")
 		)
 		(pin "DCKO" output
-			(at 264.16 52.07 0)
+			(at 196.85 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12667,7 +12073,7 @@
 		)
 	)
 	(sheet
-		(at 303.53 44.45)
+		(at 236.22 44.45)
 		(size 13.97 12.7)
 		(stroke
 			(width 0.1524)
@@ -12678,7 +12084,7 @@
 		)
 		(uuid "7842656e-a47c-4518-8816-d238239d47b0")
 		(property "Sheetname" "LED_CHAIN6"
-			(at 304.927 43.434 0)
+			(at 237.617 43.434 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12687,7 +12093,7 @@
 			)
 		)
 		(property "Sheetfile" "rgb_led_track_chain.kicad_sch"
-			(at 296.418 58.166 0)
+			(at 229.108 58.166 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12697,7 +12103,7 @@
 			)
 		)
 		(pin "DCKI" input
-			(at 303.53 52.07 180)
+			(at 236.22 52.07 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12707,7 +12113,7 @@
 			(uuid "93efb9a3-3236-43c1-834f-bb5dc779579e")
 		)
 		(pin "DIN" input
-			(at 303.53 49.53 180)
+			(at 236.22 49.53 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12717,7 +12123,7 @@
 			(uuid "7d8d0d0e-1358-4e63-8fb9-934454c48a72")
 		)
 		(pin "DOUT" output
-			(at 317.5 49.53 0)
+			(at 250.19 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12727,7 +12133,7 @@
 			(uuid "b39fa782-592e-41a2-a5e7-aca8b0fc29e5")
 		)
 		(pin "DCKO" output
-			(at 317.5 52.07 0)
+			(at 250.19 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12745,7 +12151,7 @@
 		)
 	)
 	(sheet
-		(at 267.97 44.45)
+		(at 200.66 44.45)
 		(size 13.97 12.7)
 		(stroke
 			(width 0.1524)
@@ -12756,7 +12162,7 @@
 		)
 		(uuid "8f7215bf-36fc-4f74-9846-d645984ddc38")
 		(property "Sheetname" "LED_CHAIN4"
-			(at 269.367 43.434 0)
+			(at 202.057 43.434 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12765,7 +12171,7 @@
 			)
 		)
 		(property "Sheetfile" "rgb_led_track_chain.kicad_sch"
-			(at 260.858 58.166 0)
+			(at 193.548 58.166 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12775,7 +12181,7 @@
 			)
 		)
 		(pin "DCKI" input
-			(at 267.97 52.07 180)
+			(at 200.66 52.07 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12785,7 +12191,7 @@
 			(uuid "cc282b08-f8be-4f9f-9b44-0235d9619e6c")
 		)
 		(pin "DIN" input
-			(at 267.97 49.53 180)
+			(at 200.66 49.53 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12795,7 +12201,7 @@
 			(uuid "222631cf-2ca5-4e79-b1c0-1753a148e4a0")
 		)
 		(pin "DOUT" output
-			(at 281.94 49.53 0)
+			(at 214.63 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12805,7 +12211,7 @@
 			(uuid "d245b5c0-5768-42ca-b9c9-e355b199d03c")
 		)
 		(pin "DCKO" output
-			(at 281.94 52.07 0)
+			(at 214.63 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12823,7 +12229,7 @@
 		)
 	)
 	(sheet
-		(at 214.63 44.45)
+		(at 147.32 44.45)
 		(size 13.97 12.7)
 		(stroke
 			(width 0.1524)
@@ -12834,7 +12240,7 @@
 		)
 		(uuid "9eaccfc8-1f8c-4317-94f7-02c4e08c7d6f")
 		(property "Sheetname" "LED_CHAIN1"
-			(at 216.027 43.434 0)
+			(at 148.717 43.434 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12843,7 +12249,7 @@
 			)
 		)
 		(property "Sheetfile" "rgb_led_track_chain.kicad_sch"
-			(at 207.518 58.166 0)
+			(at 140.208 58.166 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12853,7 +12259,7 @@
 			)
 		)
 		(pin "DCKI" input
-			(at 214.63 52.07 180)
+			(at 147.32 52.07 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12863,7 +12269,7 @@
 			(uuid "d4355700-f808-4755-af28-ae99c82656ae")
 		)
 		(pin "DIN" input
-			(at 214.63 49.53 180)
+			(at 147.32 49.53 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12873,7 +12279,7 @@
 			(uuid "337d7f9b-09c7-4072-87a0-3f57f0b1150f")
 		)
 		(pin "DOUT" output
-			(at 228.6 49.53 0)
+			(at 161.29 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12883,7 +12289,7 @@
 			(uuid "cb92e173-01f5-4e01-9ef7-6bfe4de5cfe6")
 		)
 		(pin "DCKO" output
-			(at 228.6 52.07 0)
+			(at 161.29 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12901,7 +12307,7 @@
 		)
 	)
 	(sheet
-		(at 321.31 44.45)
+		(at 254 44.45)
 		(size 13.97 12.7)
 		(stroke
 			(width 0.1524)
@@ -12912,7 +12318,7 @@
 		)
 		(uuid "d9c93f8a-c967-4b82-ac84-76174b626f0a")
 		(property "Sheetname" "LED_CHAIN7"
-			(at 322.707 43.434 0)
+			(at 255.397 43.434 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12921,7 +12327,7 @@
 			)
 		)
 		(property "Sheetfile" "rgb_led_track_chain.kicad_sch"
-			(at 314.198 58.166 0)
+			(at 246.888 58.166 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12931,7 +12337,7 @@
 			)
 		)
 		(pin "DCKI" input
-			(at 321.31 52.07 180)
+			(at 254 52.07 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12941,7 +12347,7 @@
 			(uuid "a0cbebb2-45a1-4c7e-9a65-f68c5f0122bb")
 		)
 		(pin "DIN" input
-			(at 321.31 49.53 180)
+			(at 254 49.53 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12951,7 +12357,7 @@
 			(uuid "7d40b3a2-ac89-477f-88cd-005c14c1347c")
 		)
 		(pin "DOUT" output
-			(at 335.28 49.53 0)
+			(at 267.97 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12961,7 +12367,7 @@
 			(uuid "812cd2b9-7a81-46fe-a74a-53533566e55c")
 		)
 		(pin "DCKO" output
-			(at 335.28 52.07 0)
+			(at 267.97 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12979,7 +12385,7 @@
 		)
 	)
 	(sheet
-		(at 285.75 44.45)
+		(at 218.44 44.45)
 		(size 13.97 12.7)
 		(stroke
 			(width 0.1524)
@@ -12990,7 +12396,7 @@
 		)
 		(uuid "e362bb1f-2109-4ac7-a873-0d1473e9f2ab")
 		(property "Sheetname" "LED_CHAIN5"
-			(at 287.147 43.434 0)
+			(at 219.837 43.434 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12999,7 +12405,7 @@
 			)
 		)
 		(property "Sheetfile" "rgb_led_track_chain.kicad_sch"
-			(at 278.638 58.166 0)
+			(at 211.328 58.166 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13009,7 +12415,7 @@
 			)
 		)
 		(pin "DCKI" input
-			(at 285.75 52.07 180)
+			(at 218.44 52.07 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13019,7 +12425,7 @@
 			(uuid "6947fb81-4540-426f-bb25-bfd931485486")
 		)
 		(pin "DIN" input
-			(at 285.75 49.53 180)
+			(at 218.44 49.53 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13029,7 +12435,7 @@
 			(uuid "44aec157-1caf-4747-bf86-00d89d14d559")
 		)
 		(pin "DOUT" output
-			(at 299.72 49.53 0)
+			(at 232.41 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13039,7 +12445,7 @@
 			(uuid "0b174cba-f64b-4560-8964-6e38b3458289")
 		)
 		(pin "DCKO" output
-			(at 299.72 52.07 0)
+			(at 232.41 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
