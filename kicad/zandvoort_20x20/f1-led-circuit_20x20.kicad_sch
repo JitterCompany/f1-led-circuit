@@ -4752,6 +4752,16 @@
 	)
 	(wire
 		(pts
+			(xy 336.55 242.57) (xy 339.09 242.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0e1edf94-1b65-46f7-8b45-c2ca19ae91ab")
+	)
+	(wire
+		(pts
 			(xy 134.62 109.22) (xy 134.62 111.76)
 		)
 		(stroke
@@ -5252,6 +5262,16 @@
 	)
 	(wire
 		(pts
+			(xy 346.71 242.57) (xy 351.79 242.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d9ffb4a-1922-493a-bd37-7945369b9ed8")
+	)
+	(wire
+		(pts
 			(xy 279.4 214.63) (xy 279.4 231.14)
 		)
 		(stroke
@@ -5749,6 +5769,16 @@
 			(type default)
 		)
 		(uuid "c4848c0e-1f10-44e5-a0c8-82890a8eea6c")
+	)
+	(wire
+		(pts
+			(xy 351.79 242.57) (xy 351.79 243.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c62a68e6-b5bf-4386-b6ec-606e1dd94eb5")
 	)
 	(wire
 		(pts
@@ -7871,6 +7901,73 @@
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "NT1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 342.9 242.57 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "395d24e0-5f5b-4270-8cdc-b9e21a2821d8")
+		(property "Reference" "R8"
+			(at 342.9 246.634 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "R"
+			(at 342.646 239.776 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 342.9 240.792 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 342.9 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 342.9 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "13a396a9-e6e3-476f-b0bf-66b14ca615f3")
+		)
+		(pin "1"
+			(uuid "6dabfc0c-3d77-4284-a34e-5b4e64550021")
+		)
+		(instances
+			(project "f1-led-circuit_20x20"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "R8")
 					(unit 1)
 				)
 			)
@@ -10021,10 +10118,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "8aed590a-5e60-4c67-a90d-00861b4943e0")
 		(property "Reference" "TP1"
-			(at 331.47 242.5699 90)
+			(at 327.66 240.284 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10471,7 +10567,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "JITTER-COMPONENTS:PDFN33-1EP_3x3mm_P0.65mm"
+		(property "Footprint" "F1-LED-CIRCUIT-LIBRARY:PDFN33-1EP_3x3mm_P0.65mm"
 			(at 142.875 106.68 0)
 			(effects
 				(font
@@ -10811,6 +10907,73 @@
 		)
 	)
 	(symbol
+		(lib_id "adams_library_symbols:TestPoint")
+		(at 336.55 242.57 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ac93a8c3-dd55-4eb5-a227-3eccb14fc21c")
+		(property "Reference" "TP2"
+			(at 336.296 240.284 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 331.47 241.3001 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm"
+			(at 336.55 237.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 336.55 237.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 336.55 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "283177cf-449d-44ba-9262-81c3a8524703")
+		)
+		(instances
+			(project "f1-led-circuit_20x20"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "TP2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 76.2 113.03 270)
 		(unit 1)
@@ -10963,6 +11126,72 @@
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "U5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 351.79 243.84 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b122781e-f7dd-45ad-9e10-e8bfaf2db1ae")
+		(property "Reference" "#PWR0302"
+			(at 351.79 250.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 351.79 248.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 351.79 243.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 351.79 243.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 351.79 243.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c941c9e8-5956-4d0f-8dd1-4d754f24e86b")
+		)
+		(instances
+			(project "f1-led-circuit_20x20"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "#PWR0302")
 					(unit 1)
 				)
 			)
