@@ -16,6 +16,7 @@ use esp_backtrace as _;
 use esp_hal::dma::DmaDescriptor;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 use esp_hal::{
+    analog::adc::{Adc, AdcConfig, Attenuation},
     clock::ClockControl,
     dma::{Dma, DmaPriority},
     gpio::{Event, GpioPin, Input, Io, Pull},
@@ -38,74 +39,35 @@ enum Message {
 
 static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
 
-#[main]
-async fn main(spawner: Spawner) {
-    println!("Starting program!...");
 
-    let peripherals = Peripherals::take();
-    let system = SystemControl::new(peripherals.SYSTEM);
-    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
-
-    let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
-    esp_hal_embassy::init(&clocks, timg0);
-
-    let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
-
-    let sclk = io.pins.gpio6;
-    let miso = io.pins.gpio8;
-    let mosi = io.pins.gpio7;
-    let cs = io.pins.gpio9;
-
-    let dma = Dma::new(peripherals.DMA);
-
-    let dma_channel = dma.channel0;
-
-    static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
-    let tx_descriptors = TX_DESC.init([DmaDescriptor::EMPTY; 8]);
-
-    static RX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
-    let rx_descriptors = RX_DESC.init([DmaDescriptor::EMPTY; 8]);
-
-    let spi = Spi::new(peripherals.SPI2, 20.MHz(), SpiMode::Mode0, &clocks)
-        .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs))
-        .with_dma(dma_channel.configure_for_async(
-            false,
-            tx_descriptors,
-            rx_descriptors,
-            DmaPriority::Priority0,
-        ));
-
-    let hd108 = HD108::new(spi);
-
-    // Initialize the button pin as input with interrupt and pull-up resistor
-    let mut button_pin = Input::new(io.pins.gpio10, Pull::Up);
-
-    // Enable interrupts for the button pin
-    button_pin.listen(Event::FallingEdge);
-
-    let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
-
-    // Spawn the button task with ownership of the button pin and the sender
-    spawner
-        .spawn(button_task(button_pin, signal_channel.sender()))
-        .unwrap();
-
-    // Spawn the led task with the receiver
-    spawner
-        .spawn(led_task(hd108, signal_channel.receiver()))
-        .unwrap();
+#[embassy_executor::task]
+async fn button_task(
+    mut button_pin: Input<'static, GpioPin<10>>,
+    sender: Sender<'static, NoopRawMutex, Message, 1>,
+) {
+    loop {
+        // Wait for a button press
+        button_pin.wait_for_falling_edge().await;
+        sender.send(Message::ButtonPressed).await;
+        Timer::after(Duration::from_millis(400)).await; // Debounce delay
+    }
 }
 
 #[embassy_executor::task]
 async fn led_task(
+    pin_mv: u16,
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
     receiver: Receiver<'static, NoopRawMutex, Message, 1>,
 ) {
     loop {
         // Wait for the start message
         receiver.receive().await;
+            
+        println!("Temp: current pin_mv value: {}", pin_mv);
 
-        println!("Button pressed, starting race...");
+        Timer::after(Duration::from_secs(1)).await;
+
+        println!("Starting race...");
 
         // Start deserialization in chunks
         let data_bin = include_bytes!("output.bin");
@@ -164,15 +126,76 @@ async fn led_task(
     }
 }
 
-#[embassy_executor::task]
-async fn button_task(
-    mut button_pin: Input<'static, GpioPin<10>>,
-    sender: Sender<'static, NoopRawMutex, Message, 1>,
-) {
-    loop {
-        // Wait for a button press
-        button_pin.wait_for_falling_edge().await;
-        sender.send(Message::ButtonPressed).await;
-        Timer::after(Duration::from_millis(400)).await; // Debounce delay
-    }
+
+#[main]
+async fn main(spawner: Spawner) {
+    println!("Starting program!...");
+
+    let peripherals = Peripherals::take();
+    let system = SystemControl::new(peripherals.SYSTEM);
+    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+
+    let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
+    esp_hal_embassy::init(&clocks, timg0);
+
+    let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
+
+    let analog_pin = io.pins.gpio1;
+    let sclk = io.pins.gpio6;
+    let miso = io.pins.gpio8;
+    let mosi = io.pins.gpio7;
+    let cs = io.pins.gpio9;
+
+    //type AdcCal = ();
+    type AdcCal = esp_hal::analog::adc::AdcCalBasic<esp_hal::peripherals::ADC1>;
+
+    let mut adc1_config = AdcConfig::new();
+    let mut adc1_pin =
+        adc1_config.enable_pin_with_cal::<_, AdcCal>(analog_pin, Attenuation::Attenuation11dB);
+    let mut adc1 = Adc::new(peripherals.ADC1, adc1_config);
+
+    let pin_mv = nb::block!(adc1.read_oneshot(&mut adc1_pin)).unwrap();
+
+    let dma = Dma::new(peripherals.DMA);
+
+    let dma_channel = dma.channel0;
+
+    static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
+    let tx_descriptors = TX_DESC.init([DmaDescriptor::EMPTY; 8]);
+
+    static RX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
+    let rx_descriptors = RX_DESC.init([DmaDescriptor::EMPTY; 8]);
+
+    let spi = Spi::new(peripherals.SPI2, 20.MHz(), SpiMode::Mode0, &clocks)
+        .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs))
+        .with_dma(dma_channel.configure_for_async(
+            false,
+            tx_descriptors,
+            rx_descriptors,
+            DmaPriority::Priority0,
+        ));
+
+    let hd108 = HD108::new(spi);
+
+    // Initialize the button pin as input with interrupt and pull-up resistor
+    let mut button_pin = Input::new(io.pins.gpio10, Pull::Up);
+
+    // Enable interrupts for the button pin
+    button_pin.listen(Event::FallingEdge);
+
+    let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
+
+    // Spawn the button task with ownership of the button pin and the sender
+    spawner
+        .spawn(button_task(button_pin, signal_channel.sender()))
+        .unwrap();
+
+    // Spawn the led task with the receiver
+    spawner
+        .spawn(led_task(pin_mv, hd108, signal_channel.receiver()))
+        .unwrap();
+
 }
+
+
+
