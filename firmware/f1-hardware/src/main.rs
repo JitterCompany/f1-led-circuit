@@ -39,7 +39,6 @@ enum Message {
 
 static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
 
-
 #[embassy_executor::task]
 async fn button_task(
     mut button_pin: Input<'static, GpioPin<10>>,
@@ -62,7 +61,7 @@ async fn led_task(
     loop {
         // Wait for the start message
         receiver.receive().await;
-            
+
         println!("Temp: current pin_mv value: {}", pin_mv);
 
         Timer::after(Duration::from_secs(1)).await;
@@ -125,7 +124,6 @@ async fn led_task(
         hd108.set_off().await.unwrap();
     }
 }
-
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -194,8 +192,4 @@ async fn main(spawner: Spawner) {
     spawner
         .spawn(led_task(pin_mv, hd108, signal_channel.receiver()))
         .unwrap();
-
 }
-
-
-
