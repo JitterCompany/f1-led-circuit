@@ -40,6 +40,8 @@ enum Message {
 
 static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
 
+type AdcCal = esp_hal::analog::adc::AdcCalLine<esp_hal::peripherals::ADC1>;
+
 #[embassy_executor::task]
 async fn button_task(
     mut button_pin: Input<'static, GpioPin<10>>,
@@ -56,11 +58,7 @@ async fn button_task(
 #[embassy_executor::task]
 async fn temperature_task(
     mut adc1: Adc<'static, esp_hal::peripherals::ADC1>,
-    mut adc1_pin: AdcPin<
-        GpioPin<1>,
-        esp_hal::peripherals::ADC1,
-        esp_hal::analog::adc::AdcCalLine<esp_hal::peripherals::ADC1>,
-    >,
+    mut adc1_pin: AdcPin<GpioPin<1>, esp_hal::peripherals::ADC1, AdcCal>,
 ) {
     loop {
         // Non-blocking read of ADC value
@@ -192,12 +190,10 @@ async fn main(spawner: Spawner) {
     let mosi = io.pins.gpio7;
     let cs = io.pins.gpio9;
 
-    type AdcCal = esp_hal::analog::adc::AdcCalLine<esp_hal::peripherals::ADC1>;
-
     let mut adc1_config = AdcConfig::new();
     let adc1_pin =
         adc1_config.enable_pin_with_cal::<_, AdcCal>(analog_pin, Attenuation::Attenuation11dB);
-    let mut adc1 = Adc::new(peripherals.ADC1, adc1_config);
+    let adc1 = Adc::new(peripherals.ADC1, adc1_config);
 
     let dma = Dma::new(peripherals.DMA);
 
