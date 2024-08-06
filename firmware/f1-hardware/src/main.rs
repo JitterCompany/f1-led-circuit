@@ -13,9 +13,11 @@ use embassy_sync::channel::Sender;
 use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use esp_backtrace as _;
+use esp_hal::analog::adc::AdcPin;
 use esp_hal::dma::DmaDescriptor;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 use esp_hal::{
+    analog::adc::{Adc, AdcConfig, Attenuation},
     clock::ClockControl,
     dma::{Dma, DmaPriority},
     gpio::{Event, GpioPin, Input, Io, Pull},
@@ -38,62 +40,57 @@ enum Message {
 
 static SIGNAL_CHANNEL: StaticCell<Channel<NoopRawMutex, Message, 1>> = StaticCell::new();
 
-#[main]
-async fn main(spawner: Spawner) {
-    println!("Starting program!...");
+type AdcCal = esp_hal::analog::adc::AdcCalLine<esp_hal::peripherals::ADC1>;
 
-    let peripherals = Peripherals::take();
-    let system = SystemControl::new(peripherals.SYSTEM);
-    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+#[embassy_executor::task]
+async fn button_task(
+    mut button_pin: Input<'static, GpioPin<10>>,
+    sender: Sender<'static, NoopRawMutex, Message, 1>,
+) {
+    loop {
+        // Wait for a button press
+        button_pin.wait_for_falling_edge().await;
+        sender.send(Message::ButtonPressed).await;
+        Timer::after(Duration::from_millis(400)).await; // Debounce delay
+    }
+}
 
-    let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
-    esp_hal_embassy::init(&clocks, timg0);
+#[embassy_executor::task]
+async fn temperature_task(
+    mut adc1: Adc<'static, esp_hal::peripherals::ADC1>,
+    mut adc1_pin: AdcPin<GpioPin<1>, esp_hal::peripherals::ADC1, AdcCal>,
+) {
+    loop {
+        // Non-blocking read of ADC value
+        let mut pin_mv = None;
+        loop {
+            match adc1.read_oneshot(&mut adc1_pin) {
+                Ok(value) => {
+                    pin_mv = Some(value);
+                    break;
+                }
+                Err(nb::Error::WouldBlock) => {
+                    // ADC is not ready, wait for a short duration to avoid busy-waiting
+                    Timer::after(Duration::from_millis(10)).await;
+                }
+                Err(e) => {
+                    // Handle other errors if necessary
+                    println!("ADC read error: {:?}", e);
+                    break;
+                }
+            }
+        }
 
-    let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
+        if let Some(pin_mv) = pin_mv {
+            // Convert to temperature
+            let temperature_c = convert_voltage_to_temperature(pin_mv);
+            // Print temperature
+            println!("Temperature: {:.2} °C", temperature_c);
+        }
 
-    let sclk = io.pins.gpio6;
-    let miso = io.pins.gpio8;
-    let mosi = io.pins.gpio7;
-    let cs = io.pins.gpio9;
-
-    let dma = Dma::new(peripherals.DMA);
-
-    let dma_channel = dma.channel0;
-
-    static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
-    let tx_descriptors = TX_DESC.init([DmaDescriptor::EMPTY; 8]);
-
-    static RX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
-    let rx_descriptors = RX_DESC.init([DmaDescriptor::EMPTY; 8]);
-
-    let spi = Spi::new(peripherals.SPI2, 20.MHz(), SpiMode::Mode0, &clocks)
-        .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs))
-        .with_dma(dma_channel.configure_for_async(
-            false,
-            tx_descriptors,
-            rx_descriptors,
-            DmaPriority::Priority0,
-        ));
-
-    let hd108 = HD108::new(spi);
-
-    // Initialize the button pin as input with interrupt and pull-up resistor
-    let mut button_pin = Input::new(io.pins.gpio10, Pull::Up);
-
-    // Enable interrupts for the button pin
-    button_pin.listen(Event::FallingEdge);
-
-    let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
-
-    // Spawn the button task with ownership of the button pin and the sender
-    spawner
-        .spawn(button_task(button_pin, signal_channel.sender()))
-        .unwrap();
-
-    // Spawn the led task with the receiver
-    spawner
-        .spawn(led_task(hd108, signal_channel.receiver()))
-        .unwrap();
+        // Wait for 1 second before the next reading
+        Timer::after(Duration::from_secs(1)).await;
+    }
 }
 
 #[embassy_executor::task]
@@ -105,7 +102,7 @@ async fn led_task(
         // Wait for the start message
         receiver.receive().await;
 
-        println!("Button pressed, starting race...");
+        println!("Starting race...");
 
         // Start deserialization in chunks
         let data_bin = include_bytes!("output.bin");
@@ -164,15 +161,79 @@ async fn led_task(
     }
 }
 
-#[embassy_executor::task]
-async fn button_task(
-    mut button_pin: Input<'static, GpioPin<10>>,
-    sender: Sender<'static, NoopRawMutex, Message, 1>,
-) {
-    loop {
-        // Wait for a button press
-        button_pin.wait_for_falling_edge().await;
-        sender.send(Message::ButtonPressed).await;
-        Timer::after(Duration::from_millis(400)).await; // Debounce delay
-    }
+fn convert_voltage_to_temperature(pin_mv: u16) -> f32 {
+    const V0C: f32 = 400.0; // Output voltage at 0°C in mV
+    const TC: f32 = 19.5; // Temperature coefficient in mV/°C
+
+    let voltage = pin_mv as f32; // Convert pin_mv to f32 for calculation
+    let temperature_c = (voltage - V0C) / TC;
+
+    temperature_c
+}
+
+#[main]
+async fn main(spawner: Spawner) {
+    println!("Starting program!...");
+
+    let peripherals = Peripherals::take();
+    let system = SystemControl::new(peripherals.SYSTEM);
+    let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
+
+    let timg0 = TimerGroup::new_async(peripherals.TIMG0, &clocks);
+    esp_hal_embassy::init(&clocks, timg0);
+
+    let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
+
+    let analog_pin = io.pins.gpio1;
+    let sclk = io.pins.gpio6;
+    let miso = io.pins.gpio8;
+    let mosi = io.pins.gpio7;
+    let cs = io.pins.gpio9;
+
+    let mut adc1_config = AdcConfig::new();
+    let adc1_pin =
+        adc1_config.enable_pin_with_cal::<_, AdcCal>(analog_pin, Attenuation::Attenuation11dB);
+    let adc1 = Adc::new(peripherals.ADC1, adc1_config);
+
+    let dma = Dma::new(peripherals.DMA);
+
+    let dma_channel = dma.channel0;
+
+    static TX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
+    let tx_descriptors = TX_DESC.init([DmaDescriptor::EMPTY; 8]);
+
+    static RX_DESC: StaticCell<[DmaDescriptor; 8]> = StaticCell::new();
+    let rx_descriptors = RX_DESC.init([DmaDescriptor::EMPTY; 8]);
+
+    let spi = Spi::new(peripherals.SPI2, 20.MHz(), SpiMode::Mode0, &clocks)
+        .with_pins(Some(sclk), Some(mosi), Some(miso), Some(cs))
+        .with_dma(dma_channel.configure_for_async(
+            false,
+            tx_descriptors,
+            rx_descriptors,
+            DmaPriority::Priority0,
+        ));
+
+    let hd108 = HD108::new(spi);
+
+    // Initialize the button pin as input with interrupt and pull-up resistor
+    let mut button_pin = Input::new(io.pins.gpio10, Pull::Up);
+
+    // Enable interrupts for the button pin
+    button_pin.listen(Event::FallingEdge);
+
+    let signal_channel = SIGNAL_CHANNEL.init(Channel::new());
+
+    // Spawn the button task with ownership of the button pin and the sender
+    spawner
+        .spawn(button_task(button_pin, signal_channel.sender()))
+        .unwrap();
+
+    // Spawn the led task with the receiver
+    spawner
+        .spawn(led_task(hd108, signal_channel.receiver()))
+        .unwrap();
+
+    // Spawn the temperature task
+    spawner.spawn(temperature_task(adc1, adc1_pin)).unwrap();
 }
