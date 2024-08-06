@@ -63,13 +63,34 @@ async fn temperature_task(
     >,
 ) {
     loop {
-        // Read ADC value
-        let pin_mv = nb::block!(adc1.read_oneshot(&mut adc1_pin)).unwrap();
-        // Convert to temperature
-        let temperature_c = convert_voltage_to_temperature(pin_mv);
-        // Print temperature
-        println!("Temperature: {:.2} °C", temperature_c);
-        // Wait for 1 second
+        // Non-blocking read of ADC value
+        let mut pin_mv = None;
+        loop {
+            match adc1.read_oneshot(&mut adc1_pin) {
+                Ok(value) => {
+                    pin_mv = Some(value);
+                    break;
+                }
+                Err(nb::Error::WouldBlock) => {
+                    // ADC is not ready, wait for a short duration to avoid busy-waiting
+                    Timer::after(Duration::from_millis(10)).await;
+                }
+                Err(e) => {
+                    // Handle other errors if necessary
+                    println!("ADC read error: {:?}", e);
+                    break;
+                }
+            }
+        }
+
+        if let Some(pin_mv) = pin_mv {
+            // Convert to temperature
+            let temperature_c = convert_voltage_to_temperature(pin_mv);
+            // Print temperature
+            println!("Temperature: {:.2} °C", temperature_c);
+        }
+
+        // Wait for 1 second before the next reading
         Timer::after(Duration::from_secs(1)).await;
     }
 }
