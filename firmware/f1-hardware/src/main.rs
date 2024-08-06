@@ -59,7 +59,7 @@ async fn temperature_task(
     mut adc1_pin: AdcPin<
         GpioPin<1>,
         esp_hal::peripherals::ADC1,
-        esp_hal::analog::adc::AdcCalBasic<esp_hal::peripherals::ADC1>,
+        esp_hal::analog::adc::AdcCalLine<esp_hal::peripherals::ADC1>,
     >,
 ) {
     loop {
@@ -192,7 +192,7 @@ async fn main(spawner: Spawner) {
     let mosi = io.pins.gpio7;
     let cs = io.pins.gpio9;
 
-    type AdcCal = esp_hal::analog::adc::AdcCalBasic<esp_hal::peripherals::ADC1>;
+    type AdcCal = esp_hal::analog::adc::AdcCalLine<esp_hal::peripherals::ADC1>;
 
     let mut adc1_config = AdcConfig::new();
     let adc1_pin =
