@@ -14,6 +14,7 @@ use embassy_time::{Duration, Timer};
 use embedded_hal_async::spi::SpiBus;
 use esp_backtrace as _;
 use esp_hal::dma::DmaDescriptor;
+use esp_hal::analog::adc::AdcPin;
 use esp_hal::spi::master::prelude::_esp_hal_spi_master_dma_WithDmaSpi2;
 use esp_hal::{
     analog::adc::{Adc, AdcConfig, Attenuation},
@@ -52,9 +53,27 @@ async fn button_task(
     }
 }
 
+
+#[embassy_executor::task]
+async fn temperature_task(
+    mut adc1: Adc<'static, esp_hal::peripherals::ADC1>,
+    mut adc1_pin: AdcPin<GpioPin<1>, esp_hal::peripherals::ADC1>,
+) {
+    loop {
+        // Read ADC value
+        let pin_mv = nb::block!(adc1.read_oneshot(&mut adc1_pin)).unwrap();
+        // Convert to temperature
+        let temperature_c = convert_voltage_to_temperature(pin_mv);
+        // Print temperature
+        println!("Temperature: {:.2} °C", temperature_c);
+        // Wait for 1 second
+        Timer::after(Duration::from_secs(1)).await;
+    }
+}
+
 #[embassy_executor::task]
 async fn led_task(
-    pin_mv: u16,
+    _pin_mv: u16,
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
     receiver: Receiver<'static, NoopRawMutex, Message, 1>,
 ) {
@@ -62,9 +81,13 @@ async fn led_task(
         // Wait for the start message
         receiver.receive().await;
 
-        println!("Temp: current pin_mv value: {}", pin_mv);
+        //println!("Temp: current pin_mv value: {}", pin_mv);
 
-        Timer::after(Duration::from_secs(1)).await;
+        //let temperature_c = convert_voltage_to_temperature(pin_mv);
+        
+        //println!("Temperature: {:.2} °C", temperature_c);
+
+        //Timer::after(Duration::from_secs(1)).await;
 
         println!("Starting race...");
 
@@ -124,6 +147,18 @@ async fn led_task(
         hd108.set_off().await.unwrap();
     }
 }
+
+
+fn convert_voltage_to_temperature(pin_mv: u16) -> f32 {
+    const V0C: f32 = 400.0; // Output voltage at 0°C in mV
+    const TC: f32 = 19.5;   // Temperature coefficient in mV/°C
+
+    let voltage = pin_mv as f32; // Convert pin_mv to f32 for calculation
+    let temperature_c = (voltage - V0C) / TC;
+
+    temperature_c
+}
+
 
 #[main]
 async fn main(spawner: Spawner) {
@@ -191,5 +226,11 @@ async fn main(spawner: Spawner) {
     // Spawn the led task with the receiver
     spawner
         .spawn(led_task(pin_mv, hd108, signal_channel.receiver()))
+        .unwrap();
+
+
+    // Spawn the temperature task
+    spawner
+        .spawn(temperature_task(adc1, adc1_pin))
         .unwrap();
 }
