@@ -141,4 +141,40 @@ where
 
         Ok(())
     }
+
+    // Set all LEDs to on
+    pub async fn set_all_leds(
+        &mut self,
+        red: u8,
+        green: u8,
+        blue: u8,
+    ) -> Result<(), SPI::Error> {
+        // At least 128 bits of zeros for the start frame
+        let start_frame = [0x00; 16];
+
+        // Create data frames for all 96 LEDs
+        let mut data: Vec<u8, 796> = Vec::new();
+        data.extend_from_slice(&start_frame).unwrap();
+
+        // Set all LEDs to the given brightness
+        for _ in 0..96 {
+            // Convert the 8-bit RGB values to 16-bit values
+            let red = ((red as u16) << 8) | (red as u16);
+            let green = ((green as u16) << 8) | (green as u16);
+            let blue = ((blue as u16) << 8) | (blue as u16);
+
+            let led_frame = Self::create_led_frame(red, green, blue);
+            data.extend_from_slice(&led_frame).unwrap();
+        }
+
+        // Additional clock pulses equal to the number of LEDs in the strip
+        let additional_clocks = [0x00; 12];
+        data.extend_from_slice(&additional_clocks).unwrap();
+
+        // Write the data to the SPI bus
+        self.spi.write(&data).await?;
+
+        Ok(())
+    }
+
 }

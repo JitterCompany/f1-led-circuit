@@ -98,6 +98,15 @@ async fn led_task(
     mut hd108: HD108<impl SpiBus<u8> + 'static>,
     receiver: Receiver<'static, NoopRawMutex, Message, 1>,
 ) {
+
+    // Define the brightness levels
+    let red = 10;   // Low brightness red
+    let green = 10; // Low brightness green
+    let blue = 10;  // Low brightness blue
+
+    // Initially turn on all LEDs at low brightness
+    hd108.set_all_leds(red, green, blue).await.unwrap();
+
     loop {
         // Wait for the start message
         receiver.receive().await;
