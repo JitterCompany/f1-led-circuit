@@ -104,7 +104,7 @@ async fn led_task(
 
     // Start the train animation immediately
     let high_brightness = 255;
-    let led_count = 96;
+    let led_count = 97;
     let train_length = 15;
     let colors = [
         (high_brightness, 0, 0), 
@@ -128,7 +128,8 @@ async fn led_task(
 
     while iteration_count < 10 {
         for i in 0..led_count {
-            let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 96> = heapless08::Vec::new();
+        //for i in 0..led_count {
+            let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 97> = heapless08::Vec::new();
 
             // Set all LEDs to low brightness
             for j in 0..led_count {
