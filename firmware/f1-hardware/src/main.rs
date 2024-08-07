@@ -100,12 +100,59 @@ async fn led_task(
 ) {
 
     // Define the brightness levels
-    let red = 10;   // Low brightness red
-    let green = 10; // Low brightness green
-    let blue = 10;  // Low brightness blue
+    let low_brightness = 10; // Low brightness for background LEDs
 
-    // Initially turn on all LEDs at low brightness
-    hd108.set_all_leds(red, green, blue).await.unwrap();
+    // Start the train animation immediately
+    let high_brightness = 255;
+    let led_count = 96;
+    let train_length = 15;
+    let colors = [
+        (high_brightness, 0, 0), 
+        (high_brightness, 0, 0), 
+        (high_brightness, 0, 0), 
+        (high_brightness, 0, 0), 
+        (high_brightness, 0, 0), 
+        (0, 0, high_brightness), 
+        (0, 0, high_brightness), 
+        (0, 0, high_brightness), 
+        (0, 0, high_brightness), 
+        (0, 0, high_brightness), 
+        (0, high_brightness, 0), 
+        (0, high_brightness, 0), 
+        (0, high_brightness, 0), 
+        (0, high_brightness, 0), 
+        (0, high_brightness, 0)
+    ];
+
+    let mut iteration_count = 0;
+
+    while iteration_count < 10 {
+        for i in 0..led_count {
+            let mut led_updates: heapless08::Vec<(usize, u8, u8, u8), 96> = heapless08::Vec::new();
+
+            // Set all LEDs to low brightness
+            for j in 0..led_count {
+                led_updates.push((j, low_brightness, low_brightness, low_brightness)).unwrap();
+            }
+
+            // Update the train LEDs with high brightness colors
+            for j in 0..train_length {
+                let pos = (i + j) % led_count;
+                let color = colors[j];
+                led_updates[pos] = (pos, color.0, color.1, color.2);
+            }
+
+            hd108.set_leds(&led_updates).await.unwrap();
+            Timer::after(Duration::from_millis(10)).await;
+        }
+        iteration_count += 1;
+    }
+
+    println!("Startup animation complete...");
+
+    // Set all leds off
+    hd108.set_off().await.unwrap();
+
 
     loop {
         // Wait for the start message
