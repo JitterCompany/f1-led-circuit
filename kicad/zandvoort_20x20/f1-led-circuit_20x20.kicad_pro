@@ -497,7 +497,7 @@
     "page_layout_descr_file": "worksheet_template/kicad_worksheet_template.kicad_wks"
   },
   "schematic": {
-    "annotate_start_num": 186,
+    "annotate_start_num": 0,
     "bom_fmt_presets": [],
     "bom_fmt_settings": {
       "field_delimiter": ",",
