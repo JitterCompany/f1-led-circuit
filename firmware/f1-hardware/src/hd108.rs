@@ -143,12 +143,7 @@ where
     }
 
     // Set all LEDs to on
-    pub async fn set_all_leds(
-        &mut self,
-        red: u8,
-        green: u8,
-        blue: u8,
-    ) -> Result<(), SPI::Error> {
+    pub async fn set_all_leds(&mut self, red: u8, green: u8, blue: u8) -> Result<(), SPI::Error> {
         // At least 128 bits of zeros for the start frame
         let start_frame = [0x00; 16];
 
@@ -176,5 +171,4 @@ where
 
         Ok(())
     }
-
 }
