@@ -1388,6 +1388,118 @@
 			)
 		)
 	)
+	(footprint "TestPoint:TestPoint_Pad_D1.5mm"
+		(layer "F.Cu")
+		(uuid "04d5e451-3aba-41ff-aac3-d557f25a2ded")
+		(at 357.48 344.87)
+		(descr "SMD pad as test Point, diameter 1.5mm")
+		(tags "test point SMD pad")
+		(property "Reference" "TP9"
+			(at 0 -1.648 0)
+			(layer "F.SilkS")
+			(uuid "3d471a83-e063-4c87-8984-3923874885d2")
+			(effects
+				(font
+					(size 0.5 0.5)
+					(thickness 0.125)
+				)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 0 1.75 0)
+			(layer "F.Fab")
+			(uuid "cdad6be4-4c74-4eb5-a114-f74e3ea6afac")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "22ae24b8-41f3-44df-982f-51fc9de88dd6")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e092c573-17bc-4286-9f41-ee9c9f5b5021")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "354010bd-63e9-47f1-8e1a-673dd478e5d8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property ki_fp_filters "Pin* Test*")
+		(path "/a5e23133-c919-4ef9-87de-2bd690fc1639")
+		(sheetname "Root")
+		(sheetfile "f1-led-circuit_20x20.kicad_sch")
+		(attr exclude_from_pos_files)
+		(fp_circle
+			(center 0 0)
+			(end 0 0.95)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill none)
+			(layer "F.SilkS")
+			(uuid "b326981b-679c-4485-bf13-b8aaee09dd3d")
+		)
+		(fp_circle
+			(center 0 0)
+			(end 1.25 0)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill none)
+			(layer "F.CrtYd")
+			(uuid "ab733e4f-223f-482e-826e-5584bcad0b5c")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 -1.65 0)
+			(layer "F.Fab")
+			(uuid "ae61d679-d518-4c3a-88c0-ea1ab850c6b5")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "1" smd circle
+			(at 0 0)
+			(size 1.5 1.5)
+			(layers "F.Cu" "F.Mask")
+			(net 2 "GND")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "50a78053-c6ad-430a-937e-fc29f803d2ca")
+		)
+	)
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"
 		(layer "F.Cu")
 		(uuid "054cb69d-ce87-4a98-9c6a-41803182e682")
@@ -11528,7 +11640,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP5"
-			(at 0 -2.54 0)
+			(at 0 1.865 0)
 			(layer "F.SilkS")
 			(uuid "b98af6e7-f0c5-4f7b-99f5-54527e9c2663")
 			(effects
@@ -12041,7 +12153,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP6"
-			(at 0 -2.54 0)
+			(at -0.015 1.815 0)
 			(layer "F.SilkS")
 			(uuid "ae5b7089-311f-4bf3-8049-954085b53803")
 			(effects
@@ -12963,7 +13075,7 @@
 		(at 332.08 347.41)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP8"
+		(property "Reference" "TP10"
 			(at 0 -2.54 0)
 			(layer "F.SilkS")
 			(uuid "be3b2afa-11f9-445c-bf75-a0ea34b8e6bf")
@@ -14276,7 +14388,7 @@
 		(at 334.62 347.41)
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP9"
+		(property "Reference" "TP11"
 			(at 0 -2.54 0)
 			(layer "F.SilkS")
 			(uuid "8b057ae6-c130-4cc2-97e8-de1d6c139468")
@@ -24300,7 +24412,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP3"
-			(at 0 -2.54 0)
+			(at -0.17 1.815 0)
 			(layer "F.SilkS")
 			(uuid "f7277c6e-2b7c-4a91-a36e-73876da76f37")
 			(effects
@@ -44414,7 +44526,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP7"
-			(at 0 -2.54 0)
+			(at 0.07 1.865 0)
 			(layer "F.SilkS")
 			(uuid "179438e8-758c-4f7f-82f8-472fd139ba19")
 			(effects
@@ -49167,7 +49279,7 @@
 		(descr "SMD pad as test Point, diameter 1.5mm")
 		(tags "test point SMD pad")
 		(property "Reference" "TP4"
-			(at 0 -2.54 0)
+			(at -0.185 1.815 0)
 			(layer "F.SilkS")
 			(uuid "2eca7aff-9858-42e0-a123-21fc06df72f1")
 			(effects
@@ -52691,6 +52803,119 @@
 			(rotate
 				(xyz -90 0 0)
 			)
+		)
+	)
+	(footprint "TestPoint:TestPoint_Pad_D1.5mm"
+		(layer "F.Cu")
+		(uuid "f49b895e-01b0-4361-81a6-73bba4c57eed")
+		(at 347.32 344.87)
+		(descr "SMD pad as test Point, diameter 1.5mm")
+		(tags "test point SMD pad")
+		(property "Reference" "TP8"
+			(at 0 -1.648 0)
+			(layer "F.SilkS")
+			(uuid "d910df32-da84-418f-8a8c-c64ef7289bc1")
+			(effects
+				(font
+					(size 0.5 0.5)
+					(thickness 0.125)
+					(bold yes)
+				)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 0 1.75 0)
+			(layer "F.Fab")
+			(uuid "4163b187-5757-4ad7-9708-4d7fceef003f")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "4f1875fe-bdcc-4368-9666-4fbeb46b81a7")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "78d29520-92e0-4a87-b7b1-3551be450292")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "04cbb77c-1b3f-4199-8856-ae01cfbff845")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property ki_fp_filters "Pin* Test*")
+		(path "/0a370955-d2ef-4ed1-af16-c6d26f70c5ea")
+		(sheetname "Root")
+		(sheetfile "f1-led-circuit_20x20.kicad_sch")
+		(attr exclude_from_pos_files)
+		(fp_circle
+			(center 0 0)
+			(end 0 0.95)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill none)
+			(layer "F.SilkS")
+			(uuid "1af71cbb-1ef3-4ac6-a5d5-509532d2054c")
+		)
+		(fp_circle
+			(center 0 0)
+			(end 1.25 0)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill none)
+			(layer "F.CrtYd")
+			(uuid "71269523-48a1-4dd7-b0d7-24d1b75c0b11")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 -1.65 0)
+			(layer "F.Fab")
+			(uuid "f1383c19-2ed3-4aed-9d66-de8638257e64")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "1" smd circle
+			(at 0 0)
+			(size 1.5 1.5)
+			(layers "F.Cu" "F.Mask")
+			(net 5 "+3.3V")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "65c8a9bd-856a-46b2-ae46-6a1bdaf0d353")
 		)
 	)
 	(footprint "F1-LED-CIRCUIT-LIBRARY:HD108-2020"

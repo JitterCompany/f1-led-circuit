@@ -5042,6 +5042,26 @@
 	)
 	(wire
 		(pts
+			(xy 350.52 220.98) (xy 354.33 220.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2a2eb11e-1e76-49a2-bafb-bb7d84ee0bef")
+	)
+	(wire
+		(pts
+			(xy 354.33 223.52) (xy 354.33 224.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2a71f10d-8631-4604-b8ef-54ad7ebb9471")
+	)
+	(wire
+		(pts
 			(xy 146.05 48.26) (xy 146.05 49.53)
 		)
 		(stroke
@@ -6062,6 +6082,16 @@
 	)
 	(wire
 		(pts
+			(xy 354.33 219.71) (xy 354.33 220.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "df7eea46-5b10-4337-b90f-a7f2ef731e47")
+	)
+	(wire
+		(pts
 			(xy 227.33 111.76) (xy 242.57 111.76)
 		)
 		(stroke
@@ -6099,6 +6129,16 @@
 			(type default)
 		)
 		(uuid "e2e33b4d-6948-4f67-bbb9-48e17b56bead")
+	)
+	(wire
+		(pts
+			(xy 350.52 223.52) (xy 354.33 223.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e5eb982a-cdbd-4ab3-b169-f898ecd6ef60")
 	)
 	(wire
 		(pts
@@ -6281,6 +6321,18 @@
 		(uuid "ff80025f-df79-477a-a0f1-443396b795a0")
 	)
 	(rectangle
+		(start 337.82 209.55)
+		(end 361.95 233.68)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid 3ceb0e9d-0d27-4696-8458-0c9b3bc668f9)
+	)
+	(rectangle
 		(start 124.46 93.98)
 		(end 181.61 147.32)
 		(stroke
@@ -6401,6 +6453,17 @@
 			)
 		)
 		(uuid "57266ec2-4038-4d0a-9c5e-102b60c6798c")
+	)
+	(text "JTAG \nTEST POINTS"
+		(exclude_from_sim no)
+		(at 342.138 215.646 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "8490473f-c721-4927-b8ea-cc55141e90b0")
 	)
 	(text "USB-C port with ESD protection"
 		(exclude_from_sim no)
@@ -7000,6 +7063,71 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 350.52 220.98 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0a370955-d2ef-4ed1-af16-c6d26f70c5ea")
+		(property "Reference" "TP8"
+			(at 343.408 220.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 347.218 218.44 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm"
+			(at 350.52 215.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 350.52 215.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 350.52 220.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5c0f80a1-3851-4789-8f69-eff9edffda92")
+		)
+		(instances
+			(project "f1-led-circuit_20x20"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "TP8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3.3V")
 		(at 48.26 170.18 0)
 		(unit 1)
@@ -7421,6 +7549,72 @@
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "TP7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 354.33 219.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1a1c7111-8633-4821-a350-1d287d8d6bd0")
+		(property "Reference" "#PWR01001"
+			(at 354.33 223.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 354.33 214.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 354.33 219.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 354.33 219.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 354.33 219.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "288363d4-f77c-48b3-8882-7d9aec3905b1")
+		)
+		(instances
+			(project "f1-led-circuit_20x20"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "#PWR01001")
 					(unit 1)
 				)
 			)
@@ -7918,6 +8112,72 @@
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
 					(reference "NT1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 354.33 224.79 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3728eca2-8e42-4a1f-aa15-1fe6258f2586")
+		(property "Reference" "#PWR01002"
+			(at 354.33 231.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 354.33 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 354.33 224.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 354.33 224.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 354.33 224.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ec0b64b2-dc5d-4222-ad0c-84e499500bc5")
+		)
+		(instances
+			(project "f1-led-circuit_20x20"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "#PWR01002")
 					(unit 1)
 				)
 			)
@@ -10268,8 +10528,8 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8aed590a-5e60-4c67-a90d-00861b4943e0")
-		(property "Reference" "TP8"
-			(at 327.66 240.284 90)
+		(property "Reference" "TP10"
+			(at 326.136 240.284 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10320,7 +10580,7 @@
 		(instances
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "TP8")
+					(reference "TP10")
 					(unit 1)
 				)
 			)
@@ -10898,6 +11158,71 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 350.52 223.52 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a5e23133-c919-4ef9-87de-2bd690fc1639")
+		(property "Reference" "TP9"
+			(at 343.662 223.52 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 347.218 220.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm"
+			(at 350.52 218.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 350.52 218.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 350.52 223.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "024edd17-133f-4b4c-b2bd-91d2f6971b92")
+		)
+		(instances
+			(project "f1-led-circuit_20x20"
+				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
+					(reference "TP9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "adams_library_symbols:GND")
 		(at 248.92 241.3 0)
 		(unit 1)
@@ -10973,7 +11298,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ac93a8c3-dd55-4eb5-a227-3eccb14fc21c")
-		(property "Reference" "TP9"
+		(property "Reference" "TP11"
 			(at 336.296 240.284 90)
 			(effects
 				(font
@@ -11025,7 +11350,7 @@
 		(instances
 			(project "f1-led-circuit_20x20"
 				(path "/e1a94fd7-a746-413d-af87-306e7f792800"
-					(reference "TP9")
+					(reference "TP11")
 					(unit 1)
 				)
 			)
